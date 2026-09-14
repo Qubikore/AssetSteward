@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: assetsteward-backend
+    env: docker
+    rootDir: AssetStewardBackend
+    plan: free
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: assetsteward-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: assetsteward-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: assetsteward-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: assetsteward-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: assetsteward-db
+          property: password
+
+databases:
+  - name: assetsteward-db
+    plan: free
