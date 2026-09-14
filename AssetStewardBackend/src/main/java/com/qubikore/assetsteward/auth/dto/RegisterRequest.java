@@ -8,6 +8,7 @@ public class RegisterRequest {
     private String lastname;
     private String email;
     private String password;
+    private com.qubikore.assetsteward.user.Role role;
 
     @JsonProperty("remember_me")
     private boolean rememberMe;
@@ -32,4 +33,6 @@ public class RegisterRequest {
     public void setPassword(String password) { this.password = password; }
     public boolean isRememberMe() { return rememberMe; }
     public void setRememberMe(boolean rememberMe) { this.rememberMe = rememberMe; }
+    public com.qubikore.assetsteward.user.Role getRole() { return role; }
+    public void setRole(com.qubikore.assetsteward.user.Role role) { this.role = role; }
 }

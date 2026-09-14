@@ -6,9 +6,11 @@ import com.qubikore.assetsteward.user.dto.ProfileUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/profile")
+@SecurityRequirement(name = "Bearer Authentication")
 public class ProfileController {
 
     private final UserService userService;
@@ -24,7 +26,7 @@ public class ProfileController {
         return ResponseEntity.ok(ApiResponse.success("Profile fetched successfully", profile));
     }
 
-    @PutMapping
+    @PutMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ProfileResponse>> updateProfile(
             Authentication authentication,
             @ModelAttribute ProfileUpdateRequest request) {

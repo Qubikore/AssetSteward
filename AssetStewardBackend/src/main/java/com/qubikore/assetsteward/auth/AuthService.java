@@ -27,8 +27,40 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthResponse register(RegisterRequest request) {
+    @jakarta.annotation.PostConstruct
+    public void initSuperAdmin() {
+        if (repository.findByEmail("admin@gmail.com").isEmpty()) {
+            User admin = new User(
+                "Super",
+                "Admin",
+                "admin@gmail.com",
+                passwordEncoder.encode("123123"),
+                Role.SUPER_ADMIN
+            );
+            repository.save(admin);
+        }
+    }
+
+    public AuthResponse register(RegisterRequest request, User currentUser) {
         
+        if (currentUser == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+        
+        Role newRole = request.getRole() != null ? request.getRole() : Role.USER;
+        
+        if (currentUser.getRole() == Role.HR) {
+            if (newRole != Role.USER) {
+                throw new RuntimeException("HR can only create USER");
+            }
+        } else if (currentUser.getRole() == Role.SUPER_ADMIN) {
+            if (newRole == Role.SUPER_ADMIN) {
+                throw new RuntimeException("Cannot create another SUPER_ADMIN");
+            }
+        } else {
+            throw new RuntimeException("Only SUPER_ADMIN and HR can create users");
+        }
+
         if (repository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email is already in use");
         }
@@ -38,7 +70,7 @@ public class AuthService {
                 request.getLastname(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                Role.USER
+                newRole
         );
         repository.save(user);
         

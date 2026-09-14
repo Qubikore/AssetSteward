@@ -1,6 +1,7 @@
 package com.qubikore.assetsteward.user;
 
 public enum Role {
-    USER,
-    ADMIN
+    SUPER_ADMIN,
+    HR,
+    USER
 }

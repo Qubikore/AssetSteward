@@ -6,6 +6,7 @@ import com.qubikore.assetsteward.auth.dto.RegisterRequest;
 import com.qubikore.assetsteward.common.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -18,8 +19,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request)));
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<ApiResponse<AuthResponse>> register(
+            @RequestBody RegisterRequest request,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser
+    ) {
+        return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request, currentUser)));
     }
 
     @PostMapping("/login")
