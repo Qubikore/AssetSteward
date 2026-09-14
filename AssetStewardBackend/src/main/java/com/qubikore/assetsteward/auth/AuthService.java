@@ -19,16 +19,24 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
-    public AuthService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @jakarta.annotation.PostConstruct
     public void initSuperAdmin() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check");
+        } catch (Exception e) {
+            System.out.println("Could not drop constraint: " + e.getMessage());
+        }
+
         if (repository.findByEmail("admin@gmail.com").isEmpty()) {
             User admin = new User(
                 "Super",
