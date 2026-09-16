@@ -12,10 +12,10 @@ class AuthRemoteDS {
   Future<String> login(String email, String password) async {
     final response = await _dio.get(Endpoints.login);
 
-    if (response.data case {'token': String token}) {
+    if (response.data case {'token': final String token}) {
       return token;
     } else {
-      throw Failure('Invalid response format');
+      throw const Failure('Invalid response format');
     }
   }
 }

@@ -9,6 +9,6 @@ class ForgetPassPageview extends ConsumerWidget {
     // final authState = ref.watch(authCtrlProvider);
     // final authCtrl = useMemoized(() => ref.read(authCtrlProvider.notifier));
 
-    return Scaffold(appBar: AppBar(title: Text('ForgetPassPageview')));
+    return Scaffold(appBar: AppBar(title: const Text('ForgetPassPageview')));
   }
 }

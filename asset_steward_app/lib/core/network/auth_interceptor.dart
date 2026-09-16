@@ -80,7 +80,7 @@ class AuthInterceptor extends Interceptor {
       final response = await _refreshDio.post(Endpoints.refresh, data: {'refreshToken': refreshToken});
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.data case {'accessToken': String access, 'refreshToken': String refresh}) {
+        if (response.data case {'accessToken': final String access, 'refreshToken': final String refresh}) {
           await _tokenStorage.saveTokens(accessToken: access, refreshToken: refresh);
           return true;
         }

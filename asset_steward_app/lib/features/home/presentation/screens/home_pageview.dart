@@ -6,6 +6,6 @@ class HomePageview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(appBar: AppBar(title: Text('home')));
+    return Scaffold(appBar: AppBar(title: const Text('home')));
   }
 }

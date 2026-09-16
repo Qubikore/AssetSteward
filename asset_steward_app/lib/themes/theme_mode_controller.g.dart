@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'route_config.dart';
+part of 'theme_mode_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,50 +9,52 @@ part of 'route_config.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AppRouter)
-final appRouterProvider = AppRouterProvider._();
+@ProviderFor(ThemeModeController)
+final themeModeControllerProvider = ThemeModeControllerProvider._();
 
-final class AppRouterProvider extends $NotifierProvider<AppRouter, GoRouter> {
-  AppRouterProvider._()
+final class ThemeModeControllerProvider
+    extends $NotifierProvider<ThemeModeController, ThemeMode> {
+  ThemeModeControllerProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'appRouterProvider',
+        name: r'themeModeControllerProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$appRouterHash();
+  String debugGetCreateSourceHash() => _$themeModeControllerHash();
 
   @$internal
   @override
-  AppRouter create() => AppRouter();
+  ThemeModeController create() => ThemeModeController();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GoRouter value) {
+  Override overrideWithValue(ThemeMode value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GoRouter>(value),
+      providerOverride: $SyncValueProvider<ThemeMode>(value),
     );
   }
 }
 
-String _$appRouterHash() => r'f6760aa10178a762fc85c0fc99dc3c76ceffaf92';
+String _$themeModeControllerHash() =>
+    r'969f0b0c5c393473f0b4f3e2d0b51ac5d2807aab';
 
-abstract class _$AppRouter extends $Notifier<GoRouter> {
-  GoRouter build();
+abstract class _$ThemeModeController extends $Notifier<ThemeMode> {
+  ThemeMode build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<GoRouter, GoRouter>;
+    final ref = this.ref as $Ref<ThemeMode, ThemeMode>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<GoRouter, GoRouter>,
-              GoRouter,
+              AnyNotifier<ThemeMode, ThemeMode>,
+              ThemeMode,
               Object?,
               Object?
             >;

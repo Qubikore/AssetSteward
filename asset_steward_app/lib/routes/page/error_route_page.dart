@@ -8,7 +8,7 @@ class ErrorRoutePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('404')),
+      appBar: AppBar(title: const Text('404')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -19,7 +19,7 @@ class ErrorRoutePage extends StatelessWidget {
             const SizedBox(height: 20),
             Text('$error', style: context.text.bodyMedium, textAlign: TextAlign.center),
             const SizedBox(height: 20),
-            FilledButton(child: Text('Go home'), onPressed: () => RPaths.home.go(context)),
+            FilledButton(child: const Text('Go home'), onPressed: () => RPaths.home.go(context)),
           ],
         ),
       ),

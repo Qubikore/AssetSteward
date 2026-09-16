@@ -9,6 +9,6 @@ class ResetPassPageview extends ConsumerWidget {
     // final authState = ref.watch(authCtrlProvider);
     // final authCtrl = useMemoized(() => ref.read(authCtrlProvider.notifier));
 
-    return Scaffold(appBar: AppBar(title: Text('ResetPassPageview')));
+    return Scaffold(appBar: AppBar(title: const Text('ResetPassPageview')));
   }
 }

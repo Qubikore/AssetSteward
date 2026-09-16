@@ -22,7 +22,7 @@ Failure mapError(Object e, [StackTrace? stackTrace]) {
 
 Failure _badResponse(DioException e, StackTrace? stackTrace) {
   final data = e.response?.data;
-  if (data case {'message': String message}) {
+  if (data case {'message': final String message}) {
     return Failure(message, exception: e, stackTrace: stackTrace);
   }
   return Failure('Something went wrong', exception: e, stackTrace: stackTrace);

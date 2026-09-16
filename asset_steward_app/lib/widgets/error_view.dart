@@ -10,7 +10,7 @@ class ErrorView extends StatelessWidget {
   final VoidCallback? onRetry;
 
   String get _errorMessage {
-    if (error case Failure f) {
+    if (error case final Failure f) {
       if (kDebugMode && f.exception != null) {
         return '${f.message}\n\nTechnical Details: ${f.exception}';
       }
