@@ -1,6 +1,5 @@
-import 'package:asset_steward_app/core/layout/space.dart';
 import 'package:asset_steward_app/main.export.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({
@@ -25,7 +24,6 @@ class EmptyState extends StatelessWidget {
         padding: Pads.allXL,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[

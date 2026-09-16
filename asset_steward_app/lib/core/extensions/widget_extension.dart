@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension TestWiEx on Text {
   Widget required([bool isRequired = true]) {

@@ -80,15 +80,13 @@ class DecoContainer extends StatelessWidget {
       border = Border.all(color: borderColor!, width: borderWidth, strokeAlign: strokeAlign);
     }
 
-    BorderRadiusGeometry effectiveBorderRadius = BorderRadius.circular(this.borderRadius);
+    BorderRadiusGeometry effectiveBorderRadius = BorderRadius.circular(borderRadius);
 
     if (borderRadiusGeo != null) effectiveBorderRadius = borderRadiusGeo!;
 
     final useShapeDecoration =
-        (useSuperellipse || (this.borderRadius >= 12 && this.borderRadius < 100)) &&
-        shape != BoxShape.circle &&
-        gradient == null;
-        
+        (useSuperellipse || (borderRadius >= 12 && borderRadius < 100)) && shape != BoxShape.circle && gradient == null;
+
     final shapeBorder = ContinuousRectangleBorder(
       borderRadius: effectiveBorderRadius,
       side: borderColor != null && borderWidth != 0
@@ -110,11 +108,11 @@ class DecoContainer extends StatelessWidget {
     final childWidget = clipChild && useShapeDecoration
         ? ClipPath(
             clipper: ShapeBorderClipper(shape: shapeBorder),
-            child: this.child,
+            child: child,
           )
         : clipChild
-        ? ClipRRect(borderRadius: effectiveBorderRadius as BorderRadius, child: this.child)
-        : this.child;
+        ? ClipRRect(borderRadius: effectiveBorderRadius as BorderRadius, child: child)
+        : child;
 
     return IgnorePointer(
       ignoring: ignorePointer,

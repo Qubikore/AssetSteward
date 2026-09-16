@@ -1,6 +1,6 @@
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ErrorView extends StatelessWidget {
   const ErrorView({super.key, this.error, this.stackTrace, this.onRetry});
