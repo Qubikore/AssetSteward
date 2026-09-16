@@ -2,8 +2,11 @@ import 'package:asset_steward_app/app_shell.dart';
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:asset_steward_app/features/auth/presentation/screens/forget_pass_pageview.dart';
 import 'package:asset_steward_app/features/auth/presentation/screens/login_pageview.dart';
-import 'package:asset_steward_app/features/auth/presentation/screens/reset_pass_pageview.dart';
 import 'package:asset_steward_app/features/home/presentation/screens/home_pageview.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/assets_pageview.dart';
+import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
+import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_pageview.dart';
+import 'package:asset_steward_app/features/profile/presentation/screens/profile_pageview.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,15 +46,20 @@ class AppRouter extends _$AppRouter {
         ),
 
         GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPageview()),
-        GoRoute(path: RPaths.forgetPass.path, builder: (context, state) => const ForgetPassPageview()),
-        GoRoute(path: RPaths.resetPass.path, builder: (context, state) => const ResetPassPageview()),
+        GoRoute(path: RPaths.register.path, builder: (context, state) => const ForgetPassPageview()),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
     );
   }
 
   /// The app router list
-  List<RouteBase> get _routes => [AppRoute(RPaths.home, (_) => const HomePageview())];
+  List<RouteBase> get _routes => [
+    AppRoute(RPaths.home, (_) => const HomePageview()),
+    AppRoute(RPaths.assets, (_) => const AssetsPageview()),
+    AppRoute(RPaths.scan, (_) => const ScanPageview()),
+    AppRoute(RPaths.maintenance, (_) => const MaintenancePageview()),
+    AppRoute(RPaths.profile, (_) => const ProfilePageview()),
+  ];
 
   @override
   GoRouter build() {
@@ -64,13 +72,14 @@ class AppRouter extends _$AppRouter {
 
       final isAuthenticated = authState.value == true;
       final isLoginPage = current == RPaths.login.path;
-      final isForgotPasswordPage = current == RPaths.forgetPass.path;
-      final isResetPasswordPage = current == RPaths.resetPass.path;
+      final isRegisterPage = current == RPaths.register.path;
 
-      final isAuthPage = isLoginPage || isForgotPasswordPage || isResetPasswordPage;
+      final isAuthPage = isLoginPage || isRegisterPage;
 
       if (!isAuthenticated && !isAuthPage) {
         return RPaths.login.path;
+      } else if (isAuthenticated && isAuthPage) {
+        return RPaths.home.path;
       }
 
       return null;

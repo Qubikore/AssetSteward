@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' show Random;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -108,14 +107,6 @@ extension DateTimeEx on DateTime {
       final years = difference.inDays ~/ 365;
       return '$years ${years == 1 ? 'year' : 'years'} ago';
     }
-  }
-}
-
-extension WidgetEx on Widget {
-  Widget debugView() {
-    if (kReleaseMode) return this;
-    final colors = [...Colors.accents, ...Colors.primaries];
-    return ColoredBox(color: colors[Random().nextInt(colors.length)], child: this);
   }
 }
 

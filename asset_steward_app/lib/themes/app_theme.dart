@@ -1,5 +1,4 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppThemes {
@@ -16,7 +15,7 @@ class AppThemes {
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,
-      fontFamily: GoogleFonts.outfit().fontFamily,
+      fontFamily: 'Outfit',
     );
   }
 
@@ -33,7 +32,7 @@ class AppThemes {
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,
-      fontFamily: GoogleFonts.outfit().fontFamily,
+      fontFamily: 'Outfit',
     );
   }
 }
