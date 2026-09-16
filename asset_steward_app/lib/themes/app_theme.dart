@@ -14,7 +14,6 @@ class AppThemes {
         inputDecoratorBorderType: FlexInputBorderType.outline,
         inputDecoratorUnfocusedBorderIsColored: false,
         inputDecoratorFocusedBorderWidth: 1.5,
-        inputDecoratorUnfocusedHasBorder: true,
         blendOnLevel: 10,
         useM2StyleDividerInM3: true,
         alignedDropdown: true,
@@ -33,6 +32,10 @@ class AppThemes {
       blendLevel: 13,
       subThemesData: const FlexSubThemesData(
         defaultRadius: Corners.md,
+        inputDecoratorIsFilled: true,
+        inputDecoratorBorderType: FlexInputBorderType.outline,
+        inputDecoratorUnfocusedBorderIsColored: false,
+        inputDecoratorFocusedBorderWidth: 1.5,
         blendOnLevel: 20,
         useM2StyleDividerInM3: true,
         alignedDropdown: true,

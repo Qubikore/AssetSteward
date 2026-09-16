@@ -167,3 +167,5 @@ app.*.symbols
 
 # FVM Version Cache
 .fvm/
+
+AGENTS.md
