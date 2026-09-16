@@ -18,4 +18,14 @@ class AuthRemoteDS {
       throw const Failure('Invalid response format');
     }
   }
+
+  Future<String> register(QMap form) async {
+    final response = await _dio.post(Endpoints.register, data: form);
+
+    if (response.data case {'token': final String token}) {
+      return token;
+    } else {
+      throw const Failure('Invalid response format');
+    }
+  }
 }

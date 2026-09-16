@@ -12,4 +12,21 @@ class AuthCtrl extends _$AuthCtrl {
   Future<bool> build() async {
     return _repo.isLoggedIn();
   }
+
+  FutureResult<String> login(Map<String, dynamic> form) async {
+    final result = await _repo.login(form);
+    if (result.isRight()) {
+      // Refresh auth state which redirects to home
+      ref.invalidateSelf();
+    }
+    return result;
+  }
+
+  FutureResult<String> register(Map<String, dynamic> form) async {
+    final result = await _repo.register(form);
+    if (result.isRight()) {
+      ref.invalidateSelf();
+    }
+    return result;
+  }
 }

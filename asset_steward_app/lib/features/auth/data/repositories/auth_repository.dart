@@ -18,4 +18,8 @@ class AuthRepo with RepoRunner {
   FutureResult<String> login(QMap form) async {
     return runRepoTask(() => remote.login(form));
   }
+
+  FutureResult<String> register(QMap form) async {
+    return runRepoTask(() => remote.register(form));
+  }
 }

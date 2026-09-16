@@ -1,7 +1,7 @@
 import 'package:asset_steward_app/app_shell.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assets_pageview.dart';
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:asset_steward_app/features/auth/presentation/screens/login_pageview.dart';
+import 'package:asset_steward_app/features/auth/presentation/screens/login_page.dart';
 import 'package:asset_steward_app/features/auth/presentation/screens/register_page.dart';
 import 'package:asset_steward_app/features/home/presentation/screens/home_pageview.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_pageview.dart';
@@ -45,7 +45,7 @@ class AppRouter extends _$AppRouter {
           builder: (_, s, c) => AppShell(key: s.pageKey, child: c),
         ),
 
-        GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPageview()),
+        GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPage()),
         GoRoute(path: RPaths.register.path, builder: (context, state) => const RegisterPage()),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),

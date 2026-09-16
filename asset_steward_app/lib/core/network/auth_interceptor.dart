@@ -13,19 +13,19 @@ class AuthInterceptor extends Interceptor {
   final Dio _refreshDio = Dio(BaseOptions(baseUrl: Endpoints.baseUrl));
   Future<bool>? _refreshTokenFuture;
 
-  static final StreamController<void> sessionExpiredController = StreamController<void>.broadcast();
-  static Stream<void> get onSessionExpired => sessionExpiredController.stream;
+  // static final StreamController<void> sessionExpiredController = StreamController<void>.broadcast();
+  // static Stream<void> get onSessionExpired => sessionExpiredController.stream;
 
-  static CancelToken _sessionCancelToken = CancelToken();
+  // static CancelToken _sessionCancelToken = CancelToken();
 
-  static void cancelOngoingRequests() {
-    _sessionCancelToken.cancel('Session expired. Canceling ongoing requests.');
-    _sessionCancelToken = CancelToken();
-  }
+  // static void cancelOngoingRequests() {
+  //   _sessionCancelToken.cancel('Session expired. Canceling ongoing requests.');
+  //   _sessionCancelToken = CancelToken();
+  // }
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    options.cancelToken ??= _sessionCancelToken;
+    // options.cancelToken ??= _sessionCancelToken;
 
     final token = await _tokenStorage.getAccessToken();
 
