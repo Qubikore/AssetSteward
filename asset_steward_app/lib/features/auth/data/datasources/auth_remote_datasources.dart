@@ -9,8 +9,8 @@ class AuthRemoteDS {
 
   final Dio _dio;
 
-  Future<String> login(String email, String password) async {
-    final response = await _dio.get(Endpoints.login);
+  Future<String> login(QMap form) async {
+    final response = await _dio.post(Endpoints.login, data: form);
 
     if (response.data case {'token': final String token}) {
       return token;

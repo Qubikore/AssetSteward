@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../datasources/auth_remote_datasources.dart';
 
 @lazySingleton
-class AuthRepo {
+class AuthRepo with RepoRunner {
   final AuthRemoteDS remote;
   final TokenStorage _tokenStorage;
 
@@ -15,8 +15,7 @@ class AuthRepo {
     return token != null;
   }
 
-  Future<void> login(String email, String password) async {
-    // final result = await remote.login(email, password);
-    // return result.fold((f) => f.toFuture(), (r) => r);
+  FutureResult<String> login(QMap form) async {
+    return runRepoTask(() => remote.login(form));
   }
 }
