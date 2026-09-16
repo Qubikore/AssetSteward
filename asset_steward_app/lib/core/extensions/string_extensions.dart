@@ -4,4 +4,11 @@ extension StringX on String {
     'false' || '0' || 'no' => false,
     _ => null,
   };
+
+  String ifEmpty([String onEmpty = 'EMPTY']) {
+    return isEmpty ? onEmpty : this;
+  }
+
+  String get low => toLowerCase();
+  String get up => toUpperCase();
 }

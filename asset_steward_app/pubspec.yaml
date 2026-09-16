@@ -38,6 +38,7 @@ dependencies:
   chirp_addons: ^0.0.2
   flutter_form_builder: ^11.0.0
   form_builder_validators: ^11.3.0
+  universal_image: ^1.0.12
 
 dev_dependencies:
   flutter_test:

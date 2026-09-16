@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
 extension ValueEx on ValueNotifier<bool> {
@@ -80,46 +78,4 @@ extension ObjEx<T extends Object?> on T {
     if (kDebugMode) inspect(this);
     return this;
   }
-}
-
-extension DateTimeEx on DateTime {
-  String toRelativeTime() {
-    final now = DateTime.now();
-    final difference = now.difference(this);
-
-    if (difference.isNegative || difference.inSeconds < 5) {
-      return 'Just now';
-    } else if (difference.inSeconds < 60) {
-      return '${difference.inSeconds}s ago';
-    } else if (difference.inMinutes < 60) {
-      final mins = difference.inMinutes;
-      return '$mins ${mins == 1 ? 'min' : 'mins'} ago';
-    } else if (difference.inHours < 24) {
-      final hrs = difference.inHours;
-      return '$hrs ${hrs == 1 ? 'hour' : 'hours'} ago';
-    } else if (difference.inDays < 7) {
-      final days = difference.inDays;
-      return '$days ${days == 1 ? 'day' : 'days'} ago';
-    } else if (difference.inDays < 365) {
-      final months = difference.inDays ~/ 30;
-      return '$months ${months == 1 ? 'month' : 'months'} ago';
-    } else {
-      final years = difference.inDays ~/ 365;
-      return '$years ${years == 1 ? 'year' : 'years'} ago';
-    }
-  }
-}
-
-extension WidgetListEx on Iterable<Widget> {
-  List<Widget> separatedBy(Widget separator) {
-    final result = <Widget>[];
-    for (final item in this) {
-      result.add(item);
-      result.add(separator);
-    }
-    result.removeLast();
-    return result;
-  }
-
-  List<Widget> gap(double v) => separatedBy(Gap(v));
 }
