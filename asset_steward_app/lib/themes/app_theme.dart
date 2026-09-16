@@ -1,3 +1,4 @@
+import 'package:asset_steward_app/core/layout/corner.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -8,6 +9,12 @@ class AppThemes {
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 7,
       subThemesData: const FlexSubThemesData(
+        defaultRadius: Corners.md,
+        inputDecoratorIsFilled: true,
+        inputDecoratorBorderType: FlexInputBorderType.outline,
+        inputDecoratorUnfocusedBorderIsColored: false,
+        inputDecoratorFocusedBorderWidth: 1.5,
+        inputDecoratorUnfocusedHasBorder: true,
         blendOnLevel: 10,
         useM2StyleDividerInM3: true,
         alignedDropdown: true,
@@ -25,6 +32,7 @@ class AppThemes {
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 13,
       subThemesData: const FlexSubThemesData(
+        defaultRadius: Corners.md,
         blendOnLevel: 20,
         useM2StyleDividerInM3: true,
         alignedDropdown: true,

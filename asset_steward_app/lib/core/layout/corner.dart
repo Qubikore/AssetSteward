@@ -1,68 +1,30 @@
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 
+/// Standard corner radiuses for UI elements.
 class Corners {
   const Corners._();
 
-  /// 4 px
-  static const double xs = 4;
+  static const double sm = 4;
+  static const double md = 8;
+  static const double lg = 12;
+  static const double xl = 16;
+  static const double xxl = 24;
+  static const double xxxl = 32;
+  static const double circle = 9999;
 
-  /// 8 px
-  static const double sm = 8;
+  static const Radius smRadius = Radius.circular(sm);
+  static const Radius mdRadius = Radius.circular(md);
+  static const Radius lgRadius = Radius.circular(lg);
+  static const Radius xlRadius = Radius.circular(xl);
+  static const Radius xxlRadius = Radius.circular(xxl);
+  static const Radius xxxlRadius = Radius.circular(xxxl);
+  static const Radius circleRadius = Radius.circular(circle);
 
-  /// 12 px
-  static const double med = 12;
-
-  /// 16 px
-  static const double lg = 16;
-
-  /// 24 px
-  static const double xl = 24;
-
-  /// 32 px
-  static const double xxl = 32;
-
-  /// 999
-  static const double circle = 999;
-
-  /// 4 px
-  static const xsRadius = Radius.circular(xs);
-
-  /// 8 px
-  static const smRadius = Radius.circular(sm);
-
-  /// 12 px
-  static const mdRadius = Radius.circular(med);
-
-  /// 16 px
-  static const lgRadius = Radius.circular(lg);
-
-  /// 24 px
-  static const xlRadius = Radius.circular(xl);
-
-  /// 32 px
-  static const xxlRadius = Radius.circular(xxl);
-
-  /// 999
-  static const circleRadius = Radius.circular(circle);
-
-  /// 4 px
-  static const xsBorder = BorderRadius.all(xsRadius);
-
-  /// 8 px
-  static const smBorder = BorderRadius.all(smRadius);
-
-  /// 12 px
-  static const mdBorder = BorderRadius.all(mdRadius);
-
-  /// 16 px
-  static const lgBorder = BorderRadius.all(lgRadius);
-
-  /// 24 px
-  static const xlBorder = BorderRadius.all(xlRadius);
-
-  /// 32 px
-  static const xxlBorder = BorderRadius.all(xxlRadius);
-
-  /// 999
-  static const circleBorder = BorderRadius.all(circleRadius);
+  static const BorderRadius smBorder = BorderRadius.all(smRadius);
+  static const BorderRadius mdBorder = BorderRadius.all(mdRadius);
+  static const BorderRadius lgBorder = BorderRadius.all(lgRadius);
+  static const BorderRadius xlBorder = BorderRadius.all(xlRadius);
+  static const BorderRadius xxlBorder = BorderRadius.all(xxlRadius);
+  static const BorderRadius xxxlBorder = BorderRadius.all(xxxlRadius);
+  static const BorderRadius circleBorder = BorderRadius.all(circleRadius);
 }

@@ -1,77 +1,56 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
-/// Default durations for animations
+/// Standard spacing and layout dimensions.
 class Insets {
   const Insets._();
 
-  /// 4 px
+  static const double xxs = 2;
   static const double xs = 4;
-
-  /// 8 px
   static const double sm = 8;
-
-  /// 12 px
-  static const double med = 12;
-
-  /// 16 px
+  static const double md = 12;
   static const double lg = 16;
-
-  /// 24 px
   static const double xl = 24;
-
-  /// 32 px
   static const double xxl = 32;
-
-  /// 48 px
   static const double xxxl = 48;
-
-  /// 64 px
   static const double offset = 64;
 }
 
 class Pads {
   const Pads._();
 
-  /// l = left, r = right, t = top, b = bottom
-  static EdgeInsets _build(String dir, double pad) {
-    return EdgeInsets.only(
-      left: dir.contains('l') ? pad : 0,
-      right: dir.contains('r') ? pad : 0,
-      top: dir.contains('t') ? pad : 0,
-      bottom: dir.contains('b') ? pad : 0,
-    );
-  }
+  static const EdgeInsets zero = EdgeInsets.zero;
 
-  /// 4 px
-  static EdgeInsets xs([String dir = 'ltrb']) => _build(dir, Insets.xs);
+  // All sides
+  static const EdgeInsets allXXS = EdgeInsets.all(Insets.xxs);
+  static const EdgeInsets allXS = EdgeInsets.all(Insets.xs);
+  static const EdgeInsets allSM = EdgeInsets.all(Insets.sm);
+  static const EdgeInsets allMD = EdgeInsets.all(Insets.md);
+  static const EdgeInsets allLG = EdgeInsets.all(Insets.lg);
+  static const EdgeInsets allXL = EdgeInsets.all(Insets.xl);
+  static const EdgeInsets allXXL = EdgeInsets.all(Insets.xxl);
 
-  /// 8 px
-  static EdgeInsets sm([String dir = 'ltrb']) => _build(dir, Insets.sm);
+  // Horizontal only
+  static const EdgeInsets hXXS = EdgeInsets.symmetric(horizontal: Insets.xxs);
+  static const EdgeInsets hXS = EdgeInsets.symmetric(horizontal: Insets.xs);
+  static const EdgeInsets hSM = EdgeInsets.symmetric(horizontal: Insets.sm);
+  static const EdgeInsets hMD = EdgeInsets.symmetric(horizontal: Insets.md);
+  static const EdgeInsets hLG = EdgeInsets.symmetric(horizontal: Insets.lg);
+  static const EdgeInsets hXL = EdgeInsets.symmetric(horizontal: Insets.xl);
+  static const EdgeInsets hXXL = EdgeInsets.symmetric(horizontal: Insets.xxl);
 
-  /// 12 px
-  static EdgeInsets med([String dir = 'ltrb']) => _build(dir, Insets.med);
+  // Vertical only
+  static const EdgeInsets vXXS = EdgeInsets.symmetric(vertical: Insets.xxs);
+  static const EdgeInsets vXS = EdgeInsets.symmetric(vertical: Insets.xs);
+  static const EdgeInsets vSM = EdgeInsets.symmetric(vertical: Insets.sm);
+  static const EdgeInsets vMD = EdgeInsets.symmetric(vertical: Insets.md);
+  static const EdgeInsets vLG = EdgeInsets.symmetric(vertical: Insets.lg);
+  static const EdgeInsets vXL = EdgeInsets.symmetric(vertical: Insets.xl);
+  static const EdgeInsets vXXL = EdgeInsets.symmetric(vertical: Insets.xxl);
 
-  /// 16 px
-  static EdgeInsets lg([String dir = 'ltrb']) => _build(dir, Insets.lg);
+  /// Helper to create symmetric padding
+  static EdgeInsets sym({double h = 0, double v = 0}) => EdgeInsets.symmetric(horizontal: h, vertical: v);
 
-  /// 24 px
-  static EdgeInsets xl([String dir = 'ltrb']) => _build(dir, Insets.xl);
-
-  /// 32 px
-  static EdgeInsets xxl([String dir = 'ltrb']) => _build(dir, Insets.xxl);
-
-  /// 48 px
-  static EdgeInsets xxxl([String dir = 'ltrb']) => _build(dir, Insets.xxxl);
-
-  static const EdgeInsets zero = EdgeInsets.only();
-  static EdgeInsets all(double value) => EdgeInsets.all(value);
-  static EdgeInsets sym([double h = 0, double v = 0]) => EdgeInsets.symmetric(horizontal: h, vertical: v);
-
-  /// Creates padding with flexible shorthand:
-  /// - [all] sets all sides
-  /// - [h] sets left & right
-  /// - [v] sets top & bottom
-  /// - Individual sides override shorthands
+  /// Helper to create custom padding with fallbacks
   static EdgeInsets only({
     double all = 0,
     double? h,
