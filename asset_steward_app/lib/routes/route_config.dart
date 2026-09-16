@@ -1,12 +1,12 @@
 import 'package:asset_steward_app/app_shell.dart';
-import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:asset_steward_app/features/auth/presentation/screens/forget_pass_pageview.dart';
-import 'package:asset_steward_app/features/auth/presentation/screens/login_pageview.dart';
-import 'package:asset_steward_app/features/home/presentation/screens/home_pageview.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assets_pageview.dart';
-import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
+import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:asset_steward_app/features/auth/presentation/screens/login_pageview.dart';
+import 'package:asset_steward_app/features/auth/presentation/screens/register_page.dart';
+import 'package:asset_steward_app/features/home/presentation/screens/home_pageview.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_pageview.dart';
 import 'package:asset_steward_app/features/profile/presentation/screens/profile_pageview.dart';
+import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -46,7 +46,7 @@ class AppRouter extends _$AppRouter {
         ),
 
         GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPageview()),
-        GoRoute(path: RPaths.register.path, builder: (context, state) => const ForgetPassPageview()),
+        GoRoute(path: RPaths.register.path, builder: (context, state) => const RegisterPage()),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
     );
