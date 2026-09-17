@@ -6,4 +6,6 @@ class Endpoints {
   static const String login = 'auth/login';
   static const String registerOrganization = 'auth/register-organization';
   static const String refresh = 'auth/refresh';
+  static const String profile = 'profile';
+  static const String organizationMe = 'organization/me';
 }

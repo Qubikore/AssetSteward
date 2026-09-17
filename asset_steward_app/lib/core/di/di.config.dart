@@ -17,6 +17,10 @@ import 'package:asset_steward_app/core/storage/token_storage.dart' as _i890;
 import 'package:asset_steward_app/features/auth/data/datasources/auth_remote_datasources.dart'
     as _i565;
 import 'package:asset_steward_app/features/auth/data/repositories/auth_repository.dart'
+    as _i207;
+import 'package:asset_steward_app/features/profile/data/datasources/profile_remote_datasource.dart'
+    as _i81;
+import 'package:asset_steward_app/features/profile/data/repositories/profile_repository.dart'
     as _i206;
 import 'package:asset_steward_app/main.export.dart' as _i342;
 import 'package:dio/dio.dart' as _i361;
@@ -57,8 +61,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i565.AuthRemoteDS>(
       () => _i565.AuthRemoteDS(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i206.AuthRepo>(
-      () => _i206.AuthRepo(gh<_i565.AuthRemoteDS>(), gh<_i342.TokenStorage>()),
+    gh.lazySingleton<_i81.ProfileRemoteDS>(
+      () => _i81.ProfileRemoteDS(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i206.ProfileRepository>(
+      () => _i206.ProfileRepository(gh<_i81.ProfileRemoteDS>()),
+    );
+    gh.lazySingleton<_i207.AuthRepo>(
+      () => _i207.AuthRepo(gh<_i565.AuthRemoteDS>(), gh<_i342.TokenStorage>()),
     );
     return this;
   }
