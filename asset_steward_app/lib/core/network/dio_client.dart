@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 final chirpDioLogger = ChirpLogger(name: 'DIO')
   ..addConsoleWriter(
     output: (x) => log(x),
-    capabilities: const TerminalCapabilities(colorSupport: .ansi256),
+    capabilities: const TerminalCapabilities(colorSupport: .truecolor),
     formatter: DioChirpFormatter(),
   );
 

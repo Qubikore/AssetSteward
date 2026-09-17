@@ -11,7 +11,7 @@ void main() async {
   Chirp.root = ChirpLogger()
     ..addConsoleWriter(
       output: log,
-      capabilities: const TerminalCapabilities(colorSupport: .ansi256),
+      capabilities: const TerminalCapabilities(colorSupport: .truecolor),
       formatter: ChirpPrettyJsonFormatter(getCallerInfo: kDebugMode),
     );
   await configureDependencies();

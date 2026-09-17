@@ -23,6 +23,7 @@ class LoginPage extends HookConsumerWidget {
             constraints: const BoxConstraints(maxWidth: 400),
             child: FormBuilder(
               key: formKey,
+              initialValue: onlyOnDebug({'email': 'ahnafsakil9@gmail.com', 'password': '123123'}) ?? {},
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -88,9 +89,9 @@ class LoginPage extends HookConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
+                      TextButton.icon(
                         onPressed: () => context.go(RPaths.register.path),
-                        child: const Text('Create Organization'),
+                        label: const Text('Create Organization'),
                       ),
                     ],
                   ),
