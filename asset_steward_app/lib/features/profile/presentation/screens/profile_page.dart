@@ -16,15 +16,12 @@ class ProfilePage extends HookConsumerWidget {
     final profileAsync = ref.watch(profileCtrlProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: AsyncBuilder(
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],
         builder: (data) => ListView(
-          padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.xl),
+          padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md),
           children: [
             _buildProfileHeader(context, data),
             const Gap(Insets.xxl),
@@ -32,9 +29,9 @@ class ProfilePage extends HookConsumerWidget {
             const Gap(Insets.md),
             Container(
               decoration: BoxDecoration(
-                color: context.colors.surfaceContainerHighest.withOpacity(0.3),
+                color: context.colors.surfaceContainerHighest.op(0.3),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: context.colors.outlineVariant.withOpacity(0.5)),
+                border: Border.all(color: context.colors.outlineVariant.op(0.5)),
               ),
               child: Column(
                 children: [
@@ -47,11 +44,12 @@ class ProfilePage extends HookConsumerWidget {
                         context: context,
                         isScrollControlled: true,
                         useSafeArea: true,
+                        useRootNavigator: true,
                         builder: (context) => EditProfileSheet(profile: data),
                       );
                     },
                   ),
-                  Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.withOpacity(0.5)),
+                  Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),
                   _buildSettingsTile(
                     context,
                     icon: HIStroke.informationCircle,
@@ -60,7 +58,7 @@ class ProfilePage extends HookConsumerWidget {
                       Toast.showInfo('Asset Steward v1.0.0');
                     },
                   ),
-                  Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.withOpacity(0.5)),
+                  Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),
                   _buildSettingsTile(
                     context,
                     icon: HIStroke.logout05,
@@ -78,79 +76,97 @@ class ProfilePage extends HookConsumerWidget {
   }
 
   Widget _buildProfileHeader(BuildContext context, ProfileData data) {
-    return Column(
+    return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: context.colors.primary.withOpacity(0.2), width: 2),
+            border: Border.all(color: context.colors.primary.op(0.2), width: 2),
           ),
           child: CircleAvatar(
-            radius: 54,
+            radius: 35,
             backgroundColor: context.colors.primaryContainer,
             backgroundImage: data.profilePicture != null ? NetworkImage(data.profilePicture!) : null,
             child: data.profilePicture == null
                 ? Text(
                     '${data.firstname[0]}${data.lastname[0]}',
-                    style: context.text.displaySmall?.copyWith(color: context.colors.onPrimaryContainer),
+                    style: context.text.headlineMedium?.copyWith(color: context.colors.onPrimaryContainer),
                   )
                 : null,
           ),
         ),
         const Gap(Insets.lg),
-        Text(
-          '${data.firstname} ${data.lastname}',
-          style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        const Gap(Insets.xs),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: context.colors.primaryContainer,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Text(
-            data.role.titleCase,
-            style: context.text.labelMedium?.copyWith(
-              color: context.colors.onPrimaryContainer,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ),
-        const Gap(Insets.lg),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(HIStroke.mail01, size: 16, color: context.colors.onSurfaceVariant),
-            const Gap(Insets.sm),
-            Text(data.email, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant)),
-          ],
-        ),
-        if (data.gender != null || data.dob != null) ...[
-          const Gap(Insets.sm),
-          Row(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (data.gender != null) ...[
-                Icon(HIStroke.user, size: 16, color: context.colors.onSurfaceVariant),
-                const Gap(Insets.sm),
-                Text(data.gender!.titleCase, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant)),
+              Text(
+                '${data.firstname} ${data.lastname}',
+                style: context.text.titleLarge?.bold,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+
+              Row(
+                children: [
+                  Icon(HIStroke.mail01, size: 16, color: context.colors.onSurfaceVariant),
+                  const Gap(Insets.sm),
+                  Expanded(
+                    child: Text(
+                      data.email,
+                      style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              if (data.gender != null || data.dob != null) ...[
+                const Gap(Insets.xs),
+                Row(
+                  children: [
+                    if (data.gender != null) ...[
+                      Icon(HIStroke.user, size: 14, color: context.colors.onSurfaceVariant),
+                      const Gap(Insets.xs),
+                      Text(
+                        data.gender!.titleCase,
+                        style: context.text.bodySmall?.copyWith(color: context.colors.onSurfaceVariant),
+                      ),
+                    ],
+                    if (data.gender != null && data.dob != null) ...[
+                      const Gap(Insets.sm),
+                      Container(
+                        width: 3,
+                        height: 3,
+                        decoration: BoxDecoration(color: context.colors.outlineVariant, shape: BoxShape.circle),
+                      ),
+                      const Gap(Insets.sm),
+                    ],
+                    if (data.dob != null) ...[
+                      Icon(HIStroke.calendar01, size: 14, color: context.colors.onSurfaceVariant),
+                      const Gap(Insets.xs),
+                      Text(data.dob!, style: context.text.bodySmall?.copyWith(color: context.colors.onSurfaceVariant)),
+                    ],
+                  ],
+                ),
               ],
-              if (data.gender != null && data.dob != null) ...[
-                const Gap(Insets.md),
-                Container(width: 4, height: 4, decoration: BoxDecoration(color: context.colors.outlineVariant, shape: BoxShape.circle)),
-                const Gap(Insets.md),
-              ],
-              if (data.dob != null) ...[
-                Icon(HIStroke.calendar01, size: 16, color: context.colors.onSurfaceVariant),
-                const Gap(Insets.sm),
-                Text(data.dob!, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant)),
-              ],
+              const Gap(Insets.xs),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: BoxDecoration(
+                  color: context.colors.primaryContainer,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  data.role.titleCase,
+                  style: context.text.labelSmall?.bold.letterSpace(.5).textColor(context.colors.onPrimaryContainer),
+                ),
+              ),
             ],
           ),
-        ],
+        ),
       ],
     );
   }
@@ -162,7 +178,7 @@ class ProfilePage extends HookConsumerWidget {
         title.toUpperCase(),
         style: context.text.labelLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: context.colors.onSurfaceVariant.withOpacity(0.7),
+          color: context.colors.onSurfaceVariant.op(0.7),
           letterSpacing: 1.2,
         ),
       ),
@@ -183,10 +199,7 @@ class ProfilePage extends HookConsumerWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
+        decoration: BoxDecoration(color: iconColor.op(0.1), borderRadius: BorderRadius.circular(8)),
         child: Icon(icon, color: iconColor, size: 20),
       ),
       title: Text(

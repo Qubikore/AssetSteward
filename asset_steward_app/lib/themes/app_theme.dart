@@ -3,9 +3,21 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppThemes {
+  static final FlexSchemeColor _lightColors = FlexSchemeColor.from(
+    primary: const Color(0xFF2563EB), // Modern Royal Blue
+    secondary: const Color(0xFF0F172A), // Deep Slate
+    tertiary: const Color(0xFF10B981), // Emerald Green
+  );
+
+  static final FlexSchemeColor _darkColors = FlexSchemeColor.from(
+    primary: const Color(0xFF60A5FA), // Light Blue
+    secondary: const Color(0xFF94A3B8), // Slate
+    tertiary: const Color(0xFF34D399), // Light Emerald
+  );
+
   static ThemeData get lightTheme {
     return FlexThemeData.light(
-      scheme: FlexScheme.indigo,
+      colors: _lightColors,
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 7,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
@@ -22,6 +34,15 @@ class AppThemes {
         alignedDropdown: true,
         inputDecoratorIsDense: true,
         useInputDecoratorThemeInDialogs: true,
+        
+        // Custom Navigation Bar Theme
+        navigationBarElevation: 0,
+        navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+        navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
+        navigationBarIndicatorSchemeColor: SchemeColor.primary,
+        navigationBarIndicatorOpacity: 1.0,
+        navigationBarBackgroundSchemeColor: SchemeColor.surface,
+        navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,
@@ -31,7 +52,7 @@ class AppThemes {
 
   static ThemeData get darkTheme {
     return FlexThemeData.dark(
-      scheme: FlexScheme.indigo,
+      colors: _darkColors,
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 13,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
@@ -48,6 +69,15 @@ class AppThemes {
         alignedDropdown: true,
         inputDecoratorIsDense: true,
         useInputDecoratorThemeInDialogs: true,
+        
+        // Custom Navigation Bar Theme
+        navigationBarElevation: 0,
+        navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+        navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
+        navigationBarIndicatorSchemeColor: SchemeColor.primary,
+        navigationBarIndicatorOpacity: 1.0,
+        navigationBarBackgroundSchemeColor: SchemeColor.surface,
+        navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,

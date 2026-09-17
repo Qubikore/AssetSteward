@@ -30,7 +30,7 @@ class EditProfileSheet extends HookConsumerWidget {
       }
     }
 
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: Insets.lg,
         right: Insets.lg,
@@ -82,33 +82,18 @@ class EditProfileSheet extends HookConsumerWidget {
             const Row(
               children: [
                 Expanded(
-                  child: InputField(
-                    name: 'firstname',
-                    title: 'First Name',
-                    isRequired: true,
-                  ),
+                  child: InputField(name: 'firstname', title: 'First Name', isRequired: true),
                 ),
                 Gap(Insets.md),
                 Expanded(
-                  child: InputField(
-                    name: 'lastname',
-                    title: 'Last Name',
-                    isRequired: true,
-                  ),
+                  child: InputField(name: 'lastname', title: 'Last Name', isRequired: true),
                 ),
               ],
             ),
             const Gap(Insets.md),
-            const InputField(
-              name: 'gender',
-              title: 'Gender',
-            ),
+            const InputField(name: 'gender', title: 'Gender'),
             const Gap(Insets.md),
-            const InputField(
-              name: 'dob',
-              title: 'Date of Birth (YYYY-MM-DD)',
-              hintText: 'e.g. 1990-01-01',
-            ),
+            const InputField(name: 'dob', title: 'Date of Birth (YYYY-MM-DD)', hintText: 'e.g. 1990-01-01'),
             const Gap(Insets.xl),
             FilledButton(
               onPressed: isLoading.value
@@ -135,13 +120,10 @@ class EditProfileSheet extends HookConsumerWidget {
                         final result = await ref.read(profileCtrlProvider.notifier).updateProfile(formData);
                         isLoading.value = false;
 
-                        result.fold(
-                          (l) => Toast.showError(l.message),
-                          (r) {
-                            Toast.showSuccess('Profile updated successfully!');
-                            context.nPop();
-                          },
-                        );
+                        result.fold((l) => Toast.showError(l.message), (r) {
+                          Toast.showSuccess('Profile updated successfully!');
+                          context.nPop();
+                        });
                       }
                     },
               child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Save Changes'),

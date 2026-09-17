@@ -21,15 +21,11 @@ class AppShell extends HookConsumerWidget {
           RPaths.navRoutes[index].go(context);
         },
         destinations: const [
-          NavigationDestination(icon: Icon(HIStroke.home01), selectedIcon: Icon(HISolid.home01), label: 'Home'),
-          NavigationDestination(icon: Icon(HIStroke.archive02), selectedIcon: Icon(HISolid.archive02), label: 'Assets'),
-          NavigationDestination(icon: Icon(HIStroke.qrCode01), selectedIcon: Icon(HISolid.qrCode01), label: 'Scan'),
-          NavigationDestination(
-            icon: Icon(HIStroke.wrench01),
-            selectedIcon: Icon(HISolid.wrench01),
-            label: 'Maintenance',
-          ),
-          NavigationDestination(icon: Icon(HIStroke.user), selectedIcon: Icon(HISolid.user), label: 'Profile'),
+          NavigationDestination(icon: Icon(HIStroke.home01, size: 20), label: 'Home'),
+          NavigationDestination(icon: Icon(HIStroke.archive02, size: 20), label: 'Assets'),
+          NavigationDestination(icon: Icon(HIStroke.qrCodeScan, size: 20), label: 'Scan'),
+          NavigationDestination(icon: Icon(HIStroke.wrench01, size: 20), label: 'Maintenance'),
+          NavigationDestination(icon: Icon(HIStroke.user, size: 20), label: 'Profile'),
         ],
       ),
     );
