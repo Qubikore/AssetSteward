@@ -6,7 +6,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:recase/recase.dart';
 
 import '../../data/models/profile_data.dart';
 import '../controllers/profile_controller.dart';
@@ -31,19 +33,14 @@ class EditProfileSheet extends HookConsumerWidget {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        left: Insets.lg,
-        right: Insets.lg,
-        top: Insets.lg,
-        bottom: context.mq.viewInsets.bottom + Insets.lg,
-      ),
+      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
       child: FormBuilder(
         key: formKey,
         initialValue: {
           'firstname': profile.firstname,
           'lastname': profile.lastname,
           'gender': profile.gender,
-          'dob': profile.dob,
+          'dob': profile.dob != null ? DateTime.tryParse(profile.dob!) : null,
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -91,9 +88,31 @@ class EditProfileSheet extends HookConsumerWidget {
               ],
             ),
             const Gap(Insets.md),
-            const InputField(name: 'gender', title: 'Gender'),
+            Text('Gender', style: context.text.labelLarge),
+            const Gap(Insets.xs),
+            FormBuilderRadioGroup<String>(
+              name: 'gender',
+              decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
+              options: [
+                'MALE',
+                'FEMALE',
+                'OTHER',
+              ].map((gender) => FormBuilderFieldOption(value: gender, child: Text(gender.titleCase))).toList(),
+              wrapSpacing: Insets.lg,
+              activeColor: context.colors.primary,
+            ),
             const Gap(Insets.md),
-            const InputField(name: 'dob', title: 'Date of Birth (YYYY-MM-DD)', hintText: 'e.g. 1990-01-01'),
+            Text('Date of Birth', style: context.text.labelLarge),
+            const Gap(Insets.xs),
+            FormBuilderDateTimePicker(
+              name: 'dob',
+              inputType: InputType.date,
+              format: DateFormat('yyyy-MM-dd'),
+              decoration: const InputDecoration(
+                hintText: 'Select Date',
+                suffixIcon: Icon(HIStroke.calendar01),
+              ),
+            ),
             const Gap(Insets.xl),
             FilledButton(
               onPressed: isLoading.value
@@ -106,7 +125,7 @@ class EditProfileSheet extends HookConsumerWidget {
                           'firstname': form['firstname'],
                           'lastname': form['lastname'],
                           'gender': form['gender'],
-                          if (form['dob'] != null && form['dob'].toString().isNotEmpty) 'dob': form['dob'],
+                          if (form['dob'] != null) 'dob': DateFormat('yyyy-MM-dd').format(form['dob'] as DateTime),
                         };
 
                         if (selectedImage.value != null) {

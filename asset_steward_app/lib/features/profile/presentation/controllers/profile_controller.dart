@@ -8,16 +8,13 @@ import '../../data/repositories/profile_repository.dart';
 
 part 'profile_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ProfileCtrl extends _$ProfileCtrl {
   @override
   FutureOr<ProfileData> build() async {
     final repo = di.get<ProfileRepository>();
     final result = await repo.getProfile();
-    return result.fold(
-      (l) => throw l,
-      (r) => r,
-    );
+    return result.fold((l) => throw l, (r) => r);
   }
 
   FutureResult<ProfileData> updateProfile(FormData data) async {
@@ -36,9 +33,6 @@ class OrganizationCtrl extends _$OrganizationCtrl {
   FutureOr<OrganizationData> build() async {
     final repo = di.get<ProfileRepository>();
     final result = await repo.getOrganization();
-    return result.fold(
-      (l) => throw l,
-      (r) => r,
-    );
+    return result.fold((l) => throw l, (r) => r);
   }
 }

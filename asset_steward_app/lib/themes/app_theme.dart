@@ -18,7 +18,7 @@ class AppThemes {
   static ThemeData get lightTheme {
     return FlexThemeData.light(
       colors: _lightColors,
-      surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+      surfaceMode: FlexSurfaceMode.level,
       blendLevel: 7,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
       appBarElevation: 0.0,
@@ -34,14 +34,13 @@ class AppThemes {
         alignedDropdown: true,
         inputDecoratorIsDense: true,
         useInputDecoratorThemeInDialogs: true,
-        
+
         // Custom Navigation Bar Theme
         navigationBarElevation: 0,
         navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
         navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
         navigationBarIndicatorSchemeColor: SchemeColor.primary,
         navigationBarIndicatorOpacity: 1.0,
-        navigationBarBackgroundSchemeColor: SchemeColor.surface,
         navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
@@ -53,8 +52,8 @@ class AppThemes {
   static ThemeData get darkTheme {
     return FlexThemeData.dark(
       colors: _darkColors,
-      surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-      blendLevel: 13,
+      surfaceMode: FlexSurfaceMode.level,
+      blendLevel: 10,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
       appBarElevation: 0.0,
       subThemesData: const FlexSubThemesData(
@@ -69,14 +68,13 @@ class AppThemes {
         alignedDropdown: true,
         inputDecoratorIsDense: true,
         useInputDecoratorThemeInDialogs: true,
-        
+
         // Custom Navigation Bar Theme
         navigationBarElevation: 0,
         navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
         navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
         navigationBarIndicatorSchemeColor: SchemeColor.primary,
         navigationBarIndicatorOpacity: 1.0,
-        navigationBarBackgroundSchemeColor: SchemeColor.surface,
         navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,

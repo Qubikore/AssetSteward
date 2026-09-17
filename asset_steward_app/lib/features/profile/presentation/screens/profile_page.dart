@@ -45,6 +45,7 @@ class ProfilePage extends HookConsumerWidget {
                         isScrollControlled: true,
                         useSafeArea: true,
                         useRootNavigator: true,
+                        showDragHandle: true,
                         builder: (context) => EditProfileSheet(profile: data),
                       );
                     },
@@ -124,11 +125,11 @@ class ProfilePage extends HookConsumerWidget {
                 ],
               ),
               if (data.gender != null || data.dob != null) ...[
-                const Gap(Insets.xs),
+                const Gap(Insets.xxs),
                 Row(
                   children: [
                     if (data.gender != null) ...[
-                      Icon(HIStroke.user, size: 14, color: context.colors.onSurfaceVariant),
+                      Icon(HIStroke.userCircle02, size: 12, color: context.colors.onSurfaceVariant),
                       const Gap(Insets.xs),
                       Text(
                         data.gender!.titleCase,
@@ -145,7 +146,7 @@ class ProfilePage extends HookConsumerWidget {
                       const Gap(Insets.sm),
                     ],
                     if (data.dob != null) ...[
-                      Icon(HIStroke.calendar01, size: 14, color: context.colors.onSurfaceVariant),
+                      Icon(HIStroke.calendar01, size: 12, color: context.colors.onSurfaceVariant),
                       const Gap(Insets.xs),
                       Text(data.dob!, style: context.text.bodySmall?.copyWith(color: context.colors.onSurfaceVariant)),
                     ],
