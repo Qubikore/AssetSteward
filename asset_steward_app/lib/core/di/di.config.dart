@@ -22,6 +22,10 @@ import 'package:asset_steward_app/features/profile/data/datasources/profile_remo
     as _i81;
 import 'package:asset_steward_app/features/profile/data/repositories/profile_repository.dart'
     as _i206;
+import 'package:asset_steward_app/features/users/data/datasources/users_remote_datasource.dart'
+    as _i1041;
+import 'package:asset_steward_app/features/users/data/repositories/users_repository.dart'
+    as _i876;
 import 'package:asset_steward_app/main.export.dart' as _i342;
 import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -64,8 +68,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i81.ProfileRemoteDS>(
       () => _i81.ProfileRemoteDS(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i1041.UsersRemoteDS>(
+      () => _i1041.UsersRemoteDS(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i206.ProfileRepository>(
       () => _i206.ProfileRepository(gh<_i81.ProfileRemoteDS>()),
+    );
+    gh.lazySingleton<_i876.UsersRepository>(
+      () => _i876.UsersRepository(gh<_i1041.UsersRemoteDS>()),
     );
     gh.lazySingleton<_i207.AuthRepo>(
       () => _i207.AuthRepo(gh<_i565.AuthRemoteDS>(), gh<_i342.TokenStorage>()),

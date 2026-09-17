@@ -15,4 +15,6 @@ class RPaths {
   static const scan = RPath('/scan');
   static const maintenance = RPath('/maintenance');
   static const profile = RPath('/profile');
+  
+  static const manageUsers = RPath('/manage-users');
 }

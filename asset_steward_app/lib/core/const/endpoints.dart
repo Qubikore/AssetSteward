@@ -8,4 +8,5 @@ class Endpoints {
   static const String refresh = 'auth/refresh';
   static const String profile = 'profile';
   static const String organizationMe = 'organization/me';
+  static const String users = 'users';
 }
