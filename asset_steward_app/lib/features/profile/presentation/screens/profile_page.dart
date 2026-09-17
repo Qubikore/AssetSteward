@@ -1,10 +1,10 @@
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../controllers/profile_controller.dart';
-import '../data/models/profile_data.dart';
 import 'edit_profile_sheet.dart';
 import 'local_widget/profile_header.dart';
 import 'local_widget/section_title.dart';
@@ -63,7 +63,12 @@ class ProfilePage extends HookConsumerWidget {
                           context.push(RPaths.manageUsers.path);
                         },
                       ),
-                      Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),
+                      Divider(
+                        height: 1,
+                        indent: 56,
+                        endIndent: Insets.md,
+                        color: context.colors.outlineVariant.op(0.5),
+                      ),
                     ],
 
                     SettingsTile(

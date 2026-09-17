@@ -61,9 +61,9 @@ class EmptyState extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 children: [
                   if (onReload != null)
-                    FilledButton.tonalIcon(
+                    OutlinedButton.icon(
                       onPressed: onReload,
-                      icon: const Icon(HIStroke.refresh),
+                      icon: const Icon(HIStroke.refresh, size: 20),
                       label: const Text('Reload'),
                     ),
                   ...actions,

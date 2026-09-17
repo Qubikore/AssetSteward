@@ -1,3 +1,5 @@
+import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:asset_steward_app/features/users/presentation/controllers/users_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../main.export.dart';
@@ -16,7 +18,9 @@ class AuthCtrl extends _$AuthCtrl {
   FutureResult<String> login(Map<String, dynamic> form) async {
     final result = await _repo.login(form);
     if (result.isRight()) {
-      // Refresh auth state which redirects to home
+      ref.invalidate(usersCtrlProvider);
+      ref.invalidate(profileCtrlProvider, asReload: true);
+      // ref.invalidate(organizationCtrlProvider);
       ref.invalidateSelf();
     }
     return result;

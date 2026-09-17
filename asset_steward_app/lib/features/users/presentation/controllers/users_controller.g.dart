@@ -20,7 +20,7 @@ final class UsersCtrlProvider
         argument: null,
         retry: null,
         name: r'usersCtrlProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class UsersCtrlProvider
   UsersCtrl create() => UsersCtrl();
 }
 
-String _$usersCtrlHash() => r'5d8ff357bb1e44920c40b643be62a328061c3d50';
+String _$usersCtrlHash() => r'cc9e35d66e87593c9971a4e9f489c6d5b180fa2a';
 
 abstract class _$UsersCtrl extends $AsyncNotifier<List<ProfileData>> {
   FutureOr<List<ProfileData>> build();
