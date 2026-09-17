@@ -2,7 +2,6 @@ package com.qubikore.assetsteward.auth;
 
 import com.qubikore.assetsteward.auth.dto.AuthRequest;
 import com.qubikore.assetsteward.auth.dto.AuthResponse;
-import com.qubikore.assetsteward.auth.dto.RegisterRequest;
 import com.qubikore.assetsteward.common.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +17,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/register")
-    @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(
-            @RequestBody RegisterRequest request,
-            @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser
-    ) {
-        return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request, currentUser)));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> authenticate(@RequestBody AuthRequest request) {

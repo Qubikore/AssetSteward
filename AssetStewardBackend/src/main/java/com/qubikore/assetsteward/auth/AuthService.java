@@ -2,7 +2,6 @@ package com.qubikore.assetsteward.auth;
 
 import com.qubikore.assetsteward.auth.dto.AuthRequest;
 import com.qubikore.assetsteward.auth.dto.AuthResponse;
-import com.qubikore.assetsteward.auth.dto.RegisterRequest;
 import com.qubikore.assetsteward.common.security.JwtService;
 import com.qubikore.assetsteward.user.Role;
 import com.qubikore.assetsteward.user.User;
@@ -49,43 +48,7 @@ public class AuthService {
         }
     }
 
-    public AuthResponse register(RegisterRequest request, User currentUser) {
-        
-        if (currentUser == null) {
-            throw new RuntimeException("Unauthorized");
-        }
-        
-        Role newRole = request.getRole() != null ? request.getRole() : Role.USER;
-        
-        if (currentUser.getRole() == Role.HR) {
-            if (newRole != Role.USER) {
-                throw new RuntimeException("HR can only create USER");
-            }
-        } else if (currentUser.getRole() == Role.SUPER_ADMIN) {
-            if (newRole == Role.SUPER_ADMIN) {
-                throw new RuntimeException("Cannot create another SUPER_ADMIN");
-            }
-        } else {
-            throw new RuntimeException("Only SUPER_ADMIN and HR can create users");
-        }
 
-        if (repository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email is already in use");
-        }
-        
-        var user = new User(
-                request.getFirstname(),
-                request.getLastname(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                newRole
-        );
-        repository.save(user);
-        
-        var jwtToken = jwtService.generateToken(user, request.isRememberMe());
-        double expiresAt = request.isRememberMe() ? 2592000.0 : 86400.0;
-        return new AuthResponse(jwtToken, "bearer", expiresAt);
-    }
 
     public AuthResponse authenticate(AuthRequest request) {
         authenticationManager.authenticate(
