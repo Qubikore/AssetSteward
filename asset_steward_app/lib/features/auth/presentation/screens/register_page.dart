@@ -38,23 +38,56 @@ class RegisterPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(HIStroke.userAdd01, size: 64, color: context.colors.primary),
+                  Icon(HIStroke.building01, size: 64, color: context.colors.primary),
                   const Gap(Insets.xl),
                   Text(
-                    'Create an account',
+                    'Create Organization',
                     style: context.text.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.sm),
                   Text(
-                    'Sign up to get started.',
+                    'Set up your organization and admin account.',
                     style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.xl),
                   const InputField(
+                    name: 'organizationName',
+                    title: 'Organization Name',
+                    hintText: 'Enter organization name',
+                    isRequired: true,
+                    keyboardType: TextInputType.name,
+                  ),
+                  const Gap(Insets.md),
+                  InputField(
+                    name: 'organizationPhone',
+                    title: 'Organization Phone',
+                    hintText: 'Enter organization phone',
+                    isRequired: true,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const Gap(Insets.md),
+                  InputField(
+                    name: 'organizationEmail',
+                    title: 'Organization Email',
+                    hintText: 'Enter organization email',
+                    isRequired: true,
+                    keyboardType: TextInputType.emailAddress,
+                    validators: [FormBuilderValidators.email()],
+                  ),
+                  const Gap(Insets.md),
+                  const InputField(
+                    name: 'organizationLocation',
+                    title: 'Organization Location (Optional)',
+                    hintText: 'Enter organization location',
+                  ),
+                  const Gap(Insets.xl),
+                  Text('Admin Information', style: context.text.titleMedium),
+                  const Gap(Insets.md),
+                  const InputField(
                     name: 'firstname',
-                    title: 'First Name',
+                    title: 'Admin First Name',
                     hintText: 'Enter your first name',
                     isRequired: true,
                     keyboardType: TextInputType.name,
@@ -62,7 +95,7 @@ class RegisterPage extends HookConsumerWidget {
                   const Gap(Insets.md),
                   const InputField(
                     name: 'lastname',
-                    title: 'Last Name',
+                    title: 'Admin Last Name',
                     hintText: 'Enter your last name',
                     isRequired: true,
                     keyboardType: TextInputType.name,
@@ -112,14 +145,12 @@ class RegisterPage extends HookConsumerWidget {
                             isLoading.value = true;
                             final data = QMap.from(form.value);
                             data.remove('confirm_password');
-                            data.addAll({'role': 'SUPER_ADMIN'});
-
-                            final result = await authCtrl.register(data);
+                            final result = await authCtrl.registerOrganization(data);
                             isLoading.value = false;
 
                             result.fold(
                               (f) => Toast.showError(f.message),
-                              (r) => Toast.showSuccess('Logged in successfully'),
+                              (r) => Toast.showSuccess('Organization created successfully'),
                             );
                           },
                     child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Sign up'),

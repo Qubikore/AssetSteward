@@ -22,8 +22,8 @@ class AuthCtrl extends _$AuthCtrl {
     return result;
   }
 
-  FutureResult<String> register(Map<String, dynamic> form) async {
-    final result = await _repo.register(form);
+  FutureResult<String> registerOrganization(Map<String, dynamic> form) async {
+    final result = await _repo.registerOrganization(form);
     if (result.isRight()) {
       ref.invalidateSelf();
     }

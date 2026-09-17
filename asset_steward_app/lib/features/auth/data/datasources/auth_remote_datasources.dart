@@ -12,17 +12,17 @@ class AuthRemoteDS {
   Future<String> login(QMap form) async {
     final response = await _dio.post(Endpoints.login, data: form);
 
-    if (response.data case {'token': final String token}) {
+    if (response.data case {'data': {'access_token': final String token}}) {
       return token;
     } else {
       throw const Failure('Invalid response format');
     }
   }
 
-  Future<String> register(QMap form) async {
-    final response = await _dio.post(Endpoints.register, data: form);
+  Future<String> registerOrganization(QMap form) async {
+    final response = await _dio.post(Endpoints.registerOrganization, data: form);
 
-    if (response.data case {'token': final String token}) {
+    if (response.data case {'data': {'access_token': final String token}}) {
       return token;
     } else {
       throw const Failure('Invalid response format');
