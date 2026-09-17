@@ -88,8 +88,10 @@ class LoginPage extends HookConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Don\'t have an account?', style: context.text.bodyMedium),
-                      TextButton(onPressed: () => context.go(RPaths.register.path), child: const Text('Sign up')),
+                      TextButton(
+                        onPressed: () => context.go(RPaths.register.path),
+                        child: const Text('Create Organization'),
+                      ),
                     ],
                   ),
                 ],

@@ -16,10 +16,24 @@ class AuthRepo with RepoRunner {
   }
 
   FutureResult<String> login(QMap form) async {
-    return runRepoTask(() => remote.login(form));
+    return runRepoTask(() async {
+      final token = await remote.login(form);
+      await _tokenStorage.saveAccessToken(token);
+      return token;
+    });
   }
 
   FutureResult<String> registerOrganization(QMap form) async {
-    return runRepoTask(() => remote.registerOrganization(form));
+    return runRepoTask(() async {
+      final token = await remote.registerOrganization(form);
+      await _tokenStorage.saveAccessToken(token);
+      return token;
+    });
+  }
+
+  FutureResult<void> logout() async {
+    return runRepoTask(() async {
+      await _tokenStorage.clearTokens();
+    });
   }
 }

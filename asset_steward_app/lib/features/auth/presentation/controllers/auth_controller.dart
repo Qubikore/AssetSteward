@@ -29,4 +29,12 @@ class AuthCtrl extends _$AuthCtrl {
     }
     return result;
   }
+
+  FutureResult<void> logout() async {
+    final result = await _repo.logout();
+    if (result.isRight()) {
+      ref.invalidateSelf();
+    }
+    return result;
+  }
 }
