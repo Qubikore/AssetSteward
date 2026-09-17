@@ -75,7 +75,7 @@ class ProfilePage extends HookConsumerWidget {
                       icon: HIStroke.informationCircle,
                       title: 'About App',
                       onTap: () {
-                        Toast.showInfo('Asset Steward v1.0.0');
+                        Toast.showInfo('$kAppName v$kAppVersion');
                       },
                     ),
                     Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),

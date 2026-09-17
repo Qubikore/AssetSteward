@@ -1,3 +1,3 @@
 const String kAppName = 'AssetSteward';
 
-const String kAppVersion = 'v1.0.0';
+const String kAppVersion = 'v0.0.1';
