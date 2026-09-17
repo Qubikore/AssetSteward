@@ -13,6 +13,7 @@ class ProfileRemoteDS {
 
   Future<ProfileData> getProfile() async {
     final response = await _dio.get(Endpoints.profile);
+    ProfileDataMapper.ensureInitialized();
     final res = ApiResponse.fromMap<ProfileData>(response.data);
 
     if (res case ApiResponse(success: true, data: final ProfileData data)) {
@@ -27,6 +28,17 @@ class ProfileRemoteDS {
     final res = ApiResponse.fromMap<OrganizationData>(response.data);
 
     if (res case ApiResponse(success: true, data: final OrganizationData data)) {
+      return data;
+    } else {
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+    }
+  }
+
+  Future<ProfileData> updateProfile(FormData data) async {
+    final response = await _dio.put(Endpoints.profile, data: data);
+    final res = ApiResponse.fromMap<ProfileData>(response.data);
+
+    if (res case ApiResponse(success: true, data: final ProfileData data)) {
       return data;
     } else {
       throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');

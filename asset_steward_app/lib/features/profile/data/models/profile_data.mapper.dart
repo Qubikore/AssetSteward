@@ -38,8 +38,12 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   static const Field<ProfileData, String> _f$email = Field('email', _$email);
   static String _$role(ProfileData v) => v.role;
   static const Field<ProfileData, String> _f$role = Field('role', _$role);
-  static String _$gender(ProfileData v) => v.gender;
-  static const Field<ProfileData, String> _f$gender = Field('gender', _$gender);
+  static String? _$gender(ProfileData v) => v.gender;
+  static const Field<ProfileData, String> _f$gender = Field(
+    'gender',
+    _$gender,
+    opt: true,
+  );
   static String? _$dob(ProfileData v) => v.dob;
   static const Field<ProfileData, String> _f$dob = Field(
     'dob',
@@ -167,7 +171,7 @@ class _ProfileDataCopyWithImpl<$R, $Out>
     String? lastname,
     String? email,
     String? role,
-    String? gender,
+    Object? gender = $none,
     Object? dob = $none,
     Object? profilePicture = $none,
   }) => $apply(
@@ -177,7 +181,7 @@ class _ProfileDataCopyWithImpl<$R, $Out>
       if (lastname != null) #lastname: lastname,
       if (email != null) #email: email,
       if (role != null) #role: role,
-      if (gender != null) #gender: gender,
+      if (gender != $none) #gender: gender,
       if (dob != $none) #dob: dob,
       if (profilePicture != $none) #profilePicture: profilePicture,
     }),

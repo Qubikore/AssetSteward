@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../main.export.dart';
@@ -17,6 +18,15 @@ class ProfileCtrl extends _$ProfileCtrl {
       (l) => throw l,
       (r) => r,
     );
+  }
+
+  FutureResult<ProfileData> updateProfile(FormData data) async {
+    final repo = di.get<ProfileRepository>();
+    final result = await repo.updateProfile(data);
+    if (result.isRight()) {
+      ref.invalidateSelf();
+    }
+    return result;
   }
 }
 

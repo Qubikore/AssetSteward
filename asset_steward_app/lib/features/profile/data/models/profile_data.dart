@@ -9,7 +9,7 @@ class ProfileData with ProfileDataMappable {
   final String lastname;
   final String email;
   final String role;
-  final String gender;
+  final String? gender;
   final String? dob;
   final String? profilePicture;
 
@@ -19,7 +19,7 @@ class ProfileData with ProfileDataMappable {
     required this.lastname,
     required this.email,
     required this.role,
-    required this.gender,
+    this.gender,
     this.dob,
     this.profilePicture,
   });

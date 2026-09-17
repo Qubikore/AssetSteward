@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../main.export.dart';
@@ -23,6 +24,15 @@ class ProfileRepository {
   Future<Either<Failure, OrganizationData>> getOrganization() async {
     try {
       final res = await _remoteDS.getOrganization();
+      return Right(res);
+    } catch (e, s) {
+      return Left(Failure(e.toString(), exception: e, stackTrace: s));
+    }
+  }
+
+  Future<Either<Failure, ProfileData>> updateProfile(FormData data) async {
+    try {
+      final res = await _remoteDS.updateProfile(data);
       return Right(res);
     } catch (e, s) {
       return Left(Failure(e.toString(), exception: e, stackTrace: s));
