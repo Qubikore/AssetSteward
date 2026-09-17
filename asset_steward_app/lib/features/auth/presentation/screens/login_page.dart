@@ -73,23 +73,20 @@ class LoginPage extends HookConsumerWidget {
                     onPressed: isLoading.value
                         ? null
                         : () async {
-                            if (formKey.currentState?.saveAndValidate() ?? false) {
-                              isLoading.value = true;
-                              final data = formKey.currentState!.value;
+                            final form = formKey.currentState!;
+                            if (!form.saveAndValidate()) return;
 
-                              final result = await ref.read(authCtrlProvider.notifier).login(data);
+                            isLoading.value = true;
+                            final data = form.value;
 
-                              if (context.mounted) {
-                                isLoading.value = false;
-                                if (result.isLeft()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(result.getLeft().toNullable()!.message),
-                                      behavior: SnackBarBehavior.floating,
-                                    ),
-                                  );
-                                }
-                              }
+                            final result = await ref.read(authCtrlProvider.notifier).login(data);
+                            isLoading.value = false;
+
+                            if (context.mounted) {
+                              result.fold(
+                                (f) => Toast(title: 'title', subtitle: f.message),
+                                (r) => Toast(title: 'title', subtitle: 'Logged in successfully'),
+                              );
                             }
                           },
                     child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Sign in'),
