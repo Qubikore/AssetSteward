@@ -12,14 +12,12 @@ class RegisterPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authCtrl = useMemoized(() => ref.read(authCtrlProvider.notifier));
+
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        backgroundColor: Colors.transparent,
-      ),
       body: Center(
         child: SingleChildScrollView(
           padding: Pads.allXL,
@@ -27,36 +25,45 @@ class RegisterPage extends HookConsumerWidget {
             constraints: const BoxConstraints(maxWidth: 400),
             child: FormBuilder(
               key: formKey,
+              initialValue:
+                  onlyOnDebug({
+                    'firstname': 'Ahnaf',
+                    'lastname': 'Sakil',
+                    'email': 'ahnafsakil9@gmail.com',
+                    'password': '123123',
+                    'confirm_password': '123123',
+                  }) ??
+                  {},
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    HIStroke.userAdd01,
-                    size: 64,
-                    color: context.colors.primary,
-                  ),
+                  Icon(HIStroke.userAdd01, size: 64, color: context.colors.primary),
                   const Gap(Insets.xl),
                   Text(
                     'Create an account',
-                    style: context.text.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: context.text.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.sm),
                   Text(
                     'Sign up to get started.',
-                    style: context.text.bodyMedium?.copyWith(
-                      color: context.colors.onSurfaceVariant,
-                    ),
+                    style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.xl),
                   const InputField(
-                    name: 'name',
-                    title: 'Full Name',
-                    hintText: 'Enter your full name',
+                    name: 'firstname',
+                    title: 'First Name',
+                    hintText: 'Enter your first name',
+                    isRequired: true,
+                    keyboardType: TextInputType.name,
+                  ),
+                  const Gap(Insets.md),
+                  const InputField(
+                    name: 'lastname',
+                    title: 'Last Name',
+                    hintText: 'Enter your last name',
                     isRequired: true,
                     keyboardType: TextInputType.name,
                   ),
@@ -67,9 +74,7 @@ class RegisterPage extends HookConsumerWidget {
                     hintText: 'Enter your email',
                     isRequired: true,
                     keyboardType: TextInputType.emailAddress,
-                    validators: [
-                      FormBuilderValidators.email(),
-                    ],
+                    validators: [FormBuilderValidators.email()],
                   ),
                   const Gap(Insets.md),
                   InputField(
@@ -78,9 +83,7 @@ class RegisterPage extends HookConsumerWidget {
                     hintText: 'Create a password',
                     isRequired: true,
                     isPassword: true,
-                    validators: [
-                      FormBuilderValidators.minLength(6),
-                    ],
+                    validators: [FormBuilderValidators.minLength(6)],
                   ),
                   const Gap(Insets.md),
                   InputField(
@@ -91,12 +94,11 @@ class RegisterPage extends HookConsumerWidget {
                     isPassword: true,
                     validators: [
                       (val) {
-                        if (val !=
-                            formKey.currentState?.fields['password']?.value) {
+                        if (val != formKey.currentState?.fields['password']?.value) {
                           return 'Passwords do not match';
                         }
                         return null;
-                      }
+                      },
                     ],
                   ),
                   const Gap(Insets.xl),
@@ -104,44 +106,30 @@ class RegisterPage extends HookConsumerWidget {
                     onPressed: isLoading.value
                         ? null
                         : () async {
-                            if (formKey.currentState?.saveAndValidate() ?? false) {
-                              isLoading.value = true;
-                              final data = formKey.currentState!.value;
-                              
-                              final result = await ref
-                                  .read(authCtrlProvider.notifier)
-                                  .register(data);
+                            final form = formKey.currentState!;
+                            if (!form.saveAndValidate()) return;
 
-                              if (context.mounted) {
-                                isLoading.value = false;
-                                if (result.isLeft()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          result.getLeft().toNullable()!.message),
-                                      behavior: SnackBarBehavior.floating,
-                                    ),
-                                  );
-                                }
-                              }
-                            }
+                            isLoading.value = true;
+                            final data = QMap.from(form.value);
+                            data.remove('confirm_password');
+                            data.addAll({'role': 'SUPER_ADMIN'});
+
+                            final result = await authCtrl.register(data);
+                            isLoading.value = false;
+
+                            result.fold(
+                              (f) => Toast.showError(f.message),
+                              (r) => Toast.showSuccess('Logged in successfully'),
+                            );
                           },
-                    child: isLoading.value
-                        ? const Loader(size: 20, color: Colors.white)
-                        : const Text('Sign up'),
+                    child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Sign up'),
                   ),
                   const Gap(Insets.xl),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Already have an account?',
-                        style: context.text.bodyMedium,
-                      ),
-                      TextButton(
-                        onPressed: () => context.go(RPaths.login.path),
-                        child: const Text('Sign in'),
-                      ),
+                      Text('Already have an account?', style: context.text.bodyMedium),
+                      TextButton(onPressed: () => context.go(RPaths.login.path), child: const Text('Sign in')),
                     ],
                   ),
                 ],

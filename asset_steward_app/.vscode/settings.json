@@ -1,3 +1,7 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.47.3"
+  "dart.flutterSdkPath": ".fvm/versions/3.47.3",
+  "cSpell.words": [
+    "firstname",
+    "lastname"
+  ]
 }

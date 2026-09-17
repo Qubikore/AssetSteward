@@ -19,8 +19,16 @@ class ToastWrapper extends StatefulWidget {
 class _ToastWrapperState extends State<ToastWrapper> {
   @override
   Widget build(BuildContext context) {
-    Toast._globalContext = context;
-    return widget.child;
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (ctx) {
+            Toast._globalContext = ctx;
+            return widget.child;
+          },
+        ),
+      ],
+    );
   }
 }
 
@@ -127,9 +135,9 @@ class Toast {
       return;
     }
 
-    final effectiveContext = context ?? _globalContext ?? Ctx.tryContext;
+    final effectiveContext = context ?? _globalContext;
     if (effectiveContext == null) {
-      Chirp.warning('Toast: No context available to show toast.');
+      Chirp.warning('Toast: No context available to show toast. Ensure ToastWrapper is added.');
       _toastsQueue.clear();
       return;
     }
@@ -276,7 +284,7 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
 
     return Positioned(
       left: 0,
-      top: widget.data.position == ToastPosition.top ? 0 : null,
+      top: widget.data.position == ToastPosition.top ? 3 : null,
       bottom: widget.data.position == ToastPosition.bottom ? MediaQuery.of(context).viewPadding.bottom : null,
       right: 0,
       child: SlideTransition(
