@@ -1,7 +1,7 @@
 import 'package:asset_steward_app/main.export.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppShell extends HookConsumerWidget {
   const AppShell({super.key, required this.child});

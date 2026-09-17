@@ -5,71 +5,47 @@ enum ToastPosition { top, bottom }
 
 enum ToastShape { pill, squared }
 
-class Toast {
-  final String title;
-  final Duration duration;
-  final Duration? transitionDuration;
-  final Curve curve;
-  final Curve? reverseCurve;
-  final String? subtitle;
-  final IconData? icon;
-  final bool isDestructive;
-  final TextStyle? titleTextStyle;
-  final TextStyle? subtitleTextStyle;
-  final ToastPosition position;
-  final EdgeInsets? padding;
-  final ToastShape shape;
-  final Color? iconColor;
-  final int titleMaxLines;
-  final int subtitleMaxLines;
+/// A wrapper to provide a global context for toasts.
+/// Use this inside the [builder] property of your MaterialApp.
+/// Example: `builder: (context, child) => ToastWrapper(child: child!)`
+class ToastWrapper extends StatefulWidget {
+  final Widget child;
+  const ToastWrapper({super.key, required this.child});
 
-  Toast({
-    required this.title,
-    this.duration = const Duration(seconds: 3),
-    this.transitionDuration = const Duration(milliseconds: 700),
-    this.curve = Curves.easeOutExpo,
-    this.reverseCurve,
-    this.subtitle,
-    this.icon,
-    this.isDestructive = false,
-    this.titleTextStyle,
-    this.subtitleTextStyle,
-    this.position = ToastPosition.top,
-    this.padding,
-    this.shape = ToastShape.pill,
-    this.iconColor,
-    this.titleMaxLines = 1,
-    this.subtitleMaxLines = 1,
-  });
+  @override
+  State<ToastWrapper> createState() => _ToastWrapperState();
+}
 
-  void show(BuildContext context) {
-    Toasts._enqueue(this, context);
+class _ToastWrapperState extends State<ToastWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    Toast._globalContext = context;
+    return widget.child;
   }
 }
 
-class Toasts {
-  static final List<Toast> _toastsQueue = [];
+class Toast {
+  static BuildContext? _globalContext;
+  static final List<_ToastData> _toastsQueue = [];
   static bool _isShowingToast = false;
 
-  static void _enqueue(Toast toast, BuildContext context) {
+  const Toast._();
+
+  static void _enqueue(_ToastData toast, BuildContext? context) {
     _toastsQueue.add(toast);
     if (!_isShowingToast) {
       _showNextToast(context);
     }
   }
 
-  static void showFromToast(BuildContext context, Toast toast) {
-    _enqueue(toast, context);
-  }
-
   static void show(
-    BuildContext context, {
-    required String title,
+    String title, {
+    BuildContext? context,
+    String? subtitle,
     Duration duration = const Duration(seconds: 3),
     Duration? transitionDuration = const Duration(milliseconds: 700),
     Curve curve = Curves.easeOutExpo,
     Curve? reverseCurve,
-    String? subtitle,
     IconData? icon,
     bool isDestructive = false,
     TextStyle? titleTextStyle,
@@ -79,33 +55,82 @@ class Toasts {
     ToastShape shape = ToastShape.pill,
     Color? iconColor,
     int titleMaxLines = 1,
-    int subtitleMaxLines = 1,
+    int subtitleMaxLines = 2,
   }) {
-    final toast = Toast(
-      title: title,
-      duration: duration,
-      transitionDuration: transitionDuration,
-      curve: curve,
-      reverseCurve: reverseCurve,
-      subtitle: subtitle,
-      icon: icon,
-      isDestructive: isDestructive,
-      titleTextStyle: titleTextStyle,
-      subtitleTextStyle: subtitleTextStyle,
-      position: position,
-      padding: padding,
-      shape: shape,
-      iconColor: iconColor,
-      titleMaxLines: titleMaxLines,
-      subtitleMaxLines: subtitleMaxLines,
+    _enqueue(
+      _ToastData(
+        title: title,
+        duration: duration,
+        transitionDuration: transitionDuration,
+        curve: curve,
+        reverseCurve: reverseCurve,
+        subtitle: subtitle,
+        icon: icon,
+        isDestructive: isDestructive,
+        titleTextStyle: titleTextStyle,
+        subtitleTextStyle: subtitleTextStyle,
+        position: position,
+        padding: padding,
+        shape: shape,
+        iconColor: iconColor,
+        titleMaxLines: titleMaxLines,
+        subtitleMaxLines: subtitleMaxLines,
+      ),
+      context,
     );
-
-    _enqueue(toast, context);
   }
 
-  static void _showNextToast(BuildContext context) {
+  static void showSuccess(String message, {BuildContext? context, String? title, IconData? icon}) {
+    show(
+      title ?? 'Success',
+      subtitle: message,
+      context: context,
+      icon: icon ?? Icons.check_circle_outline,
+      iconColor: const Color(0xFF4CAF50),
+    );
+  }
+
+  static void showError(String message, {BuildContext? context, String? title, IconData? icon}) {
+    show(
+      title ?? 'Error',
+      subtitle: message,
+      context: context,
+      icon: icon ?? Icons.error_outline,
+      isDestructive: true,
+      iconColor: const Color(0xFFF44336),
+    );
+  }
+
+  static void showWarning(String message, {BuildContext? context, String? title, IconData? icon}) {
+    show(
+      title ?? 'Warning',
+      subtitle: message,
+      context: context,
+      icon: icon ?? Icons.warning_amber_outlined,
+      iconColor: const Color(0xFFFF9800),
+    );
+  }
+
+  static void showInfo(String message, {BuildContext? context, String? title, IconData? icon}) {
+    show(
+      title ?? 'Info',
+      subtitle: message,
+      context: context,
+      icon: icon ?? Icons.info_outline,
+      iconColor: const Color(0xFF2196F3),
+    );
+  }
+
+  static void _showNextToast(BuildContext? context) {
     if (_toastsQueue.isEmpty) {
       _isShowingToast = false;
+      return;
+    }
+
+    final effectiveContext = context ?? _globalContext ?? Ctx.tryContext;
+    if (effectiveContext == null) {
+      Chirp.warning('Toast: No context available to show toast.');
+      _toastsQueue.clear();
       return;
     }
 
@@ -114,23 +139,8 @@ class Toasts {
 
     OverlayEntry? currentOverlay;
     currentOverlay = OverlayEntry(
-      builder: (context) => _ToastWidget(
-        title: toast.title,
-        duration: toast.duration,
-        transitionDuration: toast.transitionDuration,
-        curve: toast.curve,
-        reverseCurve: toast.reverseCurve,
-        isDestructive: toast.isDestructive,
-        subtitle: toast.subtitle,
-        titleMaxLines: toast.titleMaxLines,
-        subtitleMaxLines: toast.subtitleMaxLines,
-        titleTextStyle: toast.titleTextStyle,
-        subtitleTextStyle: toast.subtitleTextStyle,
-        position: toast.position,
-        padding: toast.padding,
-        shape: toast.shape,
-        iconColor: toast.iconColor,
-        icon: toast.icon,
+      builder: (ctx) => _ToastWidget(
+        data: toast,
         onDismiss: () {
           currentOverlay?.remove();
           currentOverlay = null;
@@ -139,19 +149,18 @@ class Toasts {
       ),
     );
 
-    Overlay.of(context).insert(currentOverlay!);
+    Overlay.of(effectiveContext).insert(currentOverlay!);
   }
 }
 
-class _ToastWidget extends StatefulWidget {
+class _ToastData {
   final String title;
   final Duration duration;
   final Duration? transitionDuration;
   final Curve curve;
   final Curve? reverseCurve;
-  final VoidCallback onDismiss;
-  final IconData? icon;
   final String? subtitle;
+  final IconData? icon;
   final bool isDestructive;
   final TextStyle? titleTextStyle;
   final TextStyle? subtitleTextStyle;
@@ -162,25 +171,31 @@ class _ToastWidget extends StatefulWidget {
   final int titleMaxLines;
   final int subtitleMaxLines;
 
-  const _ToastWidget({
+  _ToastData({
     required this.title,
     required this.duration,
-    required this.onDismiss,
-    required this.isDestructive,
-    required this.curve,
-    required this.shape,
-    this.reverseCurve,
-    this.icon,
-    this.subtitle,
     this.transitionDuration,
+    required this.curve,
+    this.reverseCurve,
+    this.subtitle,
+    this.icon,
+    required this.isDestructive,
     this.titleTextStyle,
     this.subtitleTextStyle,
     required this.position,
     this.padding,
+    required this.shape,
     this.iconColor,
     required this.titleMaxLines,
     required this.subtitleMaxLines,
   });
+}
+
+class _ToastWidget extends StatefulWidget {
+  final _ToastData data;
+  final VoidCallback onDismiss;
+
+  const _ToastWidget({required this.data, required this.onDismiss});
 
   @override
   State<_ToastWidget> createState() => _ToastWidgetState();
@@ -194,29 +209,29 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(duration: widget.transitionDuration, vsync: this);
+    _animationController = AnimationController(duration: widget.data.transitionDuration, vsync: this);
 
-    _offsetAnimation = Tween<Offset>(begin: Offset(0, widget.position == ToastPosition.top ? -1 : 1), end: Offset.zero)
-        .animate(
+    _offsetAnimation =
+        Tween<Offset>(begin: Offset(0, widget.data.position == ToastPosition.top ? -1 : 1), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: widget.curve,
-            reverseCurve: widget.reverseCurve ?? widget.curve.flipped,
+            curve: widget.data.curve,
+            reverseCurve: widget.data.reverseCurve ?? widget.data.curve.flipped,
           ),
         );
 
     _animationController.forward();
 
-    Future.delayed(widget.duration, () {
+    Future.delayed(widget.data.duration, () {
       if (mounted) _dismissAlert();
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.offset > 30 && widget.position == ToastPosition.top) {
+      if (_scrollController.offset > 30 && widget.data.position == ToastPosition.top) {
         _dismissAlert();
       }
 
-      if (_scrollController.offset < -30 && widget.position == ToastPosition.bottom) {
+      if (_scrollController.offset < -30 && widget.data.position == ToastPosition.bottom) {
         _dismissAlert();
       }
     });
@@ -237,18 +252,18 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
 
   EdgeInsets getPadding() {
     const double baseHorizontalPadding = 20;
-    final double baseVerticalPadding = widget.subtitle != null ? 9 : 15;
+    final double baseVerticalPadding = widget.data.subtitle != null ? 9 : 15;
 
-    if (widget.subtitle == null && widget.icon == null) {
+    if (widget.data.subtitle == null && widget.data.icon == null) {
       return EdgeInsets.symmetric(vertical: baseVerticalPadding + 3, horizontal: baseHorizontalPadding + 20);
     }
-    if (widget.icon == null && widget.subtitle != null) {
+    if (widget.data.icon == null && widget.data.subtitle != null) {
       return EdgeInsets.symmetric(horizontal: baseHorizontalPadding + 20, vertical: baseVerticalPadding);
     }
-    if (widget.icon != null && widget.subtitle != null) {
+    if (widget.data.icon != null && widget.data.subtitle != null) {
       return EdgeInsets.symmetric(horizontal: baseHorizontalPadding, vertical: baseVerticalPadding);
     }
-    if (widget.icon != null && widget.subtitle == null) {
+    if (widget.data.icon != null && widget.data.subtitle == null) {
       return EdgeInsets.symmetric(horizontal: baseVerticalPadding, vertical: baseVerticalPadding);
     }
 
@@ -257,12 +272,12 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    final double iconSize = widget.icon != null ? 24.0 : 0;
+    final double iconSize = widget.data.icon != null ? 24.0 : 0;
 
     return Positioned(
       left: 0,
-      top: widget.position == ToastPosition.top ? 0 : null,
-      bottom: widget.position == ToastPosition.bottom ? MediaQuery.of(context).viewPadding.bottom : null,
+      top: widget.data.position == ToastPosition.top ? 0 : null,
+      bottom: widget.data.position == ToastPosition.bottom ? MediaQuery.of(context).viewPadding.bottom : null,
       right: 0,
       child: SlideTransition(
         position: _offsetAnimation,
@@ -275,59 +290,58 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
             child: Center(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
-                clipBehavior: widget.shape == ToastShape.squared ? Clip.none : Clip.antiAlias,
+                clipBehavior: widget.data.shape == ToastShape.squared ? Clip.none : Clip.antiAlias,
                 decoration: ShapeDecoration(
-                  shape: widget.shape == ToastShape.squared
+                  shape: widget.data.shape == ToastShape.squared
                       ? const ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(Corners.md)))
                       : const StadiumBorder(),
                   shadows: [
-                    BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 4)),
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 4)),
                   ],
                 ),
                 child: Material(
                   color: context.theme.colorScheme.surfaceContainerHighest,
                   child: Padding(
-                    padding: widget.padding ?? getPadding(),
+                    padding: widget.data.padding ?? getPadding(),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (widget.icon != null)
+                        if (widget.data.icon != null)
                           Icon(
-                            widget.icon,
+                            widget.data.icon,
                             color:
-                                widget.iconColor ??
-                                (widget.isDestructive ? context.colors.error : context.colors.primary),
+                                widget.data.iconColor ??
+                                (widget.data.isDestructive ? context.colors.error : context.colors.primary),
                             size: iconSize,
                           ),
-                        if (widget.icon != null) const Gap(Insets.sm),
+                        if (widget.data.icon != null) const Gap(Insets.sm),
                         Flexible(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.title,
-                                maxLines: widget.titleMaxLines,
+                                widget.data.title,
+                                maxLines: widget.data.titleMaxLines,
                                 overflow: TextOverflow.ellipsis,
                                 style:
-                                    widget.titleTextStyle ??
+                                    widget.data.titleTextStyle ??
                                     context.text.labelLarge?.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: context.colors.onSurfaceVariant,
                                     ),
-                                textAlign: TextAlign.center,
                               ),
-                              if (widget.subtitle != null) ...[
+                              if (widget.data.subtitle != null) ...[
                                 const Gap(Insets.xs),
                                 Text(
-                                  widget.subtitle!,
-                                  maxLines: widget.subtitleMaxLines,
+                                  widget.data.subtitle!,
+                                  maxLines: widget.data.subtitleMaxLines,
                                   overflow: TextOverflow.ellipsis,
                                   style:
-                                      widget.subtitleTextStyle ??
+                                      widget.data.subtitleTextStyle ??
                                       context.text.labelMedium?.copyWith(
-                                        color: context.colors.onSurfaceVariant.withOpacity(0.8),
+                                        color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
                                       ),
-                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ],

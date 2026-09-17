@@ -4,8 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../controllers/auth_controller.dart';
-
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
 
@@ -56,38 +54,36 @@ class LoginPage extends HookConsumerWidget {
                     isPassword: true,
                   ),
                   const Gap(Insets.xs),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: FormBuilderCheckbox(
-                          name: 'remember_me',
-                          title: Text('Remember for 30 days', style: context.text.bodyMedium),
-                          decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
-                        ),
-                      ),
-                    ],
+                  FormBuilderCheckbox(
+                    name: 'remember_me',
+                    title: Text('Remember', style: context.text.bodyMedium),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      filled: false,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                   const Gap(Insets.lg),
                   FilledButton(
                     onPressed: isLoading.value
                         ? null
                         : () async {
-                            final form = formKey.currentState!;
-                            if (!form.saveAndValidate()) return;
+                            Toast.showSuccess('Logged in successfully');
+                            // final form = formKey.currentState!;
+                            // if (!form.saveAndValidate()) return;
 
-                            isLoading.value = true;
-                            final data = form.value;
+                            // isLoading.value = true;
+                            // final data = form.value;
 
-                            final result = await ref.read(authCtrlProvider.notifier).login(data);
-                            isLoading.value = false;
+                            // final result = await ref.read(authCtrlProvider.notifier).login(data);
+                            // isLoading.value = false;
 
-                            if (context.mounted) {
-                              result.fold(
-                                (f) => Toast(title: 'title', subtitle: f.message),
-                                (r) => Toast(title: 'title', subtitle: 'Logged in successfully'),
-                              );
-                            }
+                            // if (context.mounted) {
+                            //   result.fold(
+                            //     (f) => Toast.showError(f.message),
+                            //     (r) => Toast.showSuccess('Logged in successfully'),
+                            //   );
+                            // }
                           },
                     child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Sign in'),
                   ),

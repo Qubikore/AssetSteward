@@ -39,6 +39,7 @@ class MainApp extends ConsumerWidget {
       themeMode: themeMode,
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
+      builder: (context, child) => ToastWrapper(child: child!),
     );
   }
 }
