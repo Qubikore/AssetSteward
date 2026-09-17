@@ -27,7 +27,7 @@ class ProfileCtrl extends _$ProfileCtrl {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class OrganizationCtrl extends _$OrganizationCtrl {
   @override
   FutureOr<OrganizationData> build() async {

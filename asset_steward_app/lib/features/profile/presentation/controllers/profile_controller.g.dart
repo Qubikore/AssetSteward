@@ -64,7 +64,7 @@ final class OrganizationCtrlProvider
         argument: null,
         retry: null,
         name: r'organizationCtrlProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -77,7 +77,7 @@ final class OrganizationCtrlProvider
   OrganizationCtrl create() => OrganizationCtrl();
 }
 
-String _$organizationCtrlHash() => r'99e4e32dab95ab9e58593be8934e2cff55df824a';
+String _$organizationCtrlHash() => r'b2b36badc2c7f2992a5f6063091c6754f4adf80a';
 
 abstract class _$OrganizationCtrl extends $AsyncNotifier<OrganizationData> {
   FutureOr<OrganizationData> build();

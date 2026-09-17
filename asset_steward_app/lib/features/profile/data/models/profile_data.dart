@@ -2,13 +2,16 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'profile_data.mapper.dart';
 
+@MappableEnum(caseStyle: CaseStyle.upperSnakeCase)
+enum UserRole { superAdmin, hr, user }
+
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class ProfileData with ProfileDataMappable {
   final int id;
   final String firstname;
   final String lastname;
   final String email;
-  final String role;
+  final UserRole role;
   final String? gender;
   final String? dob;
   final String? profilePicture;

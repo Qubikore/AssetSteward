@@ -1,41 +1,26 @@
 import 'package:dio/dio.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../main.export.dart';
 import '../datasources/profile_remote_datasource.dart';
 import '../models/organization_data.dart';
 import '../models/profile_data.dart';
 
 @lazySingleton
-class ProfileRepository {
+class ProfileRepository with RepoRunner {
   ProfileRepository(this._remoteDS);
 
   final ProfileRemoteDS _remoteDS;
 
-  Future<Either<Failure, ProfileData>> getProfile() async {
-    try {
-      final res = await _remoteDS.getProfile();
-      return Right(res);
-    } catch (e, s) {
-      return Left(Failure(e.toString(), exception: e, stackTrace: s));
-    }
+  FutureResult<ProfileData> getProfile() async {
+    return runRepoTask(() => _remoteDS.getProfile());
   }
 
-  Future<Either<Failure, OrganizationData>> getOrganization() async {
-    try {
-      final res = await _remoteDS.getOrganization();
-      return Right(res);
-    } catch (e, s) {
-      return Left(Failure(e.toString(), exception: e, stackTrace: s));
-    }
+  FutureResult<OrganizationData> getOrganization() async {
+    return runRepoTask(() => _remoteDS.getOrganization());
   }
 
-  Future<Either<Failure, ProfileData>> updateProfile(FormData data) async {
-    try {
-      final res = await _remoteDS.updateProfile(data);
-      return Right(res);
-    } catch (e, s) {
-      return Left(Failure(e.toString(), exception: e, stackTrace: s));
-    }
+  FutureResult<ProfileData> updateProfile(FormData data) async {
+    return runRepoTask(() => _remoteDS.updateProfile(data));
   }
 }

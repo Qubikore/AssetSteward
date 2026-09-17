@@ -8,6 +8,56 @@
 
 part of 'profile_data.dart';
 
+class UserRoleMapper extends EnumMapper<UserRole> {
+  UserRoleMapper._();
+
+  static UserRoleMapper? _instance;
+  static UserRoleMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = UserRoleMapper._());
+    }
+    return _instance!;
+  }
+
+  static UserRole fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  UserRole decode(dynamic value) {
+    switch (value) {
+      case r'SUPER_ADMIN':
+        return UserRole.superAdmin;
+      case r'HR':
+        return UserRole.hr;
+      case r'USER':
+        return UserRole.user;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(UserRole self) {
+    switch (self) {
+      case UserRole.superAdmin:
+        return r'SUPER_ADMIN';
+      case UserRole.hr:
+        return r'HR';
+      case UserRole.user:
+        return r'USER';
+    }
+  }
+}
+
+extension UserRoleMapperExtension on UserRole {
+  String toValue() {
+    UserRoleMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<UserRole>(this) as String;
+  }
+}
+
 class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   ProfileDataMapper._();
 
@@ -15,6 +65,7 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   static ProfileDataMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ProfileDataMapper._());
+      UserRoleMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -36,8 +87,8 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   );
   static String _$email(ProfileData v) => v.email;
   static const Field<ProfileData, String> _f$email = Field('email', _$email);
-  static String _$role(ProfileData v) => v.role;
-  static const Field<ProfileData, String> _f$role = Field('role', _$role);
+  static UserRole _$role(ProfileData v) => v.role;
+  static const Field<ProfileData, UserRole> _f$role = Field('role', _$role);
   static String? _$gender(ProfileData v) => v.gender;
   static const Field<ProfileData, String> _f$gender = Field(
     'gender',
@@ -148,7 +199,7 @@ abstract class ProfileDataCopyWith<$R, $In extends ProfileData, $Out>
     String? firstname,
     String? lastname,
     String? email,
-    String? role,
+    UserRole? role,
     String? gender,
     String? dob,
     String? profilePicture,
@@ -170,7 +221,7 @@ class _ProfileDataCopyWithImpl<$R, $Out>
     String? firstname,
     String? lastname,
     String? email,
-    String? role,
+    UserRole? role,
     Object? gender = $none,
     Object? dob = $none,
     Object? profilePicture = $none,
