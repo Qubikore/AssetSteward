@@ -102,7 +102,6 @@ class EditProfileSheet extends HookConsumerWidget {
             const InputField(
               name: 'gender',
               title: 'Gender',
-              isRequired: true,
             ),
             const Gap(Insets.md),
             const InputField(
