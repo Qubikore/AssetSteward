@@ -5,8 +5,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../controllers/profile_controller.dart';
 
-class ProfilePageview extends HookConsumerWidget {
-  const ProfilePageview({super.key});
+class ProfilePage extends HookConsumerWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,10 +42,10 @@ class ProfilePageview extends HookConsumerWidget {
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundImage: data.profilePicture != null ? NetworkImage(data.profilePicture!) : null,
-                                child: data.profilePicture == null
-                                    ? Text(data.firstname[0] + data.lastname[0])
+                                backgroundImage: data.profilePicture != null
+                                    ? NetworkImage(data.profilePicture!)
                                     : null,
+                                child: data.profilePicture == null ? Text(data.firstname[0] + data.lastname[0]) : null,
                               ),
                               const Gap(Insets.md),
                               Expanded(
@@ -53,7 +53,10 @@ class ProfilePageview extends HookConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('${data.firstname} ${data.lastname}', style: context.text.titleLarge),
-                                    Text(data.role, style: context.text.bodyMedium?.copyWith(color: context.colors.primary)),
+                                    Text(
+                                      data.role,
+                                      style: context.text.bodyMedium?.copyWith(color: context.colors.primary),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -64,8 +67,7 @@ class ProfilePageview extends HookConsumerWidget {
                           const Gap(Insets.sm),
                           _buildInfoRow(context, HIStroke.user, 'Gender', data.gender),
                           const Gap(Insets.sm),
-                          if (data.dob != null)
-                            _buildInfoRow(context, HIStroke.calendar01, 'Date of Birth', data.dob!),
+                          if (data.dob != null) _buildInfoRow(context, HIStroke.calendar01, 'Date of Birth', data.dob!),
                         ],
                       ),
                     ),
@@ -91,9 +93,7 @@ class ProfilePageview extends HookConsumerWidget {
                                 child: Icon(HIStroke.building04, color: context.colors.onPrimaryContainer),
                               ),
                               const Gap(Insets.md),
-                              Expanded(
-                                child: Text(data.name, style: context.text.titleLarge),
-                              ),
+                              Expanded(child: Text(data.name, style: context.text.titleLarge)),
                             ],
                           ),
                           const Gap(Insets.lg),
@@ -120,10 +120,7 @@ class ProfilePageview extends HookConsumerWidget {
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
-      style: context.text.titleMedium?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: context.colors.onSurfaceVariant,
-      ),
+      style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: context.colors.onSurfaceVariant),
     );
   }
 

@@ -5,7 +5,7 @@ import 'package:asset_steward_app/features/auth/presentation/screens/login_page.
 import 'package:asset_steward_app/features/auth/presentation/screens/register_page.dart';
 import 'package:asset_steward_app/features/home/presentation/screens/home_pageview.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_pageview.dart';
-import 'package:asset_steward_app/features/profile/presentation/screens/profile_pageview.dart';
+import 'package:asset_steward_app/features/profile/presentation/screens/profile_page.dart';
 import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/widgets.dart';
@@ -58,7 +58,7 @@ class AppRouter extends _$AppRouter {
     AppRoute(RPaths.assets, (_) => const AssetsPageview()),
     AppRoute(RPaths.scan, (_) => const ScanPageview()),
     AppRoute(RPaths.maintenance, (_) => const MaintenancePageview()),
-    AppRoute(RPaths.profile, (_) => const ProfilePageview()),
+    AppRoute(RPaths.profile, (_) => const ProfilePage()),
   ];
 
   @override
