@@ -41,6 +41,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
+
     // Default constructor for JPA
     public User() {}
 
@@ -94,6 +98,14 @@ public class User implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 
     public String getProfilePicture() {

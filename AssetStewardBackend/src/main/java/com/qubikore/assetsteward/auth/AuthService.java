@@ -16,13 +16,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository repository;
+    private final com.qubikore.assetsteward.user.OrganizationRepository organizationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
-    public AuthService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
+    public AuthService(UserRepository repository, com.qubikore.assetsteward.user.OrganizationRepository organizationRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         this.repository = repository;
+        this.organizationRepository = organizationRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -85,6 +87,33 @@ public class AuthService {
         var jwtToken = jwtService.generateToken(user, request.isRememberMe());
         double expiresAt = request.isRememberMe() ? 2592000.0 : 86400.0;
         return new AuthResponse(jwtToken, "bearer", expiresAt);
+    }
+
+    public AuthResponse registerOrganization(com.qubikore.assetsteward.auth.dto.RegisterOrganizationRequest request) {
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email is already in use");
+        }
+        
+        com.qubikore.assetsteward.user.Organization org = new com.qubikore.assetsteward.user.Organization(
+                request.getOrganizationName(),
+                request.getOrganizationPhone(),
+                request.getOrganizationEmail(),
+                request.getOrganizationLocation()
+        );
+        org = organizationRepository.save(org);
+        
+        User user = new User(
+                request.getFirstname(),
+                request.getLastname(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                Role.SUPER_ADMIN
+        );
+        user.setOrganization(org);
+        repository.save(user);
+        
+        var jwtToken = jwtService.generateToken(user, false);
+        return new AuthResponse(jwtToken, "bearer", 86400.0);
     }
 
     public AuthResponse authenticate(AuthRequest request) {
