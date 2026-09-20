@@ -9,6 +9,7 @@ public class AssetResponse {
     private String name;
     private String serialNumber;
     private LocalDate purchaseDate;
+    private LocalDate expireDate;
     private Double purchasePrice;
     private String vendor;
     private Integer quantity;
@@ -23,6 +24,7 @@ public class AssetResponse {
         this.name = asset.getName();
         this.serialNumber = asset.getSerialNumber();
         this.purchaseDate = asset.getPurchaseDate();
+        this.expireDate = asset.getExpireDate();
         this.purchasePrice = asset.getPurchasePrice();
         this.vendor = asset.getVendor();
         this.quantity = asset.getQuantity();
@@ -37,6 +39,7 @@ public class AssetResponse {
     public String getName() { return name; }
     public String getSerialNumber() { return serialNumber; }
     public LocalDate getPurchaseDate() { return purchaseDate; }
+    public LocalDate getExpireDate() { return expireDate; }
     public Double getPurchasePrice() { return purchasePrice; }
     public String getVendor() { return vendor; }
     public Integer getQuantity() { return quantity; }

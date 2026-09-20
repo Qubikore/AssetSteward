@@ -43,6 +43,7 @@ public class AssetService {
         asset.setName(request.getName());
         asset.setSerialNumber(request.getSerialNumber());
         asset.setPurchaseDate(request.getPurchaseDate());
+        asset.setExpireDate(request.getExpireDate());
         asset.setPurchasePrice(request.getPurchasePrice());
         asset.setVendor(request.getVendor());
         if (request.getQuantity() != null) {

@@ -7,6 +7,7 @@ public class AssetRequest {
     private String name;
     private String serialNumber;
     private LocalDate purchaseDate;
+    private LocalDate expireDate;
     private Double purchasePrice;
     private String vendor;
     private Integer quantity;
@@ -22,6 +23,8 @@ public class AssetRequest {
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
     public LocalDate getPurchaseDate() { return purchaseDate; }
     public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
+    public LocalDate getExpireDate() { return expireDate; }
+    public void setExpireDate(LocalDate expireDate) { this.expireDate = expireDate; }
     public Double getPurchasePrice() { return purchasePrice; }
     public void setPurchasePrice(Double purchasePrice) { this.purchasePrice = purchasePrice; }
     public String getVendor() { return vendor; }

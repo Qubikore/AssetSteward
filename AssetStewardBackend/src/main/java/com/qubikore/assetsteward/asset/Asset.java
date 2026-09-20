@@ -27,6 +27,9 @@ public class Asset {
     private LocalDate purchaseDate;
 
     @Column
+    private LocalDate expireDate;
+
+    @Column
     private Double purchasePrice;
 
     @Column
@@ -69,6 +72,8 @@ public class Asset {
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
     public LocalDate getPurchaseDate() { return purchaseDate; }
     public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
+    public LocalDate getExpireDate() { return expireDate; }
+    public void setExpireDate(LocalDate expireDate) { this.expireDate = expireDate; }
     public Double getPurchasePrice() { return purchasePrice; }
     public void setPurchasePrice(Double purchasePrice) { this.purchasePrice = purchasePrice; }
     public String getVendor() { return vendor; }
