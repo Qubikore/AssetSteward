@@ -75,33 +75,42 @@ public class AuthService {
         return new AuthResponse(jwtToken, "bearer", 2592000.0);
     }
 
-    public AuthResponse registerOrganization(com.qubikore.assetsteward.auth.dto.RegisterOrganizationRequest request) {
+    public AuthResponse register(com.qubikore.assetsteward.auth.dto.RegisterRequest request, User currentUser) {
+        if (currentUser == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+        
+        Role newRole = request.getRole() != null ? request.getRole() : Role.USER;
+        
+        if (currentUser.getRole() == Role.HR) {
+            if (newRole != Role.USER) {
+                throw new RuntimeException("HR can only create USER");
+            }
+        } else if (currentUser.getRole() == Role.SUPER_ADMIN) {
+            if (newRole == Role.SUPER_ADMIN) {
+                throw new RuntimeException("Cannot create another SUPER_ADMIN");
+            }
+        } else {
+            throw new RuntimeException("Only SUPER_ADMIN and HR can create users");
+        }
+
         if (repository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email is already in use");
         }
         
-        com.qubikore.assetsteward.user.Organization org = new com.qubikore.assetsteward.user.Organization(
-                request.getOrganizationName(),
-                request.getOrganizationPhone(),
-                request.getOrganizationEmail(),
-                request.getOrganizationLocation()
-        );
-        org = organizationRepository.save(org);
-        
-        User user = new User(
+        var user = new User(
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                Role.SUPER_ADMIN
+                newRole
         );
-        user.setOrganization(org);
         repository.save(user);
         
-        var jwtToken = jwtService.generateToken(user, false);
-        return new AuthResponse(jwtToken, "bearer", 86400.0);
+        var jwtToken = jwtService.generateToken(user, request.isRememberMe());
+        double expiresAt = request.isRememberMe() ? 2592000.0 : 86400.0;
+        return new AuthResponse(jwtToken, "bearer", expiresAt);
     }
-
     public AuthResponse authenticate(AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -17,11 +17,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/register-organization")
-    public ResponseEntity<ApiResponse<AuthResponse>> registerOrganization(
-            @RequestBody com.qubikore.assetsteward.auth.dto.RegisterOrganizationRequest request
+    @PostMapping("/register")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<ApiResponse<AuthResponse>> register(
+            @RequestBody com.qubikore.assetsteward.auth.dto.RegisterRequest request,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser
     ) {
-        return ResponseEntity.ok(ApiResponse.success("Organization created successfully", authService.registerOrganization(request)));
+        return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request, currentUser)));
     }
 
     @PostMapping("/register-organization")
@@ -30,6 +32,7 @@ public class AuthController {
     ) {
         return ResponseEntity.ok(ApiResponse.success("Organization created successfully", authService.registerOrganization(request)));
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> authenticate(@RequestBody AuthRequest request) {

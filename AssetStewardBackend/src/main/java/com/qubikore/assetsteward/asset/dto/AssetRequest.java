@@ -9,8 +9,10 @@ public class AssetRequest {
     private LocalDate purchaseDate;
     private Double purchasePrice;
     private String vendor;
+    private Integer quantity;
     private Long categoryId;
     private Long locationId;
+    private Long departmentId;
 
     public String getAssetCode() { return assetCode; }
     public void setAssetCode(String assetCode) { this.assetCode = assetCode; }
@@ -24,8 +26,12 @@ public class AssetRequest {
     public void setPurchasePrice(Double purchasePrice) { this.purchasePrice = purchasePrice; }
     public String getVendor() { return vendor; }
     public void setVendor(String vendor) { this.vendor = vendor; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
     public Long getLocationId() { return locationId; }
     public void setLocationId(Long locationId) { this.locationId = locationId; }
+    public Long getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
 }
