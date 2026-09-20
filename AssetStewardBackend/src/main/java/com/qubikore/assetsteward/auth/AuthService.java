@@ -75,6 +75,32 @@ public class AuthService {
         return new AuthResponse(jwtToken, "bearer", 2592000.0);
     }
 
+    public AuthResponse registerOrganization(com.qubikore.assetsteward.auth.dto.RegisterOrganizationRequest request) {
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email is already in use");
+        }
+        
+        com.qubikore.assetsteward.user.Organization org = new com.qubikore.assetsteward.user.Organization(
+                request.getOrganizationName(),
+                request.getOrganizationPhone(),
+                request.getOrganizationEmail(),
+                request.getOrganizationLocation()
+        );
+        org = organizationRepository.save(org);
+        
+        User user = new User(
+                request.getFirstname(),
+                request.getLastname(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                Role.SUPER_ADMIN
+        );
+        user.setOrganization(org);
+        repository.save(user);
+        
+        var jwtToken = jwtService.generateToken(user, false);
+        return new AuthResponse(jwtToken, "bearer", 86400.0);
+    }
 
     public AuthResponse authenticate(AuthRequest request) {
         authenticationManager.authenticate(
