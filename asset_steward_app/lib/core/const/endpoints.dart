@@ -11,4 +11,6 @@ class Endpoints {
   static const String users = 'users';
   static const String locations = 'locations';
   static const String departments = 'departments';
+  static const String dashboardMetrics = 'dashboard/metrics';
+  static const String dashboardUtilization = 'dashboard/utilization';
 }

@@ -33,7 +33,7 @@ final class LocationsCtrlProvider
   LocationsCtrl create() => LocationsCtrl();
 }
 
-String _$locationsCtrlHash() => r'519f578fca9ff0e6f1845b59c1265e1b950101e2';
+String _$locationsCtrlHash() => r'8496c58bae50cb32b107dc8c96d7b9c3023d7c48';
 
 abstract class _$LocationsCtrl extends $AsyncNotifier<List<LocationModel>> {
   FutureOr<List<LocationModel>> build();

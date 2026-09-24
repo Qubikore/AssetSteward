@@ -33,7 +33,7 @@ final class UsersCtrlProvider
   UsersCtrl create() => UsersCtrl();
 }
 
-String _$usersCtrlHash() => r'cc9e35d66e87593c9971a4e9f489c6d5b180fa2a';
+String _$usersCtrlHash() => r'088e0866bb15ae3d319dbb535737d55380da3dbd';
 
 abstract class _$UsersCtrl extends $AsyncNotifier<List<ProfileData>> {
   FutureOr<List<ProfileData>> build();

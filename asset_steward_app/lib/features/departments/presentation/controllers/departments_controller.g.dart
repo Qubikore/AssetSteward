@@ -33,7 +33,7 @@ final class DepartmentsCtrlProvider
   DepartmentsCtrl create() => DepartmentsCtrl();
 }
 
-String _$departmentsCtrlHash() => r'bfe089b337685ccca2721f4abe54a2b86fa05dd5';
+String _$departmentsCtrlHash() => r'6f9d4dff1fb1a40b1ad9b7a8a963a1feabe70d19';
 
 abstract class _$DepartmentsCtrl extends $AsyncNotifier<List<DepartmentModel>> {
   FutureOr<List<DepartmentModel>> build();
