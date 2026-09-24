@@ -69,6 +69,19 @@ class ProfilePage extends HookConsumerWidget {
                         endIndent: Insets.md,
                         color: context.colors.outlineVariant.op(0.5),
                       ),
+                      SettingsTile(
+                        icon: HIStroke.location01,
+                        title: 'Locations',
+                        onTap: () {
+                          context.push(RPaths.locations.path);
+                        },
+                      ),
+                      Divider(
+                        height: 1,
+                        indent: 56,
+                        endIndent: Insets.md,
+                        color: context.colors.outlineVariant.op(0.5),
+                      ),
                     ],
 
                     SettingsTile(

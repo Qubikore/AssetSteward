@@ -1,0 +1,153 @@
+Profile Controller:
+  GET /api/v1/profile:
+    summary: "getProfile"
+    response: ApiResponseProfileResponse
+  PUT /api/v1/profile:
+    summary: "updateProfile"
+    request: ProfileUpdateRequest
+    response: ApiResponseProfileResponse
+
+Maintenance Controller:
+  PUT /api/v1/maintenance/{id}/complete:
+    summary: "Complete asset maintenance"
+    parameters: id
+    response: ApiResponseMaintenanceResponse
+  POST /api/v1/maintenance/start:
+    summary: "Start asset maintenance"
+    request: MaintenanceRequest
+    response: ApiResponseMaintenanceResponse
+  GET /api/v1/maintenance:
+    summary: "Get all maintenance records"
+    response: ApiResponseListMaintenanceResponse
+
+Location Controller:
+  GET /api/v1/locations/{id}:
+    summary: "getLocationById"
+    parameters: id
+    response: ApiResponseLocationResponse
+  PUT /api/v1/locations/{id}:
+    summary: "updateLocation"
+    parameters: id
+    request: LocationRequest
+    response: ApiResponseLocationResponse
+  DELETE /api/v1/locations/{id}:
+    summary: "deleteLocation"
+    parameters: id
+    response: ApiResponseVoid
+  GET /api/v1/locations:
+    summary: "getAllLocations"
+    response: ApiResponseListLocationResponse
+  POST /api/v1/locations:
+    summary: "createLocation"
+    request: LocationRequest
+    response: ApiResponseLocationResponse
+
+Department Controller:
+  GET /api/v1/departments/{id}:
+    summary: "Get a department by ID"
+    parameters: id
+    response: ApiResponseDepartmentResponse
+  PUT /api/v1/departments/{id}:
+    summary: "Update a department"
+    parameters: id
+    request: DepartmentRequest
+    response: ApiResponseDepartmentResponse
+  DELETE /api/v1/departments/{id}:
+    summary: "Delete a department"
+    parameters: id
+    response: ApiResponseVoid
+  GET /api/v1/departments:
+    summary: "Get all departments"
+    response: ApiResponseListDepartmentResponse
+  POST /api/v1/departments:
+    summary: "Create a department"
+    request: DepartmentRequest
+    response: ApiResponseDepartmentResponse
+
+Category Controller:
+  GET /api/v1/categories/{id}:
+    summary: "getCategoryById"
+    parameters: id
+    response: ApiResponseCategoryResponse
+  PUT /api/v1/categories/{id}:
+    summary: "updateCategory"
+    parameters: id
+    request: CategoryRequest
+    response: ApiResponseCategoryResponse
+  DELETE /api/v1/categories/{id}:
+    summary: "deleteCategory"
+    parameters: id
+    response: ApiResponseVoid
+  GET /api/v1/categories:
+    summary: "getAllCategories"
+    response: ApiResponseListCategoryResponse
+  POST /api/v1/categories:
+    summary: "createCategory"
+    request: CategoryRequest
+    response: ApiResponseCategoryResponse
+
+Asset Controller:
+  PUT /api/v1/assets/{assetId}/approve:
+    summary: "Approve an asset"
+    parameters: assetId
+    response: ApiResponseAssetResponse
+  GET /api/v1/assets:
+    summary: "Get all assets"
+    parameters: categoryId, locationId, departmentId, status, search
+    response: ApiResponseListAssetResponse
+  POST /api/v1/assets:
+    summary: "Create a new asset"
+    request: AssetRequest
+    response: ApiResponseAssetResponse
+  POST /api/v1/assets/transfer:
+    summary: "Transfer an asset"
+    request: AssetAssignmentRequest
+    response: ApiResponseString
+  POST /api/v1/assets/assign:
+    summary: "Assign an asset"
+    request: AssetAssignmentRequest
+    response: ApiResponseString
+  GET /api/v1/assets/{assetId}/qrcode:
+    summary: "Generate QR Code"
+    parameters: assetId
+  GET /api/v1/assets/assignments:
+    summary: "Get asset assignments"
+    parameters: status
+    response: ApiResponseListAssignmentResponse
+
+User Controller:
+  GET /api/v1/users:
+    summary: "getUsers"
+    response: ApiResponseListProfileResponse
+  POST /api/v1/users:
+    summary: "createUser"
+    request: RegisterRequest
+    response: ApiResponseProfileResponse
+
+Auth Controller:
+  POST /api/v1/auth/register:
+    summary: "register"
+    request: RegisterRequest
+    response: ApiResponseAuthResponse
+  POST /api/v1/auth/register-organization:
+    summary: "registerOrganization"
+    request: RegisterOrganizationRequest
+    response: ApiResponseAuthResponse
+  POST /api/v1/auth/login:
+    summary: "authenticate"
+    request: AuthRequest
+    response: ApiResponseAuthResponse
+
+Organization Controller:
+  GET /api/v1/organization/me:
+    summary: "getMyOrganization"
+    response: ApiResponseOrganizationResponse
+
+Dashboard Controller:
+  GET /api/v1/dashboard/utilization:
+    summary: "Get Asset Utilization"
+    response: ApiResponseListAssetUtilizationResponse
+  GET /api/v1/dashboard/metrics:
+    summary: "Get Dashboard Metrics"
+    response: ApiResponseDashboardMetrics
+

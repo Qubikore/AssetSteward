@@ -17,4 +17,5 @@ class RPaths {
   static const profile = RPath('/profile');
   
   static const manageUsers = RPath('/manage-users');
+  static const locations = RPath('/locations');
 }

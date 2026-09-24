@@ -1,0 +1,2086 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "https://assetsteward-backend.onrender.com",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/api/v1/profile": {
+            "get": {
+                "tags": [
+                    "profile-controller"
+                ],
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "profile-controller"
+                ],
+                "operationId": "updateProfile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/maintenance/{id}/complete": {
+            "put": {
+                "tags": [
+                    "maintenance-controller"
+                ],
+                "summary": "Complete asset maintenance",
+                "description": "Marks a maintenance record as COMPLETED and returns the asset to AVAILABLE status.",
+                "operationId": "completeMaintenance",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseMaintenanceResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations/{id}": {
+            "get": {
+                "tags": [
+                    "location-controller"
+                ],
+                "operationId": "getLocationById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseLocationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "location-controller"
+                ],
+                "operationId": "updateLocation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LocationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseLocationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "location-controller"
+                ],
+                "operationId": "deleteLocation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/departments/{id}": {
+            "get": {
+                "tags": [
+                    "department-controller"
+                ],
+                "summary": "Get a department by ID",
+                "operationId": "getDepartmentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDepartmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "department-controller"
+                ],
+                "summary": "Update a department",
+                "operationId": "updateDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepartmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDepartmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "department-controller"
+                ],
+                "summary": "Delete a department",
+                "operationId": "deleteDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/categories/{id}": {
+            "get": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "getCategoryById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "updateCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "deleteCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/{assetId}/approve": {
+            "put": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Approve an asset",
+                "description": "Approves a pending asset. Only HR and Super Admin can perform this action.",
+                "operationId": "approveAsset",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "getUsers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "createUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/maintenance/start": {
+            "post": {
+                "tags": [
+                    "maintenance-controller"
+                ],
+                "summary": "Start asset maintenance",
+                "description": "Moves an asset into IN_PROGRESS maintenance status and logs the history.",
+                "operationId": "startMaintenance",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MaintenanceRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseMaintenanceResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations": {
+            "get": {
+                "tags": [
+                    "location-controller"
+                ],
+                "operationId": "getAllLocations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListLocationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "location-controller"
+                ],
+                "operationId": "createLocation",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LocationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseLocationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/departments": {
+            "get": {
+                "tags": [
+                    "department-controller"
+                ],
+                "summary": "Get all departments",
+                "operationId": "getAllDepartments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListDepartmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "department-controller"
+                ],
+                "summary": "Create a department",
+                "operationId": "createDepartment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepartmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDepartmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/categories": {
+            "get": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "getAllCategories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "createCategory",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "auth-controller"
+                ],
+                "operationId": "register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/register-organization": {
+            "post": {
+                "tags": [
+                    "auth-controller"
+                ],
+                "operationId": "registerOrganization",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterOrganizationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "auth-controller"
+                ],
+                "operationId": "authenticate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get all assets",
+                "description": "Retrieves a list of all assets with optional filtering.",
+                "operationId": "getAllAssets",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "locationId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "departmentId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssetResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Create a new asset",
+                "description": "Registers a new asset into the system with its purchase details, category, location, and department.",
+                "operationId": "createAsset",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssetRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/transfer": {
+            "post": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Transfer an asset",
+                "description": "Transfers an already assigned asset from the current user to a new user.",
+                "operationId": "transferAsset",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssetAssignmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseString"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/assign": {
+            "post": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Assign an asset",
+                "description": "Assigns an available asset to a specific user.",
+                "operationId": "assignAsset",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssetAssignmentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseString"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/organization/me": {
+            "get": {
+                "tags": [
+                    "organization-controller"
+                ],
+                "operationId": "getMyOrganization",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseOrganizationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/maintenance": {
+            "get": {
+                "tags": [
+                    "maintenance-controller"
+                ],
+                "summary": "Get all maintenance records",
+                "description": "Fetches a list of all maintenance events (active and completed).",
+                "operationId": "getAllMaintenance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListMaintenanceResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dashboard/utilization": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "summary": "Get Asset Utilization",
+                "description": "Fetches an analytics report identifying underutilized assets based on assignment history.",
+                "operationId": "getUtilization",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssetUtilizationResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dashboard/metrics": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "summary": "Get Dashboard Metrics",
+                "description": "Fetches summarized metrics of all assets.",
+                "operationId": "getMetrics",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDashboardMetrics"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/{assetId}/qrcode": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Generate QR Code",
+                "description": "Generates a PNG QR code image for a specific asset based on its assetCode.",
+                "operationId": "getQRCode",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "image/png": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/assignments": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get asset assignments",
+                "description": "Retrieves a list of asset assignments. Can be filtered by status.",
+                "operationId": "getAllAssignments",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status. Allowed values: 'active' (currently assigned), 'returned' (past assignments), or leave empty for all.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssignmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ProfileUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "dob": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "profile_picture": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                }
+            },
+            "ApiResponseProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ProfileResponse"
+                    }
+                }
+            },
+            "ProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "dob": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "profile_picture": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseMaintenanceResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/MaintenanceResponse"
+                    }
+                }
+            },
+            "MaintenanceResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetName": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "provider": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LocationRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseLocationResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/LocationResponse"
+                    }
+                }
+            },
+            "LocationResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DepartmentRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseDepartmentResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/DepartmentResponse"
+                    }
+                }
+            },
+            "DepartmentResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CategoryRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/CategoryResponse"
+                    }
+                }
+            },
+            "CategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AssetResponse"
+                    }
+                }
+            },
+            "AssetResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "serialNumber": {
+                        "type": "string"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "vendor": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "categoryName": {
+                        "type": "string"
+                    },
+                    "locationName": {
+                        "type": "string"
+                    },
+                    "departmentName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "RegisterRequest": {
+                "type": "object",
+                "properties": {
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Represents the user's role in the system for RBAC.",
+                        "enum": [
+                            "SUPER_ADMIN",
+                            "HR",
+                            "USER"
+                        ]
+                    },
+                    "remember_me": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "MaintenanceRequest": {
+                "type": "object",
+                "properties": {
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "provider": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            },
+            "ApiResponseAuthResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AuthResponse"
+                    }
+                }
+            },
+            "AuthResponse": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
+            },
+            "RegisterOrganizationRequest": {
+                "type": "object",
+                "properties": {
+                    "organizationName": {
+                        "type": "string"
+                    },
+                    "organizationPhone": {
+                        "type": "string"
+                    },
+                    "organizationEmail": {
+                        "type": "string"
+                    },
+                    "organizationLocation": {
+                        "type": "string"
+                    },
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AuthRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "remember_me": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "AssetRequest": {
+                "type": "object",
+                "properties": {
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "serialNumber": {
+                        "type": "string"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "vendor": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "locationId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "departmentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "AssetAssignmentRequest": {
+                "type": "object",
+                "properties": {
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ApiResponseString": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseListProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProfileResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseOrganizationResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/OrganizationResponse"
+                    }
+                }
+            },
+            "OrganizationResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseListMaintenanceResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MaintenanceResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseListLocationResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LocationResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseListDepartmentResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DepartmentResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseListAssetUtilizationResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetUtilizationResponse"
+                        }
+                    }
+                }
+            },
+            "AssetUtilizationResponse": {
+                "type": "object",
+                "properties": {
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetName": {
+                        "type": "string"
+                    },
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "assignmentCount": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "maintenanceCount": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ApiResponseDashboardMetrics": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/DashboardMetrics"
+                    }
+                }
+            },
+            "DashboardMetrics": {
+                "type": "object",
+                "properties": {
+                    "totalAssets": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "availableAssets": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assignedAssets": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "maintenanceAssets": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "totalAssetValue": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
+            },
+            "ApiResponseListCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseListAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetResponse"
+                        }
+                    }
+                }
+            },
+            "ApiResponseListAssignmentResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssignmentResponse"
+                        }
+                    }
+                }
+            },
+            "AssignmentResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetName": {
+                        "type": "string"
+                    },
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "assignedToUserId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assignedToEmail": {
+                        "type": "string"
+                    },
+                    "assignedByUserId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assignedByEmail": {
+                        "type": "string"
+                    },
+                    "assignedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "returnedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ApiResponseVoid": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "Bearer Authentication": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
