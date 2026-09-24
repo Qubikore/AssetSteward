@@ -26,19 +26,16 @@ class AssetUtilizationMapper extends ClassMapperBase<AssetUtilization> {
   static const Field<AssetUtilization, int> _f$assetId = Field(
     'assetId',
     _$assetId,
-    key: r'asset_id',
   );
   static String _$assetName(AssetUtilization v) => v.assetName;
   static const Field<AssetUtilization, String> _f$assetName = Field(
     'assetName',
     _$assetName,
-    key: r'asset_name',
   );
   static String _$assetCode(AssetUtilization v) => v.assetCode;
   static const Field<AssetUtilization, String> _f$assetCode = Field(
     'assetCode',
     _$assetCode,
-    key: r'asset_code',
   );
   static String _$status(AssetUtilization v) => v.status;
   static const Field<AssetUtilization, String> _f$status = Field(
@@ -49,7 +46,6 @@ class AssetUtilizationMapper extends ClassMapperBase<AssetUtilization> {
   static const Field<AssetUtilization, int> _f$assignmentCount = Field(
     'assignmentCount',
     _$assignmentCount,
-    key: r'assignment_count',
     opt: true,
     def: 0,
   );
@@ -57,7 +53,6 @@ class AssetUtilizationMapper extends ClassMapperBase<AssetUtilization> {
   static const Field<AssetUtilization, int> _f$maintenanceCount = Field(
     'maintenanceCount',
     _$maintenanceCount,
-    key: r'maintenance_count',
     opt: true,
     def: 0,
   );

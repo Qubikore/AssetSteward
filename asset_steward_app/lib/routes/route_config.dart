@@ -11,6 +11,7 @@ import 'package:asset_steward_app/features/users/presentation/screens/manage_use
 import 'package:asset_steward_app/features/locations/presentation/screens/locations_page.dart';
 import 'package:asset_steward_app/features/departments/presentation/screens/departments_page.dart';
 import 'package:asset_steward_app/features/categories/presentation/screens/categories_page.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/create_asset_page.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -55,6 +56,7 @@ class AppRouter extends _$AppRouter {
         GoRoute(path: RPaths.locations.path, builder: (context, state) => const LocationsPage()),
         GoRoute(path: RPaths.departments.path, builder: (context, state) => const DepartmentsPage()),
         GoRoute(path: RPaths.categories.path, builder: (context, state) => const CategoriesPage()),
+        GoRoute(path: RPaths.createAsset.path, builder: (context, state) => const CreateAssetPage()),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
     );

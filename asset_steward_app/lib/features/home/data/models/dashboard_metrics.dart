@@ -2,7 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'dashboard_metrics.mapper.dart';
 
-@MappableClass(caseStyle: CaseStyle.snakeCase)
+@MappableClass(caseStyle: CaseStyle.camelCase)
 class DashboardMetrics with DashboardMetricsMappable {
   static const fromMap = DashboardMetricsMapper.fromMap;
   static const fromJson = DashboardMetricsMapper.fromJson;

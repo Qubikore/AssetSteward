@@ -31,49 +31,60 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
   );
   static String _$name(AssetModel v) => v.name;
   static const Field<AssetModel, String> _f$name = Field('name', _$name);
-  static String _$serialNumber(AssetModel v) => v.serialNumber;
+  static String? _$serialNumber(AssetModel v) => v.serialNumber;
   static const Field<AssetModel, String> _f$serialNumber = Field(
     'serialNumber',
     _$serialNumber,
+    opt: true,
   );
   static String _$purchaseDate(AssetModel v) => v.purchaseDate;
   static const Field<AssetModel, String> _f$purchaseDate = Field(
     'purchaseDate',
     _$purchaseDate,
   );
-  static String _$expireDate(AssetModel v) => v.expireDate;
+  static String? _$expireDate(AssetModel v) => v.expireDate;
   static const Field<AssetModel, String> _f$expireDate = Field(
     'expireDate',
     _$expireDate,
+    opt: true,
   );
   static double _$purchasePrice(AssetModel v) => v.purchasePrice;
   static const Field<AssetModel, double> _f$purchasePrice = Field(
     'purchasePrice',
     _$purchasePrice,
   );
-  static String _$vendor(AssetModel v) => v.vendor;
-  static const Field<AssetModel, String> _f$vendor = Field('vendor', _$vendor);
+  static String? _$vendor(AssetModel v) => v.vendor;
+  static const Field<AssetModel, String> _f$vendor = Field(
+    'vendor',
+    _$vendor,
+    opt: true,
+  );
   static int _$quantity(AssetModel v) => v.quantity;
   static const Field<AssetModel, int> _f$quantity = Field(
     'quantity',
     _$quantity,
+    opt: true,
+    def: 0,
   );
   static String _$status(AssetModel v) => v.status;
   static const Field<AssetModel, String> _f$status = Field('status', _$status);
-  static String _$categoryName(AssetModel v) => v.categoryName;
+  static String? _$categoryName(AssetModel v) => v.categoryName;
   static const Field<AssetModel, String> _f$categoryName = Field(
     'categoryName',
     _$categoryName,
+    opt: true,
   );
-  static String _$locationName(AssetModel v) => v.locationName;
+  static String? _$locationName(AssetModel v) => v.locationName;
   static const Field<AssetModel, String> _f$locationName = Field(
     'locationName',
     _$locationName,
+    opt: true,
   );
-  static String _$departmentName(AssetModel v) => v.departmentName;
+  static String? _$departmentName(AssetModel v) => v.departmentName;
   static const Field<AssetModel, String> _f$departmentName = Field(
     'departmentName',
     _$departmentName,
+    opt: true,
   );
 
   @override
@@ -202,31 +213,31 @@ class _AssetModelCopyWithImpl<$R, $Out>
     int? id,
     String? assetCode,
     String? name,
-    String? serialNumber,
+    Object? serialNumber = $none,
     String? purchaseDate,
-    String? expireDate,
+    Object? expireDate = $none,
     double? purchasePrice,
-    String? vendor,
+    Object? vendor = $none,
     int? quantity,
     String? status,
-    String? categoryName,
-    String? locationName,
-    String? departmentName,
+    Object? categoryName = $none,
+    Object? locationName = $none,
+    Object? departmentName = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
       if (assetCode != null) #assetCode: assetCode,
       if (name != null) #name: name,
-      if (serialNumber != null) #serialNumber: serialNumber,
+      if (serialNumber != $none) #serialNumber: serialNumber,
       if (purchaseDate != null) #purchaseDate: purchaseDate,
-      if (expireDate != null) #expireDate: expireDate,
+      if (expireDate != $none) #expireDate: expireDate,
       if (purchasePrice != null) #purchasePrice: purchasePrice,
-      if (vendor != null) #vendor: vendor,
+      if (vendor != $none) #vendor: vendor,
       if (quantity != null) #quantity: quantity,
       if (status != null) #status: status,
-      if (categoryName != null) #categoryName: categoryName,
-      if (locationName != null) #locationName: locationName,
-      if (departmentName != null) #departmentName: departmentName,
+      if (categoryName != $none) #categoryName: categoryName,
+      if (locationName != $none) #locationName: locationName,
+      if (departmentName != $none) #departmentName: departmentName,
     }),
   );
   @override

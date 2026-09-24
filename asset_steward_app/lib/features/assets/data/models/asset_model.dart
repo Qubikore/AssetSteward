@@ -10,30 +10,30 @@ class AssetModel with AssetModelMappable {
   final int id;
   final String assetCode;
   final String name;
-  final String serialNumber;
+  final String? serialNumber;
   final String purchaseDate;
-  final String expireDate;
+  final String? expireDate;
   final double purchasePrice;
-  final String vendor;
+  final String? vendor;
   final int quantity;
   final String status;
-  final String categoryName;
-  final String locationName;
-  final String departmentName;
+  final String? categoryName;
+  final String? locationName;
+  final String? departmentName;
 
   const AssetModel({
     required this.id,
     required this.assetCode,
     required this.name,
-    required this.serialNumber,
+    this.serialNumber,
     required this.purchaseDate,
-    required this.expireDate,
+    this.expireDate,
     required this.purchasePrice,
-    required this.vendor,
-    required this.quantity,
+    this.vendor,
+    this.quantity = 0,
     required this.status,
-    required this.categoryName,
-    required this.locationName,
-    required this.departmentName,
+    this.categoryName,
+    this.locationName,
+    this.departmentName,
   });
 }

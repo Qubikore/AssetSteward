@@ -20,4 +20,5 @@ class RPaths {
   static const locations = RPath('/locations');
   static const departments = RPath('/departments');
   static const categories = RPath('/categories');
+  static const createAsset = RPath('/assets/create');
 }

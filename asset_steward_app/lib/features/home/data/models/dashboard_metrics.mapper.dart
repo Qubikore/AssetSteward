@@ -26,7 +26,6 @@ class DashboardMetricsMapper extends ClassMapperBase<DashboardMetrics> {
   static const Field<DashboardMetrics, int> _f$totalAssets = Field(
     'totalAssets',
     _$totalAssets,
-    key: r'total_assets',
     opt: true,
     def: 0,
   );
@@ -34,7 +33,6 @@ class DashboardMetricsMapper extends ClassMapperBase<DashboardMetrics> {
   static const Field<DashboardMetrics, int> _f$availableAssets = Field(
     'availableAssets',
     _$availableAssets,
-    key: r'available_assets',
     opt: true,
     def: 0,
   );
@@ -42,7 +40,6 @@ class DashboardMetricsMapper extends ClassMapperBase<DashboardMetrics> {
   static const Field<DashboardMetrics, int> _f$assignedAssets = Field(
     'assignedAssets',
     _$assignedAssets,
-    key: r'assigned_assets',
     opt: true,
     def: 0,
   );
@@ -50,7 +47,6 @@ class DashboardMetricsMapper extends ClassMapperBase<DashboardMetrics> {
   static const Field<DashboardMetrics, int> _f$maintenanceAssets = Field(
     'maintenanceAssets',
     _$maintenanceAssets,
-    key: r'maintenance_assets',
     opt: true,
     def: 0,
   );
@@ -58,7 +54,6 @@ class DashboardMetricsMapper extends ClassMapperBase<DashboardMetrics> {
   static const Field<DashboardMetrics, double> _f$totalAssetValue = Field(
     'totalAssetValue',
     _$totalAssetValue,
-    key: r'total_asset_value',
     opt: true,
     def: 0,
   );

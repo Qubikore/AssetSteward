@@ -20,8 +20,8 @@ class UtilizationTile extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: context.colors.secondaryContainer, shape: BoxShape.circle),
-            child: Icon(HIStroke.laptopProgramming, color: context.colors.onSecondaryContainer),
+            decoration: BoxDecoration(color: context.colors.primaryContainer.op1, shape: BoxShape.circle),
+            child: Icon(HIStroke.laptopProgramming, color: context.colors.primaryContainer),
           ),
           const Gap(Insets.md),
           Expanded(

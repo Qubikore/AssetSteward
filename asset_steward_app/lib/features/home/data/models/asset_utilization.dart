@@ -2,7 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'asset_utilization.mapper.dart';
 
-@MappableClass(caseStyle: CaseStyle.snakeCase)
+@MappableClass(caseStyle: CaseStyle.camelCase)
 class AssetUtilization with AssetUtilizationMappable {
   static const fromMap = AssetUtilizationMapper.fromMap;
   static const fromJson = AssetUtilizationMapper.fromJson;

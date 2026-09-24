@@ -18,6 +18,7 @@ class InputField extends HookWidget {
     this.outsideSuffix,
     this.initialValue,
     this.controller,
+    this.focusNode,
     this.keyboardType,
     this.inputFormatters,
     this.maxLines = 1,
@@ -35,6 +36,7 @@ class InputField extends HookWidget {
   final Widget? outsideSuffix;
   final String? initialValue;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
@@ -71,6 +73,7 @@ class InputField extends HookWidget {
         name: name!,
         initialValue: initialValue,
         controller: controller,
+        focusNode: focusNode,
         obscureText: obscureText.value,
         keyboardType: effectiveKeyboardType,
         inputFormatters: effectiveFormatters,
@@ -84,6 +87,7 @@ class InputField extends HookWidget {
       field = TextFormField(
         initialValue: initialValue,
         controller: controller,
+        focusNode: focusNode,
         obscureText: obscureText.value,
         keyboardType: effectiveKeyboardType,
         inputFormatters: effectiveFormatters,
