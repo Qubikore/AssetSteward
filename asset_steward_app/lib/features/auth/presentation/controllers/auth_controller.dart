@@ -18,7 +18,7 @@ class AuthCtrl extends _$AuthCtrl {
   FutureResult<String> login(Map<String, dynamic> form) async {
     final result = await _repo.login(form);
     if (result.isRight()) {
-      ref.invalidate(usersCtrlProvider);
+      ref.invalidate(usersCtrlProvider, asReload: true);
       ref.invalidate(profileCtrlProvider, asReload: true);
       // ref.invalidate(organizationCtrlProvider);
       ref.invalidateSelf();

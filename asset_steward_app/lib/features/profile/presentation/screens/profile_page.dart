@@ -25,10 +25,10 @@ class ProfilePage extends HookConsumerWidget {
         builder: (data) => RefreshIndicator(
           onRefresh: () => ref.refresh(profileCtrlProvider.future),
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md),
+            padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md).copyWith(top: 6),
             children: [
               ProfileHeader(data: data),
-              const Gap(Insets.xxl),
+              const Gap(Insets.lg),
               const SectionTitle(title: 'Settings'),
               const Gap(Insets.md),
               Container(
@@ -75,7 +75,7 @@ class ProfilePage extends HookConsumerWidget {
                       icon: HIStroke.informationCircle,
                       title: 'About App',
                       onTap: () {
-                        Toast.showInfo('$kAppName v$kAppVersion');
+                        Toast.showInfo('$kAppName $kAppVersion');
                       },
                     ),
                     Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),

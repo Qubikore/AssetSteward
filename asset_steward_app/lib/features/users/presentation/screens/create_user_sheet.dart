@@ -18,13 +18,7 @@ class CreateUserSheet extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
-    final myProfile = ref.watch(profileCtrlProvider).value;
-    final availableRoles = useMemoized(() {
-      if (myProfile?.role == UserRole.superAdmin) {
-        return UserRole.values;
-      }
-      return [UserRole.user];
-    }, [myProfile?.role]);
+    final me = ref.watch(profileCtrlProvider).value;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
@@ -65,16 +59,16 @@ class CreateUserSheet extends HookConsumerWidget {
               validators: [FormBuilderValidators.minLength(6)],
             ),
             const Gap(Insets.md),
+
             Text('Role', style: context.text.labelLarge),
-            const Gap(Insets.xs),
             FormBuilderRadioGroup<UserRole>(
               name: 'role',
-              decoration: const InputDecoration(border: InputBorder.none),
-              options: availableRoles.map((role) {
-                return FormBuilderFieldOption(
-                  value: role,
-                  child: Text(role.name.titleCase),
-                );
+              initialValue: .user,
+              enabled: me?.role == .superAdmin,
+              decoration: const InputDecoration(border: .none, contentPadding: .zero),
+              materialTapTargetSize: .shrinkWrap,
+              options: UserRole.values.map((role) {
+                return FormBuilderFieldOption(value: role, child: Text(role.name.titleCase));
               }).toList(),
               validator: FormBuilderValidators.required(),
             ),
