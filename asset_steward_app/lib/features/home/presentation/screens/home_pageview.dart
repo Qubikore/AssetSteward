@@ -12,6 +12,7 @@ import '../controllers/home_controllers.dart';
 import 'local_widgets/dashboard_shimmers.dart';
 import 'local_widgets/metrics_overview.dart';
 import 'local_widgets/utilization_tile.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/create_asset_sheet.dart';
 
 class HomePageview extends HookConsumerWidget {
   const HomePageview({super.key});
@@ -83,7 +84,11 @@ class HomePageview extends HookConsumerWidget {
                         const Gap(Insets.lg),
                         FilledButton.icon(
                           onPressed: () {
-                            Toast.showError('Not implemented yet');
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => const CreateAssetSheet(),
+                            );
                           },
                           icon: const Icon(HIStroke.plusSign),
                           label: const Text('Add Asset'),

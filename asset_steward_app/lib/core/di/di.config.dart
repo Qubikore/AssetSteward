@@ -14,10 +14,18 @@ import 'package:asset_steward_app/core/network/auth_interceptor.dart' as _i94;
 import 'package:asset_steward_app/core/network/dio_client.dart' as _i462;
 import 'package:asset_steward_app/core/storage/key_value_storage.dart' as _i595;
 import 'package:asset_steward_app/core/storage/token_storage.dart' as _i890;
+import 'package:asset_steward_app/features/assets/data/datasources/assets_remote_ds.dart'
+    as _i488;
+import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart'
+    as _i64;
 import 'package:asset_steward_app/features/auth/data/datasources/auth_remote_datasources.dart'
     as _i565;
 import 'package:asset_steward_app/features/auth/data/repositories/auth_repository.dart'
     as _i207;
+import 'package:asset_steward_app/features/categories/data/datasources/categories_remote_ds.dart'
+    as _i203;
+import 'package:asset_steward_app/features/categories/data/repositories/categories_repository.dart'
+    as _i317;
 import 'package:asset_steward_app/features/departments/data/datasources/departments_remote_datasource.dart'
     as _i389;
 import 'package:asset_steward_app/features/departments/data/repositories/departments_repository.dart'
@@ -74,8 +82,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.dio(gh<_i342.AuthInterceptor>()),
     );
+    gh.lazySingleton<_i488.AssetsRemoteDS>(
+      () => _i488.AssetsRemoteDS(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i565.AuthRemoteDS>(
       () => _i565.AuthRemoteDS(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i203.CategoriesRemoteDS>(
+      () => _i203.CategoriesRemoteDS(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i389.DepartmentsRemoteDS>(
       () => _i389.DepartmentsRemoteDS(gh<_i361.Dio>()),
@@ -95,11 +109,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i206.ProfileRepository>(
       () => _i206.ProfileRepository(gh<_i81.ProfileRemoteDS>()),
     );
+    gh.lazySingleton<_i317.CategoriesRepository>(
+      () => _i317.CategoriesRepository(gh<_i203.CategoriesRemoteDS>()),
+    );
     gh.lazySingleton<_i876.UsersRepository>(
       () => _i876.UsersRepository(gh<_i1041.UsersRemoteDS>()),
     );
     gh.lazySingleton<_i207.AuthRepo>(
       () => _i207.AuthRepo(gh<_i565.AuthRemoteDS>(), gh<_i342.TokenStorage>()),
+    );
+    gh.lazySingleton<_i64.AssetsRepository>(
+      () => _i64.AssetsRepository(gh<_i488.AssetsRemoteDS>()),
     );
     gh.lazySingleton<_i557.LocationsRepository>(
       () => _i557.LocationsRepository(gh<_i1012.LocationsRemoteDS>()),
