@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/main.export.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:screwdriver/screwdriver.dart';
@@ -66,86 +67,102 @@ class _LocationTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.all(Insets.md),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerHighest.op(0.3),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.colors.outlineVariant.op(0.5)),
       ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: context.colors.primaryContainer.op2,
-            child: Icon(HIStroke.location01, color: context.colors.primaryContainer),
-          ),
-          const Gap(Insets.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              spacing: 2,
-              children: [
-                Text(
-                  location.name,
-                  style: context.text.titleMedium?.bold,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (location.address.isNotNullOrBlank)
-                  Text(
-                    location.address!,
-                    style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
-                    maxLines: 2,
-                    overflow: .ellipsis,
-                  ),
-              ],
+      child: Slidable(
+        key: ValueKey(location.id),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          children: [
+            SlidableAction(
+              onPressed: (context) {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  showDragHandle: true,
+                  builder: (context) => CreateOrUpdateLocationSheet(location: location),
+                );
+              },
+              backgroundColor: context.colors.primaryContainer,
+              foregroundColor: context.colors.onPrimaryContainer,
+              icon: HIStroke.edit03,
+              label: 'Edit',
             ),
-          ),
-          const Gap(Insets.sm),
-          IconButton(
-            icon: const Icon(HIStroke.edit03),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                showDragHandle: true,
-                builder: (context) => CreateOrUpdateLocationSheet(location: location),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(HIStroke.delete01, color: context.colors.error),
-            onPressed: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Location'),
-                  content: Text('Are you sure you want to delete ${location.name}?'),
-                  actions: [
-                    TextButton(onPressed: () => context.nPop(false), child: const Text('Cancel')),
-                    FilledButton(
-                      onPressed: () => context.nPop(true),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: context.colors.error,
-                        foregroundColor: context.colors.onError,
+            SlidableAction(
+              onPressed: (context) async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Location'),
+                    content: Text('Are you sure you want to delete ${location.name}?'),
+                    actions: [
+                      TextButton(onPressed: () => context.nPop(false), child: const Text('Cancel')),
+                      FilledButton(
+                        onPressed: () => context.nPop(true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: context.colors.error,
+                          foregroundColor: context.colors.onError,
+                        ),
+                        child: const Text('Delete'),
                       ),
-                      child: const Text('Delete'),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  final result = await ref.read(locationsCtrlProvider.notifier).deleteLocation(location.id);
+                  result.fold(
+                    (l) => Toast.showError(l.message),
+                    (r) => Toast.showSuccess('Location deleted successfully'),
+                  );
+                }
+              },
+              backgroundColor: context.colors.error,
+              foregroundColor: context.colors.onError,
+              icon: HIStroke.delete01,
+              label: 'Delete',
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(Insets.md),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: context.colors.primaryContainer.op2,
+                child: Icon(HIStroke.location01, color: context.colors.primaryContainer),
+              ),
+              const Gap(Insets.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 2,
+                  children: [
+                    Text(
+                      location.name,
+                      style: context.text.titleMedium?.bold,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    if (location.address.isNotNullOrBlank)
+                      Text(
+                        location.address!,
+                        style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   ],
                 ),
-              );
-
-              if (confirm == true) {
-                final result = await ref.read(locationsCtrlProvider.notifier).deleteLocation(location.id);
-                result.fold(
-                  (l) => Toast.showError(l.message),
-                  (r) => Toast.showSuccess('Location deleted successfully'),
-                );
-              }
-            },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
