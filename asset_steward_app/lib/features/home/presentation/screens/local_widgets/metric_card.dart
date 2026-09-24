@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 class MetricCard extends StatelessWidget {
   final String title;
-  final int value;
+  final String value;
   final IconData icon;
 
   const MetricCard({super.key, required this.title, required this.value, required this.icon});
@@ -13,18 +13,31 @@ class MetricCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Insets.md),
       decoration: BoxDecoration(
-        color: context.colors.surfaceContainerHighest.op(0.4),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+        color: context.colors.surfaceContainerHighest.op(0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.colors.outlineVariant.op(0.3)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Icon(icon, color: context.colors.primary, size: 24),
-          const Gap(Insets.sm),
-          Text(title, style: context.text.bodyMedium?.medium.textColor(context.colors.onSurfaceVariant)),
-          const Gap(4),
-          Text(value.toString(), style: context.text.headlineSmall?.bold),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: context.colors.primaryContainer,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: context.colors.onPrimaryContainer, size: 20),
+          ),
+          const Gap(Insets.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(title, style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant), maxLines: 1),
+                Text(value, style: context.text.titleMedium?.bold, maxLines: 1),
+              ],
+            ),
+          ),
         ],
       ),
     );
