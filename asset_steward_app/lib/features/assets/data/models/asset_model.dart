@@ -36,4 +36,6 @@ class AssetModel with AssetModelMappable {
     this.locationName,
     this.departmentName,
   });
+
+  bool get isAvailable => status.toLowerCase() == 'available';
 }

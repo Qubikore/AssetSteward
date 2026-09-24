@@ -71,7 +71,8 @@ class ContextMenu extends StatefulWidget {
   final Widget? child;
   final List<ContextMenuItem> items;
   final double width;
-  final bool isSubmenu;\n  final ContextMenuAlignment alignment;
+  final bool isSubmenu;
+  final ContextMenuAlignment alignment;
   final ContextMenuPosition position;
 
   const ContextMenu({
@@ -80,7 +81,8 @@ class ContextMenu extends StatefulWidget {
     this.child,
     required this.items,
     this.width = 240.0,
-    this.isSubmenu = false,\n    this.alignment = ContextMenuAlignment.start,
+    this.isSubmenu = false,
+    this.alignment = ContextMenuAlignment.start,
     this.position = ContextMenuPosition.auto,
   });
 
