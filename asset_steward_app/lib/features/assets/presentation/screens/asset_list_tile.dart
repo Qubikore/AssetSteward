@@ -1,20 +1,54 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/main.export.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:screwdriver/screwdriver.dart';
 
-class AssetListTile extends StatelessWidget {
+class AssetListTile extends ConsumerWidget {
   final AssetModel asset;
 
   const AssetListTile({super.key, required this.asset});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ContextMenu(
-      alignment: .end,
-      items: [
-        ContextMenuAction(title: 'Edit', leading: const Icon(HIStroke.edit02), onTap: () {}),
-        ContextMenuAction(title: 'Delete', isDestructive: true, leading: const Icon(HIStroke.delete02), onTap: () {}),
+      alignment: ContextMenuAlignment.end,
+      items: const [
+        // ContextMenuAction(
+        //   title: 'Edit',
+        //   leading: const Icon(HIStroke.edit02),
+        //   onTap: () {
+        //     context.push(RPaths.createAsset.path, extra: asset);
+        //   },
+        // ),
+        // ContextMenuAction(
+        //   title: 'Delete',
+        //   isDestructive: true,
+        //   leading: const Icon(HIStroke.delete02),
+        //   onTap: () async {
+        //     final confirm = await showDialog<bool>(
+        //       context: context,
+        //       builder: (context) => AlertDialog(
+        //         title: const Text('Delete Asset'),
+        //         content: const Text('Are you sure you want to delete this asset?'),
+        //         actions: [
+        //           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+        //           FilledButton(
+        //             onPressed: () => Navigator.pop(context, true),
+        //             style: FilledButton.styleFrom(
+        //               backgroundColor: context.colors.error,
+        //               foregroundColor: context.colors.onError,
+        //             ),
+        //             child: const Text('Delete'),
+        //           ),
+        //         ],
+        //       ),
+        //     );
+        //     if (confirm == true) {
+        //       await ref.read(assetsCtrlProvider.notifier).deleteAsset(asset.id);
+        //     }
+        //   },
+        // ),
       ],
       buttonBuilder: (context, open) => GestureDetector(
         onLongPress: open,

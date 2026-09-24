@@ -36,4 +36,31 @@ class AssetsCtrl extends _$AssetsCtrl {
       },
     );
   }
+  Future<bool> updateAsset(int id, QMap data) async {
+    final result = await _repo.updateAsset(id, data);
+    return result.fold(
+      (l) {
+        Toast.showError(l.message);
+        return false;
+      },
+      (r) {
+        ref.invalidateSelf();
+        return true;
+      },
+    );
+  }
+
+  Future<bool> deleteAsset(int id) async {
+    final result = await _repo.deleteAsset(id);
+    return result.fold(
+      (l) {
+        Toast.showError(l.message);
+        return false;
+      },
+      (r) {
+        ref.invalidateSelf();
+        return true;
+      },
+    );
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
 import 'package:asset_steward_app/features/categories/presentation/controllers/categories_controller.dart';
@@ -13,9 +14,12 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:screwdriver/screwdriver.dart';
 
 class CreateAssetPage extends HookConsumerWidget {
-  const CreateAssetPage({super.key});
+  final AssetModel? asset;
+
+  const CreateAssetPage({super.key, this.asset});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,209 +30,237 @@ class CreateAssetPage extends HookConsumerWidget {
     final departmentsAsync = ref.watch(departmentsCtrlProvider);
     final categoriesAsync = ref.watch(categoriesCtrlProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Add New Asset'), centerTitle: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Insets.lg,
-          vertical: Insets.lg,
-        ).copyWith(bottom: context.viewInsets.bottom + Insets.xxl),
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const _Section(
-                title: 'General Information',
-                icon: HIStroke.laptopProgramming,
-                children: [
-                  InputField(name: 'name', title: 'Asset Name', hintText: 'e.g. MacBook Pro M3', isRequired: true),
-                  Gap(Insets.md),
-                  Row(
-                    spacing: Insets.md,
-                    children: [
-                      Expanded(
-                        child: InputField(
-                          name: 'assetCode',
-                          title: 'Asset Code',
-                          hintText: 'e.g. LPT-001',
-                          isRequired: true,
+    return GestureDetector(
+      onTap: () => InputUtils.unFocus(),
+      child: Scaffold(
+        appBar: AppBar(title: Text(asset == null ? 'Add New Asset' : 'Edit Asset'), centerTitle: true),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Insets.lg,
+            vertical: Insets.lg,
+          ).copyWith(bottom: context.viewInsets.bottom + Insets.xxl),
+          child: FormBuilder(
+            key: formKey,
+            initialValue: asset != null
+                ? {
+                    'name': asset!.name,
+                    'description': '',
+                    'assetCode': asset!.assetCode,
+                    'serialNumber': asset!.serialNumber,
+                    'purchaseDate': DateTime.tryParse(asset!.purchaseDate) ?? DateTime.now(),
+                    'purchasePrice': asset!.purchasePrice.toString(),
+                    'vendor': asset!.vendor,
+                    'quantity': asset!.quantity.toString(),
+                    'category': categoriesAsync.value?.firstWhereOrNull((c) => c.name == asset!.categoryName),
+                    'location': locationsAsync.value?.firstWhereOrNull((l) => l.name == asset!.locationName),
+                    'department': departmentsAsync.value?.firstWhereOrNull((d) => d.name == asset!.departmentName),
+                  }
+                : {},
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _Section(
+                  title: 'General Information',
+                  icon: HIStroke.laptopProgramming,
+                  children: [
+                    InputField(name: 'name', title: 'Asset Name', hintText: 'e.g. MacBook Pro M3', isRequired: true),
+                    Gap(Insets.md),
+                    Row(
+                      spacing: Insets.md,
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            name: 'assetCode',
+                            title: 'Asset Code',
+                            hintText: 'e.g. LPT-001',
+                            isRequired: true,
+                          ),
                         ),
-                      ),
 
-                      Expanded(
-                        child: InputField(
-                          name: 'serialNumber',
-                          title: 'Serial Number',
-                          hintText: 'e.g. C02X...',
-                          isRequired: true,
+                        Expanded(
+                          child: InputField(
+                            name: 'serialNumber',
+                            title: 'Serial Number',
+                            hintText: 'e.g. C02X...',
+                            isRequired: true,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const Gap(Insets.xl),
+                      ],
+                    ),
+                  ],
+                ),
+                const Gap(Insets.xl),
 
-              _Section(
-                title: 'Purchase Details',
-                icon: HIStroke.money01,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InputField(
-                          name: 'purchasePrice',
-                          title: 'Purchase Price (\$)',
-                          hintText: 'e.g. 100.00',
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          isRequired: true,
-                          validators: [FormBuilderValidators.numeric()],
+                _Section(
+                  title: 'Purchase Details',
+                  icon: HIStroke.money01,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            name: 'purchasePrice',
+                            title: 'Purchase Price (\$)',
+                            hintText: 'e.g. 100.00',
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            isRequired: true,
+                            validators: [FormBuilderValidators.numeric()],
+                          ),
                         ),
-                      ),
-                      const Gap(Insets.md),
-                      Expanded(
-                        child: InputField(
-                          name: 'quantity',
-                          title: 'Quantity',
-                          hintText: 'e.g. 10',
-                          keyboardType: TextInputType.number,
-                          isRequired: true,
-                          validators: [FormBuilderValidators.numeric()],
+                        const Gap(Insets.md),
+                        Expanded(
+                          child: InputField(
+                            name: 'quantity',
+                            title: 'Quantity',
+                            hintText: 'e.g. 10',
+                            keyboardType: TextInputType.number,
+                            isRequired: true,
+                            validators: [FormBuilderValidators.numeric()],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const Gap(Insets.md),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Purchase Date', style: context.text.titleSmall?.medium).required(),
-                            const Gap(Insets.xs),
+                      ],
+                    ),
+                    const Gap(Insets.md),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Purchase Date', style: context.text.titleSmall?.medium).required(),
+                              const Gap(Insets.xs),
 
-                            FormBuilderDateTimePicker(
-                              name: 'purchaseDate',
-                              decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
-                              inputType: InputType.date,
-                              format: DateFormat('yyyy-MM-dd'),
-                              validator: FormBuilderValidators.required(),
-                              valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
-                            ),
-                          ],
+                              FormBuilderDateTimePicker(
+                                name: 'purchaseDate',
+                                decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
+                                inputType: InputType.date,
+                                format: DateFormat('yyyy-MM-dd'),
+                                validator: FormBuilderValidators.required(),
+                                valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Gap(Insets.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Expiry/Warranty Date', style: context.text.titleSmall?.medium),
-                            FormBuilderDateTimePicker(
-                              name: 'expireDate',
-                              decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
-                              inputType: InputType.date,
-                              format: DateFormat('yyyy-MM-dd'),
-                              validator: FormBuilderValidators.required(),
-                              valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
-                            ),
-                          ],
+                        const Gap(Insets.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Expiry/Warranty Date', style: context.text.titleSmall?.medium),
+                              FormBuilderDateTimePicker(
+                                name: 'expireDate',
+                                decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
+                                inputType: InputType.date,
+                                format: DateFormat('yyyy-MM-dd'),
+                                validator: FormBuilderValidators.required(),
+                                valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
-                  const Gap(Insets.md),
-                  const InputField(
-                    name: 'vendor',
-                    title: 'Vendor/Supplier',
-                    hintText: 'e.g. Apple Inc.',
-                    isRequired: true,
-                  ),
-                ],
-              ),
-              const Gap(Insets.xl),
+                    const Gap(Insets.md),
+                    const InputField(
+                      name: 'vendor',
+                      title: 'Vendor/Supplier',
+                      hintText: 'e.g. Apple Inc.',
+                      isRequired: true,
+                    ),
+                  ],
+                ),
+                const Gap(Insets.xl),
 
-              _Section(
-                title: 'Categorization & Location',
-                icon: HIStroke.tag01,
-                children: [
-                  AutocompleteFormBox<CategoryModel>(
-                    name: 'category',
-                    label: 'Category',
-                    placeholder: 'Select a category...',
-                    validator: FormBuilderValidators.required(),
-                    isRequired: true,
-                    items: categoriesAsync.maybeWhen(data: (cats) => cats, orElse: () => []),
-                    itemLabel: (c) => c.name,
-                    valueTransformer: (x) => x?.id,
-                  ),
-                  const Gap(Insets.md),
-                  Row(
-                    spacing: Insets.md,
-                    children: [
-                      Expanded(
-                        child: AutocompleteFormBox<LocationModel>(
-                          name: 'location',
-                          label: 'Location',
-                          placeholder: 'Select a location...',
-                          validator: FormBuilderValidators.required(),
-                          isRequired: true,
-                          items: locationsAsync.maybeWhen(data: (locs) => locs, orElse: () => []),
-                          itemLabel: (l) => l.name,
-                          valueTransformer: (x) => x?.id,
+                _Section(
+                  title: 'Categorization & Location',
+                  icon: HIStroke.tag01,
+                  children: [
+                    AutocompleteFormBox<CategoryModel>(
+                      name: 'category',
+                      label: 'Category',
+                      placeholder: 'Select a category...',
+                      validator: FormBuilderValidators.required(),
+                      isRequired: true,
+                      items: categoriesAsync.maybeWhen(data: (cats) => cats, orElse: () => []),
+                      itemLabel: (c) => c.name,
+                      valueTransformer: (x) => x?.id,
+                    ),
+                    const Gap(Insets.md),
+                    Row(
+                      spacing: Insets.md,
+                      children: [
+                        Expanded(
+                          child: AutocompleteFormBox<LocationModel>(
+                            name: 'location',
+                            label: 'Location',
+                            placeholder: 'Select a location...',
+                            validator: FormBuilderValidators.required(),
+                            isRequired: true,
+                            items: locationsAsync.maybeWhen(data: (locs) => locs, orElse: () => []),
+                            itemLabel: (l) => l.name,
+                            valueTransformer: (x) => x?.id,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: AutocompleteFormBox<DepartmentModel>(
-                          name: 'department',
-                          label: 'Department',
-                          placeholder: 'Select a department...',
-                          validator: FormBuilderValidators.required(),
-                          isRequired: true,
-                          items: departmentsAsync.maybeWhen(data: (deps) => deps, orElse: () => []),
-                          itemLabel: (d) => d.name,
-                          valueTransformer: (x) => x?.id,
+                        Expanded(
+                          child: AutocompleteFormBox<DepartmentModel>(
+                            name: 'department',
+                            label: 'Department',
+                            placeholder: 'Select a department...',
+                            validator: FormBuilderValidators.required(),
+                            isRequired: true,
+                            items: departmentsAsync.maybeWhen(data: (deps) => deps, orElse: () => []),
+                            itemLabel: (d) => d.name,
+                            valueTransformer: (x) => x?.id,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                      ],
+                    ),
+                  ],
+                ),
 
-              const Gap(Insets.xxl),
+                const Gap(Insets.xxl),
 
-              FilledButton(
-                onPressed: isLoading.value
-                    ? null
-                    : () async {
-                        final state = formKey.currentState!;
+                FilledButton(
+                  onPressed: isLoading.value
+                      ? null
+                      : () async {
+                          final state = formKey.currentState!;
 
-                        if (!state.saveAndValidate()) return;
+                          if (!state.saveAndValidate()) return;
 
-                        isLoading.value = true;
-                        final payload = state.value;
+                          isLoading.value = true;
+                          final payload = state.value;
 
-                        final success = await ref.read(assetsCtrlProvider.notifier).createAsset(payload);
-                        isLoading.value = false;
+                          final bool success;
+                          if (asset != null) {
+                            success = await ref.read(assetsCtrlProvider.notifier).updateAsset(asset!.id, payload);
+                          } else {
+                            success = await ref.read(assetsCtrlProvider.notifier).createAsset(payload);
+                          }
 
-                        if (success) {
-                          Toast.showSuccess('Asset created successfully!');
-                          if (context.mounted) context.nPop();
+                          isLoading.value = false;
 
-                          ref.invalidate(dashboardMetricsCtrlProvider);
-                          ref.invalidate(assetUtilizationCtrlProvider);
-                        } else {
-                          Toast.showError('Failed to create asset');
-                        }
-                      },
-                child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Create Asset'),
-              ),
+                          if (success) {
+                            Toast.showSuccess(
+                              asset != null ? 'Asset updated successfully!' : 'Asset created successfully!',
+                            );
+                            if (context.mounted) context.nPop();
 
-              const Gap(Insets.xxl),
-            ],
+                            ref.invalidate(dashboardMetricsCtrlProvider);
+                            ref.invalidate(assetUtilizationCtrlProvider);
+                          } else {
+                            Toast.showError(asset != null ? 'Failed to update asset' : 'Failed to create asset');
+                          }
+                        },
+                  child: isLoading.value
+                      ? const Loader(size: 20, color: Colors.white)
+                      : Text(asset != null ? 'Save Changes' : 'Create Asset'),
+                ),
+
+                const Gap(Insets.xxl),
+              ],
+            ),
           ),
         ),
       ),

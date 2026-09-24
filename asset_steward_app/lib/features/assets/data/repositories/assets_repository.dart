@@ -16,4 +16,11 @@ class AssetsRepository with RepoRunner {
   FutureResult<AssetModel> createAsset(QMap data) {
     return runRepoTask(() => _remoteDS.createAsset(data));
   }
+  FutureResult<AssetModel> updateAsset(int id, QMap data) {
+    return runRepoTask(() => _remoteDS.updateAsset(id, data));
+  }
+
+  FutureResult<void> deleteAsset(int id) {
+    return runRepoTask(() => _remoteDS.deleteAsset(id));
+  }
 }

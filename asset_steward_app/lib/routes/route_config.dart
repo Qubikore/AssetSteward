@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/app_shell.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assets_pageview.dart';
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:asset_steward_app/features/auth/presentation/screens/login_page.dart';
@@ -56,7 +57,10 @@ class AppRouter extends _$AppRouter {
         GoRoute(path: RPaths.locations.path, builder: (context, state) => const LocationsPage()),
         GoRoute(path: RPaths.departments.path, builder: (context, state) => const DepartmentsPage()),
         GoRoute(path: RPaths.categories.path, builder: (context, state) => const CategoriesPage()),
-        GoRoute(path: RPaths.createAsset.path, builder: (context, state) => const CreateAssetPage()),
+        GoRoute(
+          path: RPaths.createAsset.path,
+          builder: (context, state) => CreateAssetPage(asset: state.extra as AssetModel?),
+        ),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
     );

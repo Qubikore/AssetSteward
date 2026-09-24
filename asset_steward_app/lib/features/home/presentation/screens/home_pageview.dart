@@ -198,8 +198,11 @@ class _MiniEntityTile extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: context.colors.primaryContainer, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, color: context.colors.onPrimaryContainer, size: 20),
+            decoration: BoxDecoration(
+              color: context.colors.primaryContainer.op1,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: context.colors.primaryContainer, size: 20),
           ),
           const Gap(Insets.md),
           Expanded(

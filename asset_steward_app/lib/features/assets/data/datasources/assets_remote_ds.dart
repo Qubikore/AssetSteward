@@ -32,4 +32,23 @@ class AssetsRemoteDS {
       throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
+  Future<AssetModel> updateAsset(int id, QMap data) async {
+    final response = await _dio.put('/', data: data);
+    AssetModelMapper.ensureInitialized();
+    final res = ApiResponse.fromMap<AssetModel>(response.data);
+
+    if (res case ApiResponse(success: true, data: final AssetModel asset)) {
+      return asset;
+    } else {
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+    }
+  }
+
+  Future<void> deleteAsset(int id) async {
+    final response = await _dio.delete('/');
+    final res = ApiResponse.fromMap(response.data);
+    if (!res.success) {
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+    }
+  }
 }
