@@ -9,6 +9,7 @@ import 'package:asset_steward_app/features/profile/presentation/screens/profile_
 import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
 import 'package:asset_steward_app/features/users/presentation/screens/manage_users_page.dart';
 import 'package:asset_steward_app/features/locations/presentation/screens/locations_page.dart';
+import 'package:asset_steward_app/features/departments/presentation/screens/departments_page.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -51,6 +52,7 @@ class AppRouter extends _$AppRouter {
         GoRoute(path: RPaths.register.path, builder: (context, state) => const RegisterPage()),
         GoRoute(path: RPaths.manageUsers.path, builder: (context, state) => const ManageUsersPage()),
         GoRoute(path: RPaths.locations.path, builder: (context, state) => const LocationsPage()),
+        GoRoute(path: RPaths.departments.path, builder: (context, state) => const DepartmentsPage()),
       ],
       errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
     );

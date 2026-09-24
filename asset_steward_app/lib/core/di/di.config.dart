@@ -18,6 +18,10 @@ import 'package:asset_steward_app/features/auth/data/datasources/auth_remote_dat
     as _i565;
 import 'package:asset_steward_app/features/auth/data/repositories/auth_repository.dart'
     as _i207;
+import 'package:asset_steward_app/features/departments/data/datasources/departments_remote_datasource.dart'
+    as _i389;
+import 'package:asset_steward_app/features/departments/data/repositories/departments_repository.dart'
+    as _i146;
 import 'package:asset_steward_app/features/locations/data/datasources/locations_remote_datasource.dart'
     as _i1012;
 import 'package:asset_steward_app/features/locations/data/repositories/locations_repository.dart'
@@ -69,6 +73,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i565.AuthRemoteDS>(
       () => _i565.AuthRemoteDS(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i389.DepartmentsRemoteDS>(
+      () => _i389.DepartmentsRemoteDS(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i1012.LocationsRemoteDS>(
       () => _i1012.LocationsRemoteDS(gh<_i361.Dio>()),
     );
@@ -89,6 +96,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i557.LocationsRepository>(
       () => _i557.LocationsRepository(gh<_i1012.LocationsRemoteDS>()),
+    );
+    gh.lazySingleton<_i146.DepartmentsRepository>(
+      () => _i146.DepartmentsRepository(gh<_i389.DepartmentsRemoteDS>()),
     );
     return this;
   }

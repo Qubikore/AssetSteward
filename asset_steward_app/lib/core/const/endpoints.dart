@@ -10,4 +10,5 @@ class Endpoints {
   static const String organizationMe = 'organization/me';
   static const String users = 'users';
   static const String locations = 'locations';
+  static const String departments = 'departments';
 }
