@@ -67,8 +67,9 @@ public class MaintenanceService {
         return new MaintenanceResponse(m);
     }
 
-    public List<MaintenanceResponse> getAllMaintenance() {
+    public List<MaintenanceResponse> getAllMaintenance(User currentUser) {
         return maintenanceRepository.findAll().stream()
+                .filter(m -> m.getAsset() != null && m.getAsset().getOrganization() != null && m.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId()))
                 .map(MaintenanceResponse::new)
                 .collect(Collectors.toList());
     }

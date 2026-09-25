@@ -61,12 +61,12 @@ public class UserService {
 
     public java.util.List<ProfileResponse> getUsersForDashboard(User currentUser) {
         if (currentUser.getRole() == Role.SUPER_ADMIN) {
-            return userRepository.findAll().stream()
+            return userRepository.findByOrganization(currentUser.getOrganization()).stream()
                     .filter(u -> u.getRole() != Role.SUPER_ADMIN)
                     .map(u -> new ProfileResponse(u, backendUrl))
                     .toList();
         } else if (currentUser.getRole() == Role.HR) {
-            return userRepository.findAll().stream()
+            return userRepository.findByOrganization(currentUser.getOrganization()).stream()
                     .filter(u -> u.getRole() == Role.USER)
                     .map(u -> new ProfileResponse(u, backendUrl))
                     .toList();
@@ -101,6 +101,7 @@ public class UserService {
                 passwordEncoder.encode(request.getPassword()),
                 newRole
         );
+        user.setOrganization(currentUser.getOrganization());
         userRepository.save(user);
         
         return new ProfileResponse(user, backendUrl);
