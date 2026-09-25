@@ -19,8 +19,8 @@ public class LocationController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<LocationResponse>>> getAllLocations() {
-        return ResponseEntity.ok(ApiResponse.success("Locations fetched successfully", locationService.getAllLocations()));
+    public ResponseEntity<ApiResponse<List<LocationResponse>>> getAllLocations(@org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Locations fetched successfully", locationService.getAllLocations(currentUser)));
     }
 
     @GetMapping("/{id}")
@@ -29,8 +29,8 @@ public class LocationController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<LocationResponse>> createLocation(@RequestBody LocationRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Location created successfully", locationService.createLocation(request)));
+    public ResponseEntity<ApiResponse<LocationResponse>> createLocation(@RequestBody LocationRequest request, @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Location created successfully", locationService.createLocation(request, currentUser)));
     }
 
     @PutMapping("/{id}")

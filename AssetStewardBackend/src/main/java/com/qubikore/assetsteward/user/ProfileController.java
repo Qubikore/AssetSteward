@@ -26,7 +26,7 @@ public class ProfileController {
         return ResponseEntity.ok(ApiResponse.success("Profile fetched successfully", profile));
     }
 
-    @PutMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ProfileResponse>> updateProfile(
             Authentication authentication,
             @ModelAttribute ProfileUpdateRequest request) {

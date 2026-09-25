@@ -14,8 +14,8 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryResponse> getAllCategories() {
-        return categoryRepository.findAll().stream()
+    public List<CategoryResponse> getAllCategories(com.qubikore.assetsteward.user.User currentUser) {
+        return categoryRepository.findByOrganization(currentUser.getOrganization()).stream()
                 .map(CategoryResponse::new)
                 .collect(Collectors.toList());
     }
@@ -26,11 +26,13 @@ public class CategoryService {
         return new CategoryResponse(category);
     }
 
-    public CategoryResponse createCategory(CategoryRequest request) {
-        if (categoryRepository.existsByName(request.getName())) {
+    public CategoryResponse createCategory(CategoryRequest request, com.qubikore.assetsteward.user.User currentUser) {
+        if (categoryRepository.existsByNameAndOrganization(request.getName(), currentUser.getOrganization())) {
             throw new RuntimeException("Category already exists");
         }
         Category category = new Category(request.getName());
+        category.setOrganization(currentUser.getOrganization());
+
         category = categoryRepository.save(category);
         return new CategoryResponse(category);
     }
@@ -39,7 +41,7 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         
-        if (!category.getName().equals(request.getName()) && categoryRepository.existsByName(request.getName())) {
+        if (!category.getName().equals(request.getName()) && categoryRepository.existsByNameAndOrganization(request.getName(), category.getOrganization())) {
             throw new RuntimeException("Category already exists");
         }
 

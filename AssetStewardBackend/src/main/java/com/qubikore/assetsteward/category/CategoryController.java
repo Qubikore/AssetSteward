@@ -19,8 +19,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {
-        return ResponseEntity.ok(ApiResponse.success("Categories fetched successfully", categoryService.getAllCategories()));
+    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories(@org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Categories fetched successfully", categoryService.getAllCategories(currentUser)));
     }
 
     @GetMapping("/{id}")
@@ -29,8 +29,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Category created successfully", categoryService.createCategory(request)));
+    public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest request, @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Category created successfully", categoryService.createCategory(request, currentUser)));
     }
 
     @PutMapping("/{id}")

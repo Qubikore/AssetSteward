@@ -13,6 +13,8 @@ public class AssetHistory {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
+
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
