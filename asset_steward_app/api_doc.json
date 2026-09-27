@@ -11,63 +11,6 @@
         }
     ],
     "paths": {
-        "/api/v1/profile": {
-            "get": {
-                "tags": [
-                    "profile-controller"
-                ],
-                "operationId": "getProfile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer Authentication": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "profile-controller"
-                ],
-                "operationId": "updateProfile",
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ProfileUpdateRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer Authentication": []
-                    }
-                ]
-            }
-        },
         "/api/v1/maintenance/{id}/complete": {
             "put": {
                 "tags": [
@@ -451,6 +394,90 @@
                 ]
             }
         },
+        "/api/v1/assets/{assetId}": {
+            "put": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Update an asset",
+                "description": "Updates an existing asset's details.",
+                "operationId": "updateAsset",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssetRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Delete an asset",
+                "description": "Deletes an asset from the system.",
+                "operationId": "deleteAsset",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
         "/api/v1/assets/{assetId}/approve": {
             "put": {
                 "tags": [
@@ -527,6 +554,63 @@
                         }
                     },
                     "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile": {
+            "get": {
+                "tags": [
+                    "profile-controller"
+                ],
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseProfileResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "profile-controller"
+                ],
+                "operationId": "updateProfile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateRequest"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "200": {
@@ -1181,6 +1265,33 @@
                 ]
             }
         },
+        "/api/v1/assets/labels": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get asset labels",
+                "description": "Retrieves all assets with their QR codes in base64 format and basic info (price, dates) for printing labels.",
+                "operationId": "getAssetLabels",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssetLabelResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
         "/api/v1/assets/assignments": {
             "get": {
                 "tags": [
@@ -1222,77 +1333,6 @@
     },
     "components": {
         "schemas": {
-            "ProfileUpdateRequest": {
-                "type": "object",
-                "properties": {
-                    "firstname": {
-                        "type": "string"
-                    },
-                    "lastname": {
-                        "type": "string"
-                    },
-                    "gender": {
-                        "type": "string"
-                    },
-                    "dob": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "profile_picture": {
-                        "type": "string",
-                        "format": "binary"
-                    }
-                }
-            },
-            "ApiResponseProfileResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "message": {
-                        "type": "string"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/ProfileResponse"
-                    }
-                }
-            },
-            "ProfileResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "firstname": {
-                        "type": "string"
-                    },
-                    "lastname": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "role": {
-                        "type": "string"
-                    },
-                    "gender": {
-                        "type": "string"
-                    },
-                    "dob": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "profile_picture": {
-                        "type": "string"
-                    }
-                }
-            },
             "ApiResponseMaintenanceResponse": {
                 "type": "object",
                 "properties": {
@@ -1468,6 +1508,51 @@
                     }
                 }
             },
+            "AssetRequest": {
+                "type": "object",
+                "properties": {
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "serialNumber": {
+                        "type": "string"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "vendor": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "locationId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "departmentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
             "ApiResponseAssetResponse": {
                 "type": "object",
                 "properties": {
@@ -1524,14 +1609,14 @@
                     "status": {
                         "type": "string"
                     },
-                    "categoryName": {
-                        "type": "string"
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryResponse"
                     },
-                    "locationName": {
-                        "type": "string"
+                    "location": {
+                        "$ref": "#/components/schemas/LocationResponse"
                     },
-                    "departmentName": {
-                        "type": "string"
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentResponse"
                     }
                 }
             },
@@ -1561,6 +1646,77 @@
                     },
                     "remember_me": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "ApiResponseProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ProfileResponse"
+                    }
+                }
+            },
+            "ProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "dob": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "profile_picture": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ProfileUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "dob": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "profile_picture": {
+                        "type": "string",
+                        "format": "binary"
                     }
                 }
             },
@@ -1663,51 +1819,6 @@
                     }
                 }
             },
-            "AssetRequest": {
-                "type": "object",
-                "properties": {
-                    "assetCode": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "serialNumber": {
-                        "type": "string"
-                    },
-                    "purchaseDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "expireDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "purchasePrice": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "vendor": {
-                        "type": "string"
-                    },
-                    "quantity": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "categoryId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "locationId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "departmentId": {
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                }
-            },
             "AssetAssignmentRequest": {
                 "type": "object",
                 "properties": {
@@ -1716,6 +1827,10 @@
                         "format": "int64"
                     },
                     "userId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "locationId": {
                         "type": "integer",
                         "format": "int64"
                     }
@@ -1991,6 +2106,57 @@
                         "items": {
                             "$ref": "#/components/schemas/AssetResponse"
                         }
+                    }
+                }
+            },
+            "ApiResponseListAssetLabelResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetLabelResponse"
+                        }
+                    }
+                }
+            },
+            "AssetLabelResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "qrCodeBase64": {
+                        "type": "string"
                     }
                 }
             },

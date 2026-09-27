@@ -32,7 +32,7 @@ class AssetsPageview extends HookConsumerWidget {
               }
 
               return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md).copyWith(bottom: 100),
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg).copyWith(bottom: 100),
                 itemCount: assets.length,
                 separatorBuilder: (context, index) => const Gap(Insets.md),
                 itemBuilder: (context, index) {

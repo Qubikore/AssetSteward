@@ -174,7 +174,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Category'),
                       builder: (categories) {
-                        final category = categories.firstWhereOrNull((c) => c.name == asset?.categoryName);
+                        final category = categories.firstWhereOrNull((c) => c.name == asset?.category);
                         return AutocompleteFormBox<CategoryModel>(
                           name: 'categoryId',
                           label: 'Category',
@@ -197,7 +197,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (locations) {
-                        final location = locations.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        final location = locations.firstWhereOrNull((c) => c.name == asset?.location);
                         return AutocompleteFormBox<LocationModel>(
                           name: 'locationId',
                           label: 'Location',
@@ -220,7 +220,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (departments) {
-                        final department = departments.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        final department = departments.firstWhereOrNull((c) => c.name == asset?.location);
                         return AutocompleteFormBox<DepartmentModel>(
                           name: 'departmentId',
                           label: 'Department',

@@ -15,6 +15,9 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
   static AssetModelMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AssetModelMapper._());
+      CategoryModelMapper.ensureInitialized();
+      LocationModelMapper.ensureInitialized();
+      DepartmentModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -31,27 +34,29 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
   );
   static String _$name(AssetModel v) => v.name;
   static const Field<AssetModel, String> _f$name = Field('name', _$name);
-  static String? _$serialNumber(AssetModel v) => v.serialNumber;
-  static const Field<AssetModel, String> _f$serialNumber = Field(
-    'serialNumber',
-    _$serialNumber,
-    opt: true,
+  static double _$purchasePrice(AssetModel v) => v.purchasePrice;
+  static const Field<AssetModel, double> _f$purchasePrice = Field(
+    'purchasePrice',
+    _$purchasePrice,
   );
   static String _$purchaseDate(AssetModel v) => v.purchaseDate;
   static const Field<AssetModel, String> _f$purchaseDate = Field(
     'purchaseDate',
     _$purchaseDate,
   );
+  static String _$status(AssetModel v) => v.status;
+  static const Field<AssetModel, String> _f$status = Field('status', _$status);
+  static String? _$serialNumber(AssetModel v) => v.serialNumber;
+  static const Field<AssetModel, String> _f$serialNumber = Field(
+    'serialNumber',
+    _$serialNumber,
+    opt: true,
+  );
   static String? _$expireDate(AssetModel v) => v.expireDate;
   static const Field<AssetModel, String> _f$expireDate = Field(
     'expireDate',
     _$expireDate,
     opt: true,
-  );
-  static double _$purchasePrice(AssetModel v) => v.purchasePrice;
-  static const Field<AssetModel, double> _f$purchasePrice = Field(
-    'purchasePrice',
-    _$purchasePrice,
   );
   static String? _$vendor(AssetModel v) => v.vendor;
   static const Field<AssetModel, String> _f$vendor = Field(
@@ -66,24 +71,22 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     opt: true,
     def: 0,
   );
-  static String _$status(AssetModel v) => v.status;
-  static const Field<AssetModel, String> _f$status = Field('status', _$status);
-  static String? _$categoryName(AssetModel v) => v.categoryName;
-  static const Field<AssetModel, String> _f$categoryName = Field(
-    'categoryName',
-    _$categoryName,
+  static CategoryModel? _$category(AssetModel v) => v.category;
+  static const Field<AssetModel, CategoryModel> _f$category = Field(
+    'category',
+    _$category,
     opt: true,
   );
-  static String? _$locationName(AssetModel v) => v.locationName;
-  static const Field<AssetModel, String> _f$locationName = Field(
-    'locationName',
-    _$locationName,
+  static LocationModel? _$location(AssetModel v) => v.location;
+  static const Field<AssetModel, LocationModel> _f$location = Field(
+    'location',
+    _$location,
     opt: true,
   );
-  static String? _$departmentName(AssetModel v) => v.departmentName;
-  static const Field<AssetModel, String> _f$departmentName = Field(
-    'departmentName',
-    _$departmentName,
+  static DepartmentModel? _$department(AssetModel v) => v.department;
+  static const Field<AssetModel, DepartmentModel> _f$department = Field(
+    'department',
+    _$department,
     opt: true,
   );
 
@@ -92,16 +95,16 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     #id: _f$id,
     #assetCode: _f$assetCode,
     #name: _f$name,
-    #serialNumber: _f$serialNumber,
-    #purchaseDate: _f$purchaseDate,
-    #expireDate: _f$expireDate,
     #purchasePrice: _f$purchasePrice,
+    #purchaseDate: _f$purchaseDate,
+    #status: _f$status,
+    #serialNumber: _f$serialNumber,
+    #expireDate: _f$expireDate,
     #vendor: _f$vendor,
     #quantity: _f$quantity,
-    #status: _f$status,
-    #categoryName: _f$categoryName,
-    #locationName: _f$locationName,
-    #departmentName: _f$departmentName,
+    #category: _f$category,
+    #location: _f$location,
+    #department: _f$department,
   };
 
   static AssetModel _instantiate(DecodingData data) {
@@ -109,16 +112,16 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
       id: data.dec(_f$id),
       assetCode: data.dec(_f$assetCode),
       name: data.dec(_f$name),
-      serialNumber: data.dec(_f$serialNumber),
-      purchaseDate: data.dec(_f$purchaseDate),
-      expireDate: data.dec(_f$expireDate),
       purchasePrice: data.dec(_f$purchasePrice),
+      purchaseDate: data.dec(_f$purchaseDate),
+      status: data.dec(_f$status),
+      serialNumber: data.dec(_f$serialNumber),
+      expireDate: data.dec(_f$expireDate),
       vendor: data.dec(_f$vendor),
       quantity: data.dec(_f$quantity),
-      status: data.dec(_f$status),
-      categoryName: data.dec(_f$categoryName),
-      locationName: data.dec(_f$locationName),
-      departmentName: data.dec(_f$departmentName),
+      category: data.dec(_f$category),
+      location: data.dec(_f$location),
+      department: data.dec(_f$department),
     );
   }
 
@@ -182,20 +185,23 @@ extension AssetModelValueCopy<$R, $Out>
 
 abstract class AssetModelCopyWith<$R, $In extends AssetModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  CategoryModelCopyWith<$R, CategoryModel, CategoryModel>? get category;
+  LocationModelCopyWith<$R, LocationModel, LocationModel>? get location;
+  DepartmentModelCopyWith<$R, DepartmentModel, DepartmentModel>? get department;
   $R call({
     int? id,
     String? assetCode,
     String? name,
-    String? serialNumber,
-    String? purchaseDate,
-    String? expireDate,
     double? purchasePrice,
+    String? purchaseDate,
+    String? status,
+    String? serialNumber,
+    String? expireDate,
     String? vendor,
     int? quantity,
-    String? status,
-    String? categoryName,
-    String? locationName,
-    String? departmentName,
+    CategoryModel? category,
+    LocationModel? location,
+    DepartmentModel? department,
   });
   AssetModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -209,35 +215,45 @@ class _AssetModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<AssetModel> $mapper =
       AssetModelMapper.ensureInitialized();
   @override
+  CategoryModelCopyWith<$R, CategoryModel, CategoryModel>? get category =>
+      $value.category?.copyWith.$chain((v) => call(category: v));
+  @override
+  LocationModelCopyWith<$R, LocationModel, LocationModel>? get location =>
+      $value.location?.copyWith.$chain((v) => call(location: v));
+  @override
+  DepartmentModelCopyWith<$R, DepartmentModel, DepartmentModel>?
+  get department =>
+      $value.department?.copyWith.$chain((v) => call(department: v));
+  @override
   $R call({
     int? id,
     String? assetCode,
     String? name,
-    Object? serialNumber = $none,
-    String? purchaseDate,
-    Object? expireDate = $none,
     double? purchasePrice,
+    String? purchaseDate,
+    String? status,
+    Object? serialNumber = $none,
+    Object? expireDate = $none,
     Object? vendor = $none,
     int? quantity,
-    String? status,
-    Object? categoryName = $none,
-    Object? locationName = $none,
-    Object? departmentName = $none,
+    Object? category = $none,
+    Object? location = $none,
+    Object? department = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
       if (assetCode != null) #assetCode: assetCode,
       if (name != null) #name: name,
-      if (serialNumber != $none) #serialNumber: serialNumber,
-      if (purchaseDate != null) #purchaseDate: purchaseDate,
-      if (expireDate != $none) #expireDate: expireDate,
       if (purchasePrice != null) #purchasePrice: purchasePrice,
+      if (purchaseDate != null) #purchaseDate: purchaseDate,
+      if (status != null) #status: status,
+      if (serialNumber != $none) #serialNumber: serialNumber,
+      if (expireDate != $none) #expireDate: expireDate,
       if (vendor != $none) #vendor: vendor,
       if (quantity != null) #quantity: quantity,
-      if (status != null) #status: status,
-      if (categoryName != $none) #categoryName: categoryName,
-      if (locationName != $none) #locationName: locationName,
-      if (departmentName != $none) #departmentName: departmentName,
+      if (category != $none) #category: category,
+      if (location != $none) #location: location,
+      if (department != $none) #department: department,
     }),
   );
   @override
@@ -245,16 +261,16 @@ class _AssetModelCopyWithImpl<$R, $Out>
     id: data.get(#id, or: $value.id),
     assetCode: data.get(#assetCode, or: $value.assetCode),
     name: data.get(#name, or: $value.name),
-    serialNumber: data.get(#serialNumber, or: $value.serialNumber),
-    purchaseDate: data.get(#purchaseDate, or: $value.purchaseDate),
-    expireDate: data.get(#expireDate, or: $value.expireDate),
     purchasePrice: data.get(#purchasePrice, or: $value.purchasePrice),
+    purchaseDate: data.get(#purchaseDate, or: $value.purchaseDate),
+    status: data.get(#status, or: $value.status),
+    serialNumber: data.get(#serialNumber, or: $value.serialNumber),
+    expireDate: data.get(#expireDate, or: $value.expireDate),
     vendor: data.get(#vendor, or: $value.vendor),
     quantity: data.get(#quantity, or: $value.quantity),
-    status: data.get(#status, or: $value.status),
-    categoryName: data.get(#categoryName, or: $value.categoryName),
-    locationName: data.get(#locationName, or: $value.locationName),
-    departmentName: data.get(#departmentName, or: $value.departmentName),
+    category: data.get(#category, or: $value.category),
+    location: data.get(#location, or: $value.location),
+    department: data.get(#department, or: $value.department),
   );
 
   @override
