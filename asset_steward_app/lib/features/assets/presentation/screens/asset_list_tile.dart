@@ -64,102 +64,105 @@ class AssetListTile extends ConsumerWidget {
             ),
           ],
         ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: context.colors.surface,
-            border: Border.all(color: context.colors.outlineVariant.op(0.3)),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      spacing: 8,
-                      children: [
-                        Expanded(
-                          child: Text(asset.name, style: context.text.titleMedium, maxLines: 1, overflow: .ellipsis),
-                        ),
-                        Text(asset.purchasePrice.currency(), style: context.text.titleMedium),
-                      ],
-                    ),
-                    const Gap(2),
-                    Text.rich(
-                      TextSpan(
+        child: GestureDetector(
+          onTap: () => RPaths.createAsset.push(context, extra: asset),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: context.colors.surface,
+              border: Border.all(color: context.colors.outlineVariant.op(0.3)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        spacing: 8,
                         children: [
-                          TextSpan(
-                            text: asset.status.sentenceCase,
-                            style: context.text.bodySmall?.textColor(
-                              asset.isAvailable ? Colors.green.shade600 : context.colors.outline,
-                            ),
+                          Expanded(
+                            child: Text(asset.name, style: context.text.titleMedium, maxLines: 1, overflow: .ellipsis),
                           ),
+                          Text(asset.purchasePrice.currency(), style: context.text.titleMedium),
                         ],
                       ),
-                      style: context.text.labelSmall,
-                    ),
-
-                    const Gap(4),
-
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (serialNumber.isNotNullOrBlank)
-                          Text.rich(
+                      const Gap(2),
+                      Text.rich(
+                        TextSpan(
+                          children: [
                             TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: .middle,
-                                  child: Icon(HIStroke.hashtag, size: 12, color: context.colors.outline),
-                                ),
-                                TextSpan(text: '  $serialNumber'),
-                              ],
+                              text: asset.status.sentenceCase,
+                              style: context.text.bodySmall?.textColor(
+                                asset.isAvailable ? Colors.green.shade600 : context.colors.outline,
+                              ),
                             ),
-                            style: context.text.labelSmall?.textColor(context.colors.outline),
-                          ),
-                        if (category != null && serialNumber.isNotNullOrBlank)
-                          Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+                          ],
+                        ),
+                        style: context.text.labelSmall,
+                      ),
 
-                        if (category != null)
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: .middle,
-                                  child: Icon(HIStroke.tag01, size: 12, color: context.colors.outline),
-                                ),
-                                TextSpan(text: '  ${asset.category!.name}'),
-                              ],
+                      const Gap(4),
+
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          if (serialNumber.isNotNullOrBlank)
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    alignment: .middle,
+                                    child: Icon(HIStroke.hashtag, size: 12, color: context.colors.outline),
+                                  ),
+                                  TextSpan(text: '  $serialNumber'),
+                                ],
+                              ),
+                              style: context.text.labelSmall?.textColor(context.colors.outline),
                             ),
-                            style: context.text.labelSmall?.textColor(context.colors.outline),
-                          ),
+                          if (category != null && serialNumber.isNotNullOrBlank)
+                            Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
 
-                        if (category != null && department != null)
-                          Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
-
-                        if (department != null)
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: .middle,
-                                  child: Icon(HIStroke.building02, size: 12, color: context.colors.outline),
-                                ),
-                                TextSpan(text: '  ${asset.department!.name}'),
-                              ],
+                          if (category != null)
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    alignment: .middle,
+                                    child: Icon(HIStroke.tag01, size: 12, color: context.colors.outline),
+                                  ),
+                                  TextSpan(text: '  ${asset.category!.name}'),
+                                ],
+                              ),
+                              style: context.text.labelSmall?.textColor(context.colors.outline),
                             ),
-                            style: context.text.labelSmall?.textColor(context.colors.outline),
-                          ),
-                      ],
-                    ),
-                  ],
+
+                          if (category != null && department != null)
+                            Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+
+                          if (department != null)
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    alignment: .middle,
+                                    child: Icon(HIStroke.building02, size: 12, color: context.colors.outline),
+                                  ),
+                                  TextSpan(text: '  ${asset.department!.name}'),
+                                ],
+                              ),
+                              style: context.text.labelSmall?.textColor(context.colors.outline),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

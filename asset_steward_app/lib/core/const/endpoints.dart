@@ -1,7 +1,8 @@
 class Endpoints {
   const Endpoints._();
 
-  static const String baseUrl = 'https://assetsteward-backend.onrender.com/api/v1/';
+  static const String baseUrl =
+      'https://assetsteward-backend.onrender.com/api/v1/';
 
   static const String login = 'auth/login';
   static const String registerOrganization = 'auth/register-organization';
@@ -15,4 +16,11 @@ class Endpoints {
   static const String dashboardUtilization = 'dashboard/utilization';
   static const String categories = 'categories';
   static const String assets = 'assets';
+  static String asset(int id) => 'assets/$id';
+  static String assetApprove(int id) => 'assets/$id/approve';
+  static const String assetTransfer = 'assets/transfer';
+  static const String assetAssign = 'assets/assign';
+  static String assetQrCode(int id) => 'assets/$id/qrcode';
+  static const String assetLabels = 'assets/labels';
+  static const String assetAssignments = 'assets/assignments';
 }

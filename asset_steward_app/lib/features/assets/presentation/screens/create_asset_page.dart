@@ -60,27 +60,11 @@ class CreateAssetPage extends HookConsumerWidget {
                       isRequired: true,
                     ),
                     const Gap(Insets.md),
-                    Row(
-                      spacing: Insets.md,
-                      children: [
-                        Expanded(
-                          child: InputField(
-                            name: 'assetCode',
-                            title: 'Asset Code',
-                            hintText: 'e.g. LPT-001',
-                            initialValue: asset?.assetCode,
-                          ),
-                        ),
-
-                        Expanded(
-                          child: InputField(
-                            name: 'serialNumber',
-                            title: 'Serial Number',
-                            hintText: 'e.g. C02X...',
-                            initialValue: asset?.serialNumber,
-                          ),
-                        ),
-                      ],
+                    InputField(
+                      name: 'serialNumber',
+                      title: 'Serial Number',
+                      hintText: 'e.g. C02X...',
+                      initialValue: asset?.serialNumber,
                     ),
                   ],
                 ),
@@ -95,7 +79,7 @@ class CreateAssetPage extends HookConsumerWidget {
                         Expanded(
                           child: InputField(
                             name: 'purchasePrice',
-                            title: 'Purchase Price (\$)',
+                            title: 'Purchase Price',
                             hintText: 'e.g. 100.00',
                             initialValue: asset?.purchasePrice.toString(),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -174,7 +158,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Category'),
                       builder: (categories) {
-                        final category = categories.firstWhereOrNull((c) => c.name == asset?.category);
+                        final category = categories.firstWhereOrNull((c) => c.id == asset?.category?.id);
                         return AutocompleteFormBox<CategoryModel>(
                           name: 'categoryId',
                           label: 'Category',
@@ -197,7 +181,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (locations) {
-                        final location = locations.firstWhereOrNull((c) => c.name == asset?.location);
+                        final location = locations.firstWhereOrNull((c) => c.id == asset?.location?.id);
                         return AutocompleteFormBox<LocationModel>(
                           name: 'locationId',
                           label: 'Location',
@@ -220,7 +204,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (departments) {
-                        final department = departments.firstWhereOrNull((c) => c.name == asset?.location);
+                        final department = departments.firstWhereOrNull((c) => c.id == asset?.department?.id);
                         return AutocompleteFormBox<DepartmentModel>(
                           name: 'departmentId',
                           label: 'Department',
