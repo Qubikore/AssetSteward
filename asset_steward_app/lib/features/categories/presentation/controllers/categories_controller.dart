@@ -1,4 +1,3 @@
-import 'package:asset_steward_app/core/di/di.dart';
 import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
 import 'package:asset_steward_app/features/categories/data/repositories/categories_repository.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -17,10 +16,7 @@ class CategoriesCtrl extends _$CategoriesCtrl {
 
   Future<List<CategoryModel>> _fetch() async {
     final result = await _repo.getCategories();
-    return result.fold(
-      (l) => throw l,
-      (r) => r,
-    );
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<bool> createCategory(QMap payload) async {

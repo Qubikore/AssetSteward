@@ -18,7 +18,16 @@ class ProfilePage extends HookConsumerWidget {
     final profileAsync = ref.watch(profileCtrlProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(HIStroke.logout05),
+            onPressed: () => ref.read(authCtrlProvider.notifier).logout(),
+          ),
+        ],
+      ),
       body: AsyncBuilder(
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],

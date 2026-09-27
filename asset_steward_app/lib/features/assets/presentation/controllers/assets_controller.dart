@@ -1,4 +1,3 @@
-import 'package:asset_steward_app/core/di/di.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -17,10 +16,7 @@ class AssetsCtrl extends _$AssetsCtrl {
 
   Future<List<AssetModel>> _fetch() async {
     final result = await _repo.getAssets();
-    return result.fold(
-      (l) => throw l,
-      (r) => r,
-    );
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<bool> createAsset(QMap payload) async {
@@ -36,6 +32,7 @@ class AssetsCtrl extends _$AssetsCtrl {
       },
     );
   }
+
   Future<bool> updateAsset(int id, QMap data) async {
     final result = await _repo.updateAsset(id, data);
     return result.fold(

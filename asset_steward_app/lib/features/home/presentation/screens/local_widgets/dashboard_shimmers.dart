@@ -10,24 +10,24 @@ class DashboardMetricsShimmer extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: context.colors.surfaceContainerHighest.op(0.4),
       highlightColor: context.colors.surfaceContainerHighest.op(0.1),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const _ShimmerBox(height: 72, width: double.infinity),
-          const Gap(Insets.sm),
+          _ShimmerBox(height: 72, width: double.infinity),
+          Gap(Insets.sm),
           Row(
             children: [
-              const Expanded(child: _ShimmerBox(height: 72)),
-              const Gap(Insets.sm),
-              const Expanded(child: _ShimmerBox(height: 72)),
+              Expanded(child: _ShimmerBox(height: 72)),
+              Gap(Insets.sm),
+              Expanded(child: _ShimmerBox(height: 72)),
             ],
           ),
-          const Gap(Insets.sm),
+          Gap(Insets.sm),
           Row(
             children: [
-              const Expanded(child: _ShimmerBox(height: 72)),
-              const Gap(Insets.sm),
-              const Expanded(child: _ShimmerBox(height: 72)),
+              Expanded(child: _ShimmerBox(height: 72)),
+              Gap(Insets.sm),
+              Expanded(child: _ShimmerBox(height: 72)),
             ],
           ),
         ],
@@ -48,8 +48,8 @@ class UtilizationShimmer extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 3,
-        separatorBuilder: (_, __) => const Gap(Insets.sm),
-        itemBuilder: (_, __) => const _ShimmerBox(height: 72, width: double.infinity),
+        separatorBuilder: (_, _) => const Gap(Insets.sm),
+        itemBuilder: (_, _) => const _ShimmerBox(height: 72, width: double.infinity),
       ),
     );
   }
@@ -63,11 +63,11 @@ class MiniListShimmer extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: context.colors.surfaceContainerHighest.op(0.4),
       highlightColor: context.colors.surfaceContainerHighest.op(0.1),
-      child: Column(
+      child: const Column(
         children: [
-          const _ShimmerBox(height: 64, width: double.infinity),
-          const Gap(Insets.sm),
-          const _ShimmerBox(height: 64, width: double.infinity),
+          _ShimmerBox(height: 64, width: double.infinity),
+          Gap(Insets.sm),
+          _ShimmerBox(height: 64, width: double.infinity),
         ],
       ),
     );
@@ -85,10 +85,7 @@ class _ShimmerBox extends StatelessWidget {
     return Container(
       height: height,
       width: width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
     );
   }
 }

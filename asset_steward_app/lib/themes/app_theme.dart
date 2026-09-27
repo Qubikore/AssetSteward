@@ -37,9 +37,9 @@ class AppThemes {
 
         // Custom Navigation Bar Theme
         navigationBarElevation: 0,
-        navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+        navigationBarSelectedIconSchemeColor: SchemeColor.primary,
         navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
-        navigationBarIndicatorSchemeColor: SchemeColor.primary,
+        navigationBarIndicatorSchemeColor: SchemeColor.surfaceContainer,
         navigationBarIndicatorOpacity: 1.0,
         navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),

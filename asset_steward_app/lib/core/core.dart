@@ -20,6 +20,7 @@ export 'network/auth_interceptor.dart';
 export 'network/dio_client.dart';
 export 'storage/key_value_storage.dart';
 export 'storage/token_storage.dart';
+export 'utility/app_event_bus.dart';
 export 'utility/debouncer.dart';
 export 'utility/helper_methods.dart';
 export 'utility/types.dart';
