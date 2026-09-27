@@ -16,7 +16,6 @@ class ProfilePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileCtrlProvider);
-    final orgAsync = ref.watch(organizationCtrlProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,17 +32,21 @@ class ProfilePage extends HookConsumerWidget {
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],
         builder: (data) => RefreshIndicator(
-          onRefresh: () => ref.refresh(profileCtrlProvider.future),
+          onRefresh: () =>
+              Future.wait([ref.refresh(profileCtrlProvider.future), ref.refresh(organizationCtrlProvider.future)]),
           child: ListView(
+            physics: kScrollPhysics,
             padding: const EdgeInsets.symmetric(
               horizontal: Insets.lg,
               vertical: Insets.md,
             ).copyWith(top: 6).withBottomEx(),
             children: [
               ProfileHeader(data: data),
+
               const Gap(Insets.lg),
+
               const SectionTitle(title: 'Settings'),
-              const Gap(Insets.md),
+              const Gap(Insets.xs),
               Container(
                 decoration: BoxDecoration(
                   color: context.colors.surfaceContainerHighest.op(0.3),
