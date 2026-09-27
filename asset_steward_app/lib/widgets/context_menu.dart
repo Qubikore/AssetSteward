@@ -338,7 +338,11 @@ class _ContextMenuPanel extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, ContextMenuItem item) {
     if (item is ContextMenuDivider) {
-      return Container(height: 1, margin: const EdgeInsets.symmetric(vertical: 4), color: context.colors.outline);
+      return Container(
+        height: 1,
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: context.colors.outlineVariant,
+      );
     }
 
     if (item is ContextMenuGroup) {

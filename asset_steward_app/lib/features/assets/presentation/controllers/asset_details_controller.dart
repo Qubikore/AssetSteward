@@ -10,12 +10,9 @@ part 'asset_details_controller.g.dart';
 class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   @override
   FutureOr<AssetModel> build(int id) async {
-    final assets = await ref.watch(assetsCtrlProvider.future);
-    final asset = assets.firstWhere(
-      (a) => a.id == id,
-      orElse: () => throw Exception('Asset not found'),
-    );
-    return asset;
+    final repo = di.get<AssetsRepository>();
+    final result = await repo.getAsset(id);
+    return result.fold((l) => throw Exception(l.message), (r) => r);
   }
 
   Future<bool> approve() async {
@@ -28,6 +25,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
       },
       (r) {
         ref.invalidate(assetsCtrlProvider);
+        ref.invalidateSelf();
         Toast.showSuccess('Asset approved successfully');
         return true;
       },

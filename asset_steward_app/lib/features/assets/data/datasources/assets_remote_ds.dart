@@ -11,19 +11,25 @@ class AssetsRemoteDS {
 
   final Dio _dio;
 
+  Future<AssetModel> getAsset(int id) async {
+    final response = await _dio.get(Endpoints.asset(id));
+    final res = ApiResponse.fromMap<AssetModel>(response.data);
+
+    if (res case ApiResponse(success: true, data: final AssetModel asset)) {
+      return asset;
+    } else {
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+    }
+  }
+
   Future<List<AssetModel>> getAssets() async {
     final response = await _dio.get(Endpoints.assets);
     final res = ApiResponse.fromMap<List<AssetModel>>(response.data);
 
-    if (res case ApiResponse(
-      success: true,
-      data: final List<AssetModel> data,
-    )) {
+    if (res case ApiResponse(success: true, data: final List<AssetModel> data)) {
       return data;
     } else {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -34,9 +40,7 @@ class AssetsRemoteDS {
     if (res case ApiResponse(success: true, data: final AssetModel asset)) {
       return asset;
     } else {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -47,9 +51,7 @@ class AssetsRemoteDS {
     if (res case ApiResponse(success: true, data: final AssetModel asset)) {
       return asset;
     } else {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -57,9 +59,7 @@ class AssetsRemoteDS {
     final response = await _dio.delete(Endpoints.asset(id));
     final res = ApiResponse.fromMap(response.data);
     if (!res.success) {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -67,9 +67,7 @@ class AssetsRemoteDS {
     final response = await _dio.put(Endpoints.assetApprove(id));
     final res = ApiResponse.fromMap(response.data);
     if (!res.success) {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -77,9 +75,7 @@ class AssetsRemoteDS {
     final response = await _dio.post(Endpoints.assetTransfer, data: data);
     final res = ApiResponse.fromMap(response.data);
     if (!res.success) {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -87,9 +83,7 @@ class AssetsRemoteDS {
     final response = await _dio.post(Endpoints.assetAssign, data: data);
     final res = ApiResponse.fromMap(response.data);
     if (!res.success) {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -97,15 +91,10 @@ class AssetsRemoteDS {
     final response = await _dio.get(Endpoints.assetLabels);
     final res = ApiResponse.fromMap<List<AssetLabelResponse>>(response.data);
 
-    if (res case ApiResponse(
-      success: true,
-      data: final List<AssetLabelResponse> data,
-    )) {
+    if (res case ApiResponse(success: true, data: final List<AssetLabelResponse> data)) {
       return data;
     } else {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 
@@ -116,15 +105,10 @@ class AssetsRemoteDS {
     );
     final res = ApiResponse.fromMap<List<AssignmentResponse>>(response.data);
 
-    if (res case ApiResponse(
-      success: true,
-      data: final List<AssignmentResponse> data,
-    )) {
+    if (res case ApiResponse(success: true, data: final List<AssignmentResponse> data)) {
       return data;
     } else {
-      throw Failure(
-        res.message.isNotEmpty ? res.message : 'Invalid response format',
-      );
+      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
     }
   }
 }

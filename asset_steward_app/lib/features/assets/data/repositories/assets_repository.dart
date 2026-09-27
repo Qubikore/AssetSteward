@@ -11,6 +11,10 @@ class AssetsRepository with RepoRunner {
 
   AssetsRepository(this._remoteDS);
 
+  FutureResult<AssetModel> getAsset(int id) {
+    return runRepoTask(() => _remoteDS.getAsset(id));
+  }
+
   FutureResult<List<AssetModel>> getAssets() {
     return runRepoTask(() => _remoteDS.getAssets());
   }

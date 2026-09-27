@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,83 +14,91 @@ class AssetContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
+    final profile = ref.watch(profileCtrlProvider).value;
+    final isPrivileged = profile?.isPrivileged ?? false;
+
     return assetAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),
       data: (asset) => ContextMenu(
         alignment: ContextMenuAlignment.end,
         items: [
-          ContextMenuAction(
-            title: 'Update Quantity',
-            leading: const Icon(HIStroke.add01),
-            onTap: () async {
-              final qty = await showDialog<int>(
-                context: context,
-                builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
-              );
-              if (qty != null && context.mounted) {
-                final success = await ref.read(assetsCtrlProvider.notifier).updateAsset(id, {'quantity': qty});
-                if (success) {
-                  ref.invalidate(assetDetailsCtrlProvider(id));
+          if (isPrivileged)
+            ContextMenuAction(
+              title: 'Update Quantity',
+              leading: const Icon(HIStroke.add01),
+              onTap: () async {
+                final qty = await showDialog<int>(
+                  context: context,
+                  builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
+                );
+                if (qty != null && context.mounted) {
+                  final success = await ref.read(assetsCtrlProvider.notifier).updateAsset(id, {'quantity': qty});
+                  if (success) {
+                    ref.invalidate(assetDetailsCtrlProvider(id));
+                  }
                 }
-              }
-            },
-          ),
+              },
+            ),
+          if (isPrivileged)
+            ContextMenuAction(
+              title: 'Assign',
+              leading: const Icon(HIStroke.userAdd01),
+              onTap: () => Toast.showInfo('Assign feature coming soon'),
+            ),
+          if (isPrivileged)
+            ContextMenuAction(
+              title: 'Transfer',
+              leading: const Icon(HIStroke.arrowDataTransferHorizontal),
+              onTap: () => Toast.showInfo('Transfer feature coming soon'),
+            ),
           ContextMenuAction(
-            title: 'Assign',
-            leading: const Icon(HIStroke.userAdd01),
-            onTap: () => Toast.showInfo('Assign feature coming soon'),
-          ),
-          ContextMenuAction(
-            title: 'Transfer',
-            leading: const Icon(HIStroke.arrowDataTransferHorizontal),
-            onTap: () => Toast.showInfo('Transfer feature coming soon'),
+            title: 'Start Maintenance',
+            leading: const Icon(HIStroke.repair),
+            onTap: () => Toast.showInfo('Maintenance feature coming soon'),
           ),
           ContextMenuAction(
             title: 'Print Label',
             leading: const Icon(HIStroke.printer),
             onTap: () => Toast.showInfo('Print Label feature coming soon'),
           ),
-          ContextMenuAction(
-            title: 'Start Maintenance',
-            leading: const Icon(HIStroke.settings02),
-            onTap: () => Toast.showInfo('Maintenance feature coming soon'),
-          ),
-          const ContextMenuDivider(),
-          ContextMenuAction(
-            title: 'Edit Asset',
-            leading: const Icon(HIStroke.edit02),
-            onTap: () => context.push(RPaths.createAsset.path, extra: asset),
-          ),
-          ContextMenuAction(
-            title: 'Delete Asset',
-            leading: const Icon(HIStroke.delete02),
-            isDestructive: true,
-            onTap: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Asset'),
-                  content: const Text('Are you sure you want to delete this asset?'),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                    FilledButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: context.colors.error,
-                        foregroundColor: context.colors.onError,
+          if (isPrivileged) ...[
+            const ContextMenuDivider(),
+            ContextMenuAction(
+              title: 'Edit Asset',
+              leading: const Icon(HIStroke.edit02),
+              onTap: () => context.push(RPaths.createAsset.path, extra: asset),
+            ),
+            ContextMenuAction(
+              title: 'Delete Asset',
+              leading: const Icon(HIStroke.delete02),
+              isDestructive: true,
+              onTap: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Asset'),
+                    content: const Text('Are you sure you want to delete this asset?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                      FilledButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: context.colors.error,
+                          foregroundColor: context.colors.onError,
+                        ),
+                        child: const Text('Delete'),
                       ),
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
-              if (confirm == true) {
-                final success = await ref.read(assetsCtrlProvider.notifier).deleteAsset(id);
-                if (success && context.mounted) context.pop();
-              }
-            },
-          ),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  final success = await ref.read(assetsCtrlProvider.notifier).deleteAsset(id);
+                  if (success && context.mounted) context.pop();
+                }
+              },
+            ),
+          ],
         ],
       ),
     );
