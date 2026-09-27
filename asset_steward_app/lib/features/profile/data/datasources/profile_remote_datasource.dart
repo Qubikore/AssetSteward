@@ -35,7 +35,7 @@ class ProfileRemoteDS {
   }
 
   Future<ProfileData> updateProfile(FormData data) async {
-    final response = await _dio.put(Endpoints.profile, data: data);
+    final response = await _dio.post(Endpoints.profile, data: data);
     final res = ApiResponse.fromMap<ProfileData>(response.data);
 
     if (res case ApiResponse(success: true, data: final ProfileData data)) {

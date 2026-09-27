@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface AssetRepository extends JpaRepository<Asset, Long> {
     List<Asset> findByStatus(AssetStatus status);
+    List<Asset> findByOrganization(com.qubikore.assetsteward.user.Organization organization);
+
 }

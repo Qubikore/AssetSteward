@@ -5,5 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
-    boolean existsByName(String name);
+    boolean existsByNameAndOrganization(String name, com.qubikore.assetsteward.user.Organization organization);
+    java.util.List<Department> findByOrganization(com.qubikore.assetsteward.user.Organization organization);
+
 }

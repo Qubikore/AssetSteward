@@ -19,8 +19,8 @@ public class DashboardService {
         this.maintenanceRepository = maintenanceRepository;
     }
 
-    public DashboardMetrics getMetrics() {
-        List<Asset> assets = assetRepository.findAll();
+    public DashboardMetrics getMetrics(com.qubikore.assetsteward.user.User currentUser) {
+        List<Asset> assets = assetRepository.findByOrganization(currentUser.getOrganization());
         
         DashboardMetrics metrics = new DashboardMetrics();
         metrics.setTotalAssets(assets.size());
@@ -48,8 +48,8 @@ public class DashboardService {
         return metrics;
     }
 
-    public List<AssetUtilizationResponse> getAssetUtilization() {
-        List<Asset> assets = assetRepository.findAll();
+    public List<AssetUtilizationResponse> getAssetUtilization(com.qubikore.assetsteward.user.User currentUser) {
+        List<Asset> assets = assetRepository.findByOrganization(currentUser.getOrganization());
         List<AssetUtilizationResponse> utilizationList = new java.util.ArrayList<>();
         
         // Fetch all assignments and maintenance once, or query per asset.

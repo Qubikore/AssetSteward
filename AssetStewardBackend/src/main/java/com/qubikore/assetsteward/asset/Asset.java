@@ -54,6 +54,11 @@ public class Asset {
     @JoinColumn(name = "department_id")
     private com.qubikore.assetsteward.department.Department department;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private com.qubikore.assetsteward.user.Organization organization;
+
+
     // Track who created the asset (useful for approval workflows)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
@@ -90,4 +95,7 @@ public class Asset {
     public void setDepartment(com.qubikore.assetsteward.department.Department department) { this.department = department; }
     public User getCreatedBy() { return createdBy; }
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+    public com.qubikore.assetsteward.user.Organization getOrganization() { return organization; }
+    public void setOrganization(com.qubikore.assetsteward.user.Organization organization) { this.organization = organization; }
+
 }

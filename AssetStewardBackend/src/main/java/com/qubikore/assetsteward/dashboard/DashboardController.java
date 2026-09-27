@@ -21,13 +21,13 @@ public class DashboardController {
 
     @Operation(summary = "Get Dashboard Metrics", description = "Fetches summarized metrics of all assets.")
     @GetMapping("/metrics")
-    public ResponseEntity<ApiResponse<DashboardMetrics>> getMetrics() {
-        return ResponseEntity.ok(ApiResponse.success("Dashboard metrics fetched successfully", dashboardService.getMetrics()));
+    public ResponseEntity<ApiResponse<DashboardMetrics>> getMetrics(@org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Dashboard metrics fetched successfully", dashboardService.getMetrics(currentUser)));
     }
 
     @Operation(summary = "Get Asset Utilization", description = "Fetches an analytics report identifying underutilized assets based on assignment history.")
     @GetMapping("/utilization")
-    public ResponseEntity<ApiResponse<java.util.List<AssetUtilizationResponse>>> getUtilization() {
-        return ResponseEntity.ok(ApiResponse.success("Utilization analytics fetched successfully", dashboardService.getAssetUtilization()));
+    public ResponseEntity<ApiResponse<java.util.List<AssetUtilizationResponse>>> getUtilization(@org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Utilization analytics fetched successfully", dashboardService.getAssetUtilization(currentUser)));
     }
 }

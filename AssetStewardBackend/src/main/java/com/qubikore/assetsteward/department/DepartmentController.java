@@ -21,8 +21,8 @@ public class DepartmentController {
 
     @Operation(summary = "Get all departments")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DepartmentResponse>>> getAllDepartments() {
-        return ResponseEntity.ok(ApiResponse.success("Departments fetched successfully", departmentService.getAllDepartments()));
+    public ResponseEntity<ApiResponse<List<DepartmentResponse>>> getAllDepartments(@org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Departments fetched successfully", departmentService.getAllDepartments(currentUser)));
     }
 
     @Operation(summary = "Get a department by ID")
@@ -33,8 +33,8 @@ public class DepartmentController {
 
     @Operation(summary = "Create a department")
     @PostMapping
-    public ResponseEntity<ApiResponse<DepartmentResponse>> createDepartment(@RequestBody DepartmentRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Department created successfully", departmentService.createDepartment(request)));
+    public ResponseEntity<ApiResponse<DepartmentResponse>> createDepartment(@RequestBody DepartmentRequest request, @org.springframework.security.core.annotation.AuthenticationPrincipal com.qubikore.assetsteward.user.User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Department created successfully", departmentService.createDepartment(request, currentUser)));
     }
 
     @Operation(summary = "Update a department")

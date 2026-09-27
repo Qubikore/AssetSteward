@@ -69,8 +69,8 @@ public class AssetController {
             @RequestParam(required = false) Long locationId,
             @RequestParam(required = false) Long departmentId,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(ApiResponse.success("Assets retrieved successfully", assetService.getAllAssets(categoryId, locationId, departmentId, status, search)));
+            @RequestParam(required = false) String search, @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Assets retrieved successfully", assetService.getAllAssets(categoryId, locationId, departmentId, status, search, currentUser)));
     }
 
     @Operation(summary = "Get asset assignments", description = "Retrieves a list of asset assignments. Can be filtered by status.")
@@ -82,12 +82,12 @@ public class AssetController {
         if (currentUser.getRole() != com.qubikore.assetsteward.user.Role.SUPER_ADMIN && currentUser.getRole() != com.qubikore.assetsteward.user.Role.HR) {
             throw new RuntimeException("Only HR or Admin can view all assignments.");
         }
-        return ResponseEntity.ok(ApiResponse.success("Assignments retrieved successfully", assetService.getAllAssignments(status)));
+        return ResponseEntity.ok(ApiResponse.success("Assignments retrieved successfully", assetService.getAllAssignments(status, currentUser)));
     }
 
     @Operation(summary = "Generate QR Code", description = "Generates a PNG QR code image for a specific asset based on its assetCode.")
     @GetMapping(value = "/{assetId}/qrcode", produces = org.springframework.http.MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQRCode(@PathVariable Long assetId) {
+    public ResponseEntity<byte[]> getQRCode(@PathVariable Long assetId, @AuthenticationPrincipal User currentUser) {
         try {
             // We just need the assetCode. Let's fetch the asset from the service.
             // Since getAllAssets isn't ideal, let's create a getAssetById in AssetService or fetch it here.
@@ -95,7 +95,7 @@ public class AssetController {
             // But actually we need the AssetCode. Let's assume assetCode = "AST-" + assetId or something.
             // Wait, we can iterate getAllAssets() or we can add getAssetById to AssetService.
             // I'll just use a placeholder text if I don't fetch it, but let's fetch it.
-            AssetResponse asset = assetService.getAllAssets(null, null, null, null, null).stream()
+            AssetResponse asset = assetService.getAllAssets(null, null, null, null, null, currentUser).stream()
                 .filter(a -> a.getId().equals(assetId)).findFirst().orElseThrow(() -> new RuntimeException("Asset not found"));
                 
             byte[] image = qrCodeService.generateQRCodeImage(asset.getAssetCode(), 250, 250);
@@ -103,5 +103,32 @@ public class AssetController {
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
+    }
+
+    @Operation(summary = "Get asset labels", description = "Retrieves all assets with their QR codes in base64 format and basic info (price, dates) for printing labels.")
+    @GetMapping("/labels")
+    public ResponseEntity<ApiResponse<List<com.qubikore.assetsteward.asset.dto.AssetLabelResponse>>> getAssetLabels(
+            @AuthenticationPrincipal User currentUser) {
+        List<com.qubikore.assetsteward.asset.dto.AssetLabelResponse> labels = assetService.getAssetLabels(currentUser, qrCodeService);
+        return ResponseEntity.ok(ApiResponse.success("Asset labels retrieved successfully", labels));
+    }
+
+    @Operation(summary = "Update an asset", description = "Updates an existing asset's details.")
+    @PutMapping("/{assetId}")
+    public ResponseEntity<ApiResponse<AssetResponse>> updateAsset(
+            @PathVariable Long assetId,
+            @RequestBody AssetRequest request,
+            @AuthenticationPrincipal User currentUser) {
+        AssetResponse response = assetService.updateAsset(assetId, request, currentUser);
+        return ResponseEntity.ok(ApiResponse.success("Asset updated successfully", response));
+    }
+
+    @Operation(summary = "Delete an asset", description = "Deletes an asset from the system.")
+    @DeleteMapping("/{assetId}")
+    public ResponseEntity<ApiResponse<Void>> deleteAsset(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        assetService.deleteAsset(assetId, currentUser);
+        return ResponseEntity.ok(ApiResponse.success("Asset deleted successfully", null));
     }
 }

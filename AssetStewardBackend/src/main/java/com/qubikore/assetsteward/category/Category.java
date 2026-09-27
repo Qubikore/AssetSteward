@@ -9,8 +9,13 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private com.qubikore.assetsteward.user.Organization organization;
+
 
     public Category() {}
 
@@ -22,4 +27,7 @@ public class Category {
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public com.qubikore.assetsteward.user.Organization getOrganization() { return organization; }
+    public void setOrganization(com.qubikore.assetsteward.user.Organization organization) { this.organization = organization; }
+
 }

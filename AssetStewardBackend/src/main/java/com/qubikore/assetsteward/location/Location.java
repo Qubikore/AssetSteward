@@ -15,6 +15,11 @@ public class Location {
     @Column
     private String address;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private com.qubikore.assetsteward.user.Organization organization;
+
+
     public Location() {}
 
     public Location(String name, String address) {
@@ -28,4 +33,7 @@ public class Location {
     public void setName(String name) { this.name = name; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public com.qubikore.assetsteward.user.Organization getOrganization() { return organization; }
+    public void setOrganization(com.qubikore.assetsteward.user.Organization organization) { this.organization = organization; }
+
 }

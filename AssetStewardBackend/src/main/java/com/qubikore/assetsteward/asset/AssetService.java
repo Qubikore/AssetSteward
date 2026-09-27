@@ -50,6 +50,8 @@ public class AssetService {
             asset.setQuantity(request.getQuantity());
         }
         asset.setCreatedBy(currentUser);
+        asset.setOrganization(currentUser.getOrganization());
+
 
         if (request.getCategoryId() != null) {
             Category cat = categoryRepository.findById(request.getCategoryId()).orElse(null);
@@ -116,6 +118,14 @@ public class AssetService {
         assignment.setAssignedBy(currentUser);
         assignment.setAssignedAt(LocalDateTime.now());
 
+        if (request.getLocationId() != null) {
+            Location loc = locationRepository.findById(request.getLocationId()).orElse(null);
+            if (loc != null) {
+                asset.setLocation(loc);
+            }
+        }
+
+
         assignmentRepository.save(assignment);
 
         asset.setStatus(AssetStatus.ASSIGNED);
@@ -161,8 +171,21 @@ public class AssetService {
         assetHistoryService.logAction(asset, currentUser, "TRANSFERRED", "Asset transferred from " + currentAssignment.getAssignedTo().getEmail() + " to " + assignedTo.getEmail());
     }
 
-    public List<AssetResponse> getAllAssets(Long categoryId, Long locationId, Long departmentId, String status, String search) {
-        java.util.stream.Stream<Asset> stream = assetRepository.findAll().stream();
+    public List<com.qubikore.assetsteward.asset.dto.AssetLabelResponse> getAssetLabels(User currentUser, com.qubikore.assetsteward.asset.QRCodeService qrCodeService) {
+        return assetRepository.findByOrganization(currentUser.getOrganization()).stream()
+                .map(asset -> {
+                    try {
+                        byte[] qrBytes = qrCodeService.generateQRCodeImage(asset.getAssetCode(), 200, 200);
+                        String base64Qr = java.util.Base64.getEncoder().encodeToString(qrBytes);
+                        return new com.qubikore.assetsteward.asset.dto.AssetLabelResponse(asset, "data:image/png;base64," + base64Qr);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to generate QR code for asset: " + asset.getAssetCode());
+                    }
+                }).collect(java.util.stream.Collectors.toList());
+    }
+
+    public List<AssetResponse> getAllAssets(Long categoryId, Long locationId, Long departmentId, String status, String search, User currentUser) {
+        java.util.stream.Stream<Asset> stream = assetRepository.findByOrganization(currentUser.getOrganization()).stream();
 
         if (categoryId != null) {
             stream = stream.filter(a -> a.getCategory() != null && a.getCategory().getId().equals(categoryId));
@@ -188,8 +211,8 @@ public class AssetService {
         return stream.map(AssetResponse::new).collect(Collectors.toList());
     }
 
-    public List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> getAllAssignments(String status) {
-        java.util.stream.Stream<Assignment> stream = assignmentRepository.findAll().stream();
+    public List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> getAllAssignments(String status, User currentUser) {
+        java.util.stream.Stream<Assignment> stream = assignmentRepository.findAll().stream().filter(a -> a.getAsset() != null && a.getAsset().getOrganization() != null && a.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId()));
         
         if ("active".equalsIgnoreCase(status)) {
             stream = stream.filter(a -> a.getReturnedAt() == null);
@@ -199,5 +222,52 @@ public class AssetService {
 
         return stream.map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public AssetResponse updateAsset(Long assetId, AssetRequest request, User currentUser) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+        
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        if (request.getName() != null) asset.setName(request.getName());
+        if (request.getSerialNumber() != null) asset.setSerialNumber(request.getSerialNumber());
+        if (request.getPurchaseDate() != null) asset.setPurchaseDate(request.getPurchaseDate());
+        if (request.getExpireDate() != null) asset.setExpireDate(request.getExpireDate());
+        if (request.getPurchasePrice() != null) asset.setPurchasePrice(request.getPurchasePrice());
+        if (request.getVendor() != null) asset.setVendor(request.getVendor());
+        if (request.getQuantity() != null) asset.setQuantity(request.getQuantity());
+
+        if (request.getCategoryId() != null) {
+            Category cat = categoryRepository.findById(request.getCategoryId()).orElse(null);
+            asset.setCategory(cat);
+        }
+
+        if (request.getLocationId() != null) {
+            Location loc = locationRepository.findById(request.getLocationId()).orElse(null);
+            asset.setLocation(loc);
+        }
+
+        if (request.getDepartmentId() != null) {
+            com.qubikore.assetsteward.department.Department dept = departmentRepository.findById(request.getDepartmentId()).orElse(null);
+            asset.setDepartment(dept);
+        }
+
+        assetRepository.save(asset);
+        assetHistoryService.logAction(asset, currentUser, "UPDATED", "Asset details updated.");
+        return new AssetResponse(asset);
+    }
+
+    public void deleteAsset(Long assetId, User currentUser) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+        
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        assetRepository.delete(asset);
     }
 }

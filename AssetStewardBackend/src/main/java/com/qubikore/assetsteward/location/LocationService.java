@@ -14,8 +14,8 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public List<LocationResponse> getAllLocations() {
-        return locationRepository.findAll().stream()
+    public List<LocationResponse> getAllLocations(com.qubikore.assetsteward.user.User currentUser) {
+        return locationRepository.findByOrganization(currentUser.getOrganization()).stream()
                 .map(LocationResponse::new)
                 .collect(Collectors.toList());
     }
@@ -26,8 +26,10 @@ public class LocationService {
         return new LocationResponse(location);
     }
 
-    public LocationResponse createLocation(LocationRequest request) {
+    public LocationResponse createLocation(LocationRequest request, com.qubikore.assetsteward.user.User currentUser) {
         Location location = new Location(request.getName(), request.getAddress());
+        location.setOrganization(currentUser.getOrganization());
+
         location = locationRepository.save(location);
         return new LocationResponse(location);
     }

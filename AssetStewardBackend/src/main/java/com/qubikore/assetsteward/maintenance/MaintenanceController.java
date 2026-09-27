@@ -39,7 +39,7 @@ public class MaintenanceController {
 
     @Operation(summary = "Get all maintenance records", description = "Fetches a list of all maintenance events (active and completed).")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<MaintenanceResponse>>> getAllMaintenance() {
-        return ResponseEntity.ok(ApiResponse.success("Fetched all maintenance records", maintenanceService.getAllMaintenance()));
+    public ResponseEntity<ApiResponse<List<MaintenanceResponse>>> getAllMaintenance(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Fetched all maintenance records", maintenanceService.getAllMaintenance(currentUser)));
     }
 }
