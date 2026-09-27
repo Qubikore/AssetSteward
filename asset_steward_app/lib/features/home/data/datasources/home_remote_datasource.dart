@@ -16,10 +16,15 @@ class HomeRemoteDS {
     DashboardMetricsMapper.ensureInitialized();
     final res = ApiResponse.fromMap<DashboardMetrics>(response.data);
 
-    if (res case ApiResponse(success: true, data: final DashboardMetrics data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final DashboardMetrics data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -28,10 +33,15 @@ class HomeRemoteDS {
     AssetUtilizationMapper.ensureInitialized();
     final res = ApiResponse.fromMap<List<AssetUtilization>>(response.data);
 
-    if (res case ApiResponse(success: true, data: final List<AssetUtilization> data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final List<AssetUtilization> data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

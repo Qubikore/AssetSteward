@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 part 'asset_model.mapper.dart';
 
-@MappableEnum(caseStyle: CaseStyle.snakeCase)
+@MappableEnum(caseStyle: CaseStyle.upperSnakeCase)
 enum AssetStatus {
   available,
   assigned,
@@ -30,7 +30,7 @@ enum AssetStatus {
   }
 }
 
-@MappableClass(caseStyle: CaseStyle.camelCase)
+@MappableClass()
 class AssetModel with AssetModelMappable {
   static const fromMap = AssetModelMapper.fromMap;
   static const fromJson = AssetModelMapper.fromJson;

@@ -28,11 +28,14 @@ extension TextStyleExtensions on TextStyle {
 
   /// Shortcut for color
   TextStyle textColor(Color? v) => copyWith(color: v);
-  TextStyle get primary => copyWith(color: Ctx.tryContext?.colors.primaryContainer);
+  TextStyle get primary =>
+      copyWith(color: Ctx.tryContext?.colors.primaryContainer);
   TextStyle get secondary => copyWith(color: Ctx.tryContext?.colors.secondary);
   TextStyle get onPrimary => copyWith(color: Ctx.tryContext?.colors.onPrimary);
-  TextStyle get onSecondary => copyWith(color: Ctx.tryContext?.colors.onSecondary);
-  TextStyle get gray => copyWith(color: Ctx.tryContext?.colors.onSurfaceVariant.op(.72));
+  TextStyle get onSecondary =>
+      copyWith(color: Ctx.tryContext?.colors.onSecondary);
+  TextStyle get gray =>
+      copyWith(color: Ctx.tryContext?.colors.onSurfaceVariant.op(.72));
   TextStyle get error => copyWith(color: Ctx.tryContext?.colors.error);
 
   TextStyle op(double v) => copyWith(color: color?.op(v));
@@ -80,6 +83,15 @@ extension TextStyleExtensions on TextStyle {
   TextStyle textFeatures(List<FontFeature> v) => copyWith(fontFeatures: v);
 
   /// Shortcut for decoration
-  TextStyle textDecoration(TextDecoration v, {Color? color, TextDecorationStyle? style, double? thickness}) =>
-      copyWith(decoration: v, decorationColor: color, decorationStyle: style, decorationThickness: thickness);
+  TextStyle textDecoration(
+    TextDecoration v, {
+    Color? color,
+    TextDecorationStyle? style,
+    double? thickness,
+  }) => copyWith(
+    decoration: v,
+    decorationColor: color,
+    decorationStyle: style,
+    decorationThickness: thickness,
+  );
 }

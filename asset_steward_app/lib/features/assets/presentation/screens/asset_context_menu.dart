@@ -1,0 +1,148 @@
+import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/main.export.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+class AssetContextMenu extends ConsumerWidget {
+  const new({super.key, required this.id});
+
+  final int id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
+    return assetAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (asset) => ContextMenu(
+        alignment: ContextMenuAlignment.end,
+        items: [
+          ContextMenuAction(
+            title: 'Update Quantity',
+            leading: const Icon(HIStroke.add01),
+            onTap: () async {
+              final qty = await showDialog<int>(
+                context: context,
+                builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
+              );
+              if (qty != null && context.mounted) {
+                final success = await ref.read(assetsCtrlProvider.notifier).updateAsset(id, {'quantity': qty});
+                if (success) {
+                  ref.invalidate(assetDetailsCtrlProvider(id));
+                }
+              }
+            },
+          ),
+          ContextMenuAction(
+            title: 'Assign',
+            leading: const Icon(HIStroke.userAdd01),
+            onTap: () => Toast.showInfo('Assign feature coming soon'),
+          ),
+          ContextMenuAction(
+            title: 'Transfer',
+            leading: const Icon(HIStroke.arrowDataTransferHorizontal),
+            onTap: () => Toast.showInfo('Transfer feature coming soon'),
+          ),
+          ContextMenuAction(
+            title: 'Print Label',
+            leading: const Icon(HIStroke.printer),
+            onTap: () => Toast.showInfo('Print Label feature coming soon'),
+          ),
+          ContextMenuAction(
+            title: 'Start Maintenance',
+            leading: const Icon(HIStroke.settings02),
+            onTap: () => Toast.showInfo('Maintenance feature coming soon'),
+          ),
+          const ContextMenuDivider(),
+          ContextMenuAction(
+            title: 'Edit Asset',
+            leading: const Icon(HIStroke.edit02),
+            onTap: () => context.push(RPaths.createAsset.path, extra: asset),
+          ),
+          ContextMenuAction(
+            title: 'Delete Asset',
+            leading: const Icon(HIStroke.delete02),
+            isDestructive: true,
+            onTap: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Delete Asset'),
+                  content: const Text('Are you sure you want to delete this asset?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: context.colors.error,
+                        foregroundColor: context.colors.onError,
+                      ),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+              );
+              if (confirm == true) {
+                final success = await ref.read(assetsCtrlProvider.notifier).deleteAsset(id);
+                if (success && context.mounted) context.pop();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UpdateQuantityDialog extends HookWidget {
+  final int initialQuantity;
+
+  const _UpdateQuantityDialog({required this.initialQuantity});
+
+  @override
+  Widget build(BuildContext context) {
+    final qtyState = useState(initialQuantity);
+    final ctrl = useTextEditingController(text: initialQuantity.toString());
+
+    return AlertDialog(
+      title: const Text('Update Quantity'),
+      content: Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              if (qtyState.value > 0) {
+                qtyState.value--;
+                ctrl.text = qtyState.value.toString();
+              }
+            },
+            icon: const Icon(HIStroke.minusSign),
+          ),
+          const Gap(Insets.md),
+          Expanded(
+            child: TextFormField(
+              controller: ctrl,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              onChanged: (v) => qtyState.value = int.tryParse(v) ?? 0,
+            ),
+          ),
+          const Gap(Insets.md),
+          IconButton(
+            onPressed: () {
+              qtyState.value++;
+              ctrl.text = qtyState.value.toString();
+            },
+            icon: const Icon(HIStroke.add01),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => context.pop(), child: const Text('Cancel')),
+        FilledButton(onPressed: () => context.pop(qtyState.value), child: const Text('Save')),
+      ],
+    );
+  }
+}

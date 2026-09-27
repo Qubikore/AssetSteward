@@ -13,21 +13,34 @@ class AuthRemoteDS {
     final response = await _dio.post(Endpoints.login, data: form);
     final res = ApiResponse.fromMap<QMap>(response.data);
 
-    if (res case ApiResponse(success: true, data: {'access_token': final String token})) {
+    if (res case ApiResponse(
+      success: true,
+      data: {'access_token': final String token},
+    )) {
       return token;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
   Future<String> registerOrganization(QMap form) async {
-    final response = await _dio.post(Endpoints.registerOrganization, data: form);
+    final response = await _dio.post(
+      Endpoints.registerOrganization,
+      data: form,
+    );
     final res = ApiResponse.fromMap<QMap>(response.data);
 
-    if (res case ApiResponse(success: true, data: {'access_token': final String token})) {
+    if (res case ApiResponse(
+      success: true,
+      data: {'access_token': final String token},
+    )) {
       return token;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

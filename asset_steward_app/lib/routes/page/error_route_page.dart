@@ -17,9 +17,16 @@ class ErrorRoutePage extends StatelessWidget {
             const SizedBox(height: 5),
             Text('Page not found', style: context.text.titleMedium),
             const SizedBox(height: 20),
-            Text('$error', style: context.text.bodyMedium, textAlign: TextAlign.center),
+            Text(
+              '$error',
+              style: context.text.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 20),
-            FilledButton(child: const Text('Go home'), onPressed: () => RPaths.home.go(context)),
+            FilledButton(
+              child: const Text('Go home'),
+              onPressed: () => RPaths.home.go(context),
+            ),
           ],
         ),
       ),

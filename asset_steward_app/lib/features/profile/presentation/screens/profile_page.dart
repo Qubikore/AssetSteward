@@ -32,8 +32,10 @@ class ProfilePage extends HookConsumerWidget {
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],
         builder: (data) => RefreshIndicator(
-          onRefresh: () =>
-              Future.wait([ref.refresh(profileCtrlProvider.future), ref.refresh(organizationCtrlProvider.future)]),
+          onRefresh: () => Future.wait([
+            ref.refresh(profileCtrlProvider.future),
+            ref.refresh(organizationCtrlProvider.future),
+          ]),
           child: ListView(
             physics: kScrollPhysics,
             padding: const EdgeInsets.symmetric(
@@ -51,7 +53,9 @@ class ProfilePage extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   color: context.colors.surfaceContainerHighest.op(0.3),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+                  border: Border.all(
+                    color: context.colors.outlineVariant.op(0.5),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -69,9 +73,15 @@ class ProfilePage extends HookConsumerWidget {
                         );
                       },
                     ),
-                    Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),
+                    Divider(
+                      height: 1,
+                      indent: 56,
+                      endIndent: Insets.md,
+                      color: context.colors.outlineVariant.op(0.5),
+                    ),
 
-                    if (data.role == UserRole.superAdmin || data.role == UserRole.hr) ...[
+                    if (data.role == UserRole.superAdmin ||
+                        data.role == UserRole.hr) ...[
                       SettingsTile(
                         icon: HIStroke.userGroup,
                         title: 'Manage Users',
@@ -133,7 +143,12 @@ class ProfilePage extends HookConsumerWidget {
                         Toast.showInfo('$kAppName $kAppVersion');
                       },
                     ),
-                    Divider(height: 1, indent: 56, endIndent: Insets.md, color: context.colors.outlineVariant.op(0.5)),
+                    Divider(
+                      height: 1,
+                      indent: 56,
+                      endIndent: Insets.md,
+                      color: context.colors.outlineVariant.op(0.5),
+                    ),
                     SettingsTile(
                       icon: HIStroke.logout05,
                       title: 'Logout',

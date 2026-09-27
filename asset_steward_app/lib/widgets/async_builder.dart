@@ -80,12 +80,18 @@ class AsyncBuilder<T> extends HookConsumerWidget {
               EmptyState(
                 label: emptyText ?? 'No Data Found',
                 subLabel: emptySubText,
-                icon: emptyIcon ?? (emptyIconData != null ? Icon(emptyIconData) : const Icon(HIStroke.inbox)),
-                onReload: providers.isNotEmpty ? () {
-                  for (final p in providers) {
-                    ref.invalidate(p);
-                  }
-                } : null,
+                icon:
+                    emptyIcon ??
+                    (emptyIconData != null
+                        ? Icon(emptyIconData)
+                        : const Icon(HIStroke.inbox)),
+                onReload: providers.isNotEmpty
+                    ? () {
+                        for (final p in providers) {
+                          ref.invalidate(p);
+                        }
+                      }
+                    : null,
               );
           return _wrapIfNeeded(emptyWidget);
         }
@@ -97,17 +103,21 @@ class AsyncBuilder<T> extends HookConsumerWidget {
         return _wrapIfNeeded(widget);
       },
       error: (error, stack) {
-        final widget = onError?.call(error, stack) ?? Center(
-          child: ErrorView(
-            error: error,
-            stackTrace: stack,
-            onRetry: providers.isNotEmpty ? () {
-              for (final p in providers) {
-                ref.invalidate(p);
-              }
-            } : null,
-          ),
-        );
+        final widget =
+            onError?.call(error, stack) ??
+            Center(
+              child: ErrorView(
+                error: error,
+                stackTrace: stack,
+                onRetry: providers.isNotEmpty
+                    ? () {
+                        for (final p in providers) {
+                          ref.invalidate(p);
+                        }
+                      }
+                    : null,
+              ),
+            );
         return _wrapIfNeeded(widget);
       },
     );
@@ -120,12 +130,12 @@ class AsyncBuilder<T> extends HookConsumerWidget {
     return false;
   }
 
-
-
   Widget _wrapIfNeeded(Widget child) {
     if (!wrapWithScaffold) return child;
     return Scaffold(
-      appBar: scaffoldTitle != null ? AppBar(title: Text(scaffoldTitle!), actions: [...?actions]) : null,
+      appBar: scaffoldTitle != null
+          ? AppBar(title: Text(scaffoldTitle!), actions: [...?actions])
+          : null,
       body: Center(child: child),
     );
   }

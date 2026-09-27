@@ -33,7 +33,11 @@ class EditProfileSheet extends HookConsumerWidget {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
+      padding: EdgeInsets.only(
+        left: Insets.lg,
+        right: Insets.lg,
+        bottom: context.viewInsets.bottom + Insets.xxl,
+      ),
       child: FormBuilder(
         key: formKey,
         initialValue: {
@@ -46,7 +50,12 @@ class EditProfileSheet extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Edit Profile', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Edit Profile',
+              style: context.text.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Gap(Insets.xl),
             Center(
               child: GestureDetector(
@@ -56,10 +65,18 @@ class EditProfileSheet extends HookConsumerWidget {
                     CircleAvatar(
                       radius: 40,
                       backgroundImage: selectedImage.value != null
-                          ? FileImage(File(selectedImage.value!.path)) as ImageProvider
-                          : (profile.profilePicture != null ? NetworkImage(profile.profilePicture!) : null),
-                      child: selectedImage.value == null && profile.profilePicture == null
-                          ? Text('${profile.firstname[0]}${profile.lastname[0]}', style: context.text.titleLarge)
+                          ? FileImage(File(selectedImage.value!.path))
+                                as ImageProvider
+                          : (profile.profilePicture != null
+                                ? NetworkImage(profile.profilePicture!)
+                                : null),
+                      child:
+                          selectedImage.value == null &&
+                              profile.profilePicture == null
+                          ? Text(
+                              '${profile.firstname[0]}${profile.lastname[0]}',
+                              style: context.text.titleLarge,
+                            )
                           : null,
                     ),
                     Positioned(
@@ -68,7 +85,11 @@ class EditProfileSheet extends HookConsumerWidget {
                       child: CircleAvatar(
                         radius: 14,
                         backgroundColor: context.colors.primary,
-                        child: Icon(HIStroke.camera01, size: 16, color: context.colors.onPrimary),
+                        child: Icon(
+                          HIStroke.camera01,
+                          size: 16,
+                          color: context.colors.onPrimary,
+                        ),
                       ),
                     ),
                   ],
@@ -79,11 +100,19 @@ class EditProfileSheet extends HookConsumerWidget {
             const Row(
               children: [
                 Expanded(
-                  child: InputField(name: 'firstname', title: 'First Name', isRequired: true),
+                  child: InputField(
+                    name: 'firstname',
+                    title: 'First Name',
+                    isRequired: true,
+                  ),
                 ),
                 Gap(Insets.md),
                 Expanded(
-                  child: InputField(name: 'lastname', title: 'Last Name', isRequired: true),
+                  child: InputField(
+                    name: 'lastname',
+                    title: 'Last Name',
+                    isRequired: true,
+                  ),
                 ),
               ],
             ),
@@ -92,12 +121,18 @@ class EditProfileSheet extends HookConsumerWidget {
             const Gap(Insets.xs),
             FormBuilderRadioGroup<String>(
               name: 'gender',
-              decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
-              options: [
-                'MALE',
-                'FEMALE',
-                'OTHER',
-              ].map((gender) => FormBuilderFieldOption(value: gender, child: Text(gender.titleCase))).toList(),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+              options: ['MALE', 'FEMALE', 'OTHER']
+                  .map(
+                    (gender) => FormBuilderFieldOption(
+                      value: gender,
+                      child: Text(gender.titleCase),
+                    ),
+                  )
+                  .toList(),
               wrapSpacing: Insets.lg,
               activeColor: context.colors.primary,
             ),
@@ -125,18 +160,23 @@ class EditProfileSheet extends HookConsumerWidget {
                           'firstname': form['firstname'],
                           'lastname': form['lastname'],
                           'gender': form['gender'],
-                          if (form['dob'] != null) 'dob': DateFormat('yyyy-MM-dd').format(form['dob'] as DateTime),
+                          if (form['dob'] != null)
+                            'dob': DateFormat('yyyy-MM-dd')
+                                .format(form['dob'] as DateTime),
                         };
 
                         if (selectedImage.value != null) {
-                          formDataMap['profile_picture'] = await MultipartFile.fromFile(
-                            selectedImage.value!.path,
-                            filename: selectedImage.value!.name,
-                          );
+                          formDataMap['profile_picture'] =
+                              await MultipartFile.fromFile(
+                                selectedImage.value!.path,
+                                filename: selectedImage.value!.name,
+                              );
                         }
 
                         final formData = FormData.fromMap(formDataMap);
-                        final result = await ref.read(profileCtrlProvider.notifier).updateProfile(formData);
+                        final result = await ref
+                            .read(profileCtrlProvider.notifier)
+                            .updateProfile(formData);
                         isLoading.value = false;
 
                         result.fold((l) => Toast.showError(l.message), (r) {
@@ -145,7 +185,9 @@ class EditProfileSheet extends HookConsumerWidget {
                         });
                       }
                     },
-              child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Save Changes'),
+              child: isLoading.value
+                  ? const Loader(size: 20, color: Colors.white)
+                  : const Text('Save Changes'),
             ),
           ],
         ),

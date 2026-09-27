@@ -41,7 +41,8 @@ class AppThemes {
         navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
         navigationBarIndicatorSchemeColor: SchemeColor.surfaceContainer,
         navigationBarIndicatorOpacity: 1.0,
-        navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        navigationBarLabelBehavior:
+            NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,
@@ -75,7 +76,8 @@ class AppThemes {
         navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
         navigationBarIndicatorSchemeColor: SchemeColor.primary,
         navigationBarIndicatorOpacity: 1.0,
-        navigationBarLabelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        navigationBarLabelBehavior:
+            NavigationDestinationLabelBehavior.alwaysShow,
       ),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       swapLegacyOnMaterial3: true,

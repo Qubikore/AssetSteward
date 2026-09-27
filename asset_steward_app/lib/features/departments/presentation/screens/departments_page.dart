@@ -87,7 +87,8 @@ class _DepartmentTile extends HookConsumerWidget {
                   isScrollControlled: true,
                   useSafeArea: true,
                   showDragHandle: true,
-                  builder: (context) => CreateOrUpdateDepartmentSheet(department: department),
+                  builder: (context) =>
+                      CreateOrUpdateDepartmentSheet(department: department),
                 );
               },
               backgroundColor: context.colors.primaryContainer,
@@ -101,9 +102,14 @@ class _DepartmentTile extends HookConsumerWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Delete Department'),
-                    content: Text('Are you sure you want to delete ${department.name}?'),
+                    content: Text(
+                      'Are you sure you want to delete ${department.name}?',
+                    ),
                     actions: [
-                      TextButton(onPressed: () => context.nPop(false), child: const Text('Cancel')),
+                      TextButton(
+                        onPressed: () => context.nPop(false),
+                        child: const Text('Cancel'),
+                      ),
                       FilledButton(
                         onPressed: () => context.nPop(true),
                         style: FilledButton.styleFrom(
@@ -117,7 +123,9 @@ class _DepartmentTile extends HookConsumerWidget {
                 );
 
                 if (confirm == true) {
-                  final result = await ref.read(departmentsCtrlProvider.notifier).deleteDepartment(department.id);
+                  final result = await ref
+                      .read(departmentsCtrlProvider.notifier)
+                      .deleteDepartment(department.id);
                   result.fold(
                     (l) => Toast.showError(l.message),
                     (r) => Toast.showSuccess('Department deleted successfully'),
@@ -138,7 +146,10 @@ class _DepartmentTile extends HookConsumerWidget {
               CircleAvatar(
                 radius: 22,
                 backgroundColor: context.colors.primaryContainer.op2,
-                child: Icon(HIStroke.building02, color: context.colors.primaryContainer),
+                child: Icon(
+                  HIStroke.building02,
+                  color: context.colors.primaryContainer,
+                ),
               ),
               const Gap(Insets.md),
               Expanded(

@@ -27,15 +27,15 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
   @override
   AssetStatus decode(dynamic value) {
     switch (value) {
-      case r'available':
+      case r'AVAILABLE':
         return AssetStatus.available;
-      case r'assigned':
+      case r'ASSIGNED':
         return AssetStatus.assigned;
-      case r'maintenance':
+      case r'MAINTENANCE':
         return AssetStatus.maintenance;
-      case r'pending_approval':
+      case r'PENDING_APPROVAL':
         return AssetStatus.pendingApproval;
-      case r'retired':
+      case r'RETIRED':
         return AssetStatus.retired;
       default:
         throw MapperException.unknownEnumValue(value);
@@ -46,15 +46,15 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
   dynamic encode(AssetStatus self) {
     switch (self) {
       case AssetStatus.available:
-        return r'available';
+        return r'AVAILABLE';
       case AssetStatus.assigned:
-        return r'assigned';
+        return r'ASSIGNED';
       case AssetStatus.maintenance:
-        return r'maintenance';
+        return r'MAINTENANCE';
       case AssetStatus.pendingApproval:
-        return r'pending_approval';
+        return r'PENDING_APPROVAL';
       case AssetStatus.retired:
-        return r'retired';
+        return r'RETIRED';
     }
   }
 }

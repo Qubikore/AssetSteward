@@ -11,7 +11,10 @@ class AuthInterceptor extends Interceptor {
   final TokenStorage _tokenStorage;
 
   @override
-  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final token = await _tokenStorage.getAccessToken();
 
     if (token != null) {
@@ -22,7 +25,10 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final path = err.requestOptions.path;
 
     if (path.contains(Endpoints.login)) return handler.next(err);

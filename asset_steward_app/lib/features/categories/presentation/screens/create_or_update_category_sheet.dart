@@ -41,10 +41,17 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
           children: [
             Text(
               isEdit ? 'Update Category' : 'Add New Category',
-              style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: context.text.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const Gap(Insets.xl),
-            const InputField(name: 'name', title: 'Category Name', hintText: 'e.g. Laptops', isRequired: true),
+            const InputField(
+              name: 'name',
+              title: 'Category Name',
+              hintText: 'e.g. Laptops',
+              isRequired: true,
+            ),
             const Gap(Insets.xxl),
             FilledButton(
               onPressed: isLoading.value
@@ -57,14 +64,20 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
                         final payload = {'name': form['name']};
 
                         final success = isEdit
-                            ? await ref.read(categoriesCtrlProvider.notifier).updateCategory(category!.id, payload)
-                            : await ref.read(categoriesCtrlProvider.notifier).createCategory(payload);
+                            ? await ref
+                                  .read(categoriesCtrlProvider.notifier)
+                                  .updateCategory(category!.id, payload)
+                            : await ref
+                                  .read(categoriesCtrlProvider.notifier)
+                                  .createCategory(payload);
 
                         isLoading.value = false;
 
-                        if (success) {
+                        if (success && context.mounted) {
                           Toast.showSuccess(
-                            isEdit ? 'Category updated successfully!' : 'Category created successfully!',
+                            isEdit
+                                ? 'Category updated successfully!'
+                                : 'Category created successfully!',
                           );
                           context.nPop();
                         }

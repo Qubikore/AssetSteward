@@ -1,7 +1,9 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../main.export.dart';
+
 import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+
 import '../datasources/users_remote_datasource.dart';
 
 @lazySingleton

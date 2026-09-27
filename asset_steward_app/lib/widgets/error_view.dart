@@ -3,7 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
 class ErrorView extends StatelessWidget {
-  const ErrorView({super.key, this.error, this.stackTrace, this.onRetry, this.compact = false});
+  const ErrorView({
+    super.key,
+    this.error,
+    this.stackTrace,
+    this.onRetry,
+    this.compact = false,
+  });
 
   final Object? error;
   final StackTrace? stackTrace;
@@ -43,7 +49,9 @@ class ErrorView extends StatelessWidget {
             const Gap(Insets.sm),
             Text(
               _userMessage,
-              style: context.text.bodyMedium?.copyWith(color: context.colors.error),
+              style: context.text.bodyMedium?.copyWith(
+                color: context.colors.error,
+              ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -83,8 +91,15 @@ class ErrorView extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(Insets.lg),
-                    decoration: BoxDecoration(color: context.colors.errorContainer, shape: BoxShape.circle),
-                    child: Icon(HIStroke.alert01, size: 48, color: context.colors.error),
+                    decoration: BoxDecoration(
+                      color: context.colors.errorContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      HIStroke.alert01,
+                      size: 48,
+                      color: context.colors.error,
+                    ),
                   ),
                   const Gap(Insets.xl),
                   Text(
@@ -101,7 +116,9 @@ class ErrorView extends StatelessWidget {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: context.text.bodyLarge?.copyWith(color: context.colors.onErrorContainer.op(0.8)),
+                    style: context.text.bodyLarge?.copyWith(
+                      color: context.colors.onErrorContainer.op(0.8),
+                    ),
                   ),
                   const Gap(Insets.xl),
                   if (onRetry != null)
@@ -123,7 +140,11 @@ class ErrorView extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          Chirp.error(_technicalDetails ?? _userMessage, error: error, stackTrace: stackTrace);
+                          Chirp.error(
+                            _technicalDetails ?? _userMessage,
+                            error: error,
+                            stackTrace: stackTrace,
+                          );
                         },
                         icon: const Icon(HIStroke.bug02),
                         label: const Text('Log Error'),

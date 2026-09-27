@@ -48,10 +48,20 @@ class HomePageview extends HookConsumerWidget {
             Row(
               spacing: Insets.md,
               children: [
-                Expanded(child: Text('Asset Utilization', style: context.text.titleMedium?.bold)),
+                Expanded(
+                  child: Text(
+                    'Asset Utilization',
+                    style: context.text.titleMedium?.bold,
+                  ),
+                ),
                 TextButton(
                   onPressed: () => RPaths.createAsset.push(context),
-                  child: Text('+ Add Asset', style: context.text.labelMedium?.textColor(context.colors.primary)),
+                  child: Text(
+                    '+ Add Asset',
+                    style: context.text.labelMedium?.textColor(
+                      context.colors.primary,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -68,7 +78,9 @@ class HomePageview extends HookConsumerWidget {
                     decoration: BoxDecoration(
                       color: context.colors.surfaceContainerHighest.op(0.2),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: context.colors.outlineVariant.op(0.3)),
+                      border: Border.all(
+                        color: context.colors.outlineVariant.op(0.3),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -78,14 +90,23 @@ class HomePageview extends HookConsumerWidget {
                             color: context.colors.secondaryContainer.op1,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(HIStroke.pieChart01, color: context.colors.secondaryContainer, size: 25),
+                          child: Icon(
+                            HIStroke.pieChart01,
+                            color: context.colors.secondaryContainer,
+                            size: 25,
+                          ),
                         ),
                         const Gap(Insets.md),
-                        Text('No assets found', style: context.text.titleMedium?.bold),
+                        Text(
+                          'No assets found',
+                          style: context.text.titleMedium?.bold,
+                        ),
                         const Gap(Insets.xs),
                         Text(
                           'Add your first asset to see utilization analytics.',
-                          style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
+                          style: context.text.bodySmall?.textColor(
+                            context.colors.onSurfaceVariant,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const Gap(Insets.lg),
@@ -122,7 +143,12 @@ class HomePageview extends HookConsumerWidget {
                 Text('Departments', style: context.text.titleMedium?.bold),
                 TextButton(
                   onPressed: () => context.push(RPaths.departments.path),
-                  child: Text('View All', style: context.text.labelMedium?.textColor(context.colors.primary)),
+                  child: Text(
+                    'View All',
+                    style: context.text.labelMedium?.textColor(
+                      context.colors.primary,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -135,7 +161,9 @@ class HomePageview extends HookConsumerWidget {
                 if (departments.isEmpty) {
                   return Text(
                     'No departments configured.',
-                    style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
+                    style: context.text.bodyMedium?.textColor(
+                      context.colors.onSurfaceVariant,
+                    ),
                   );
                 }
                 final list = departments.take(2).toList();
@@ -144,7 +172,10 @@ class HomePageview extends HookConsumerWidget {
                       .map(
                         (d) => Padding(
                           padding: const EdgeInsets.only(bottom: Insets.sm),
-                          child: _MiniEntityTile(title: d.name, icon: HIStroke.building02),
+                          child: _MiniEntityTile(
+                            title: d.name,
+                            icon: HIStroke.building02,
+                          ),
                         ),
                       )
                       .toList(),
@@ -185,7 +216,12 @@ class _MiniEntityTile extends StatelessWidget {
           ),
           const Gap(Insets.md),
           Expanded(
-            child: Text(title, style: context.text.bodyMedium?.bold, maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: Text(
+              title,
+              style: context.text.bodyMedium?.bold,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

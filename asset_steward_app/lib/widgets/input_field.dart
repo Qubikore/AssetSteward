@@ -54,7 +54,9 @@ class InputField extends HookWidget {
       ...validators,
     ];
 
-    final effectiveKeyboardType = isNumeric ? TextInputType.number : keyboardType;
+    final effectiveKeyboardType = isNumeric
+        ? TextInputType.number
+        : keyboardType;
 
     final effectiveFormatters = <TextInputFormatter>[
       if (isNumeric) FilteringTextInputFormatter.digitsOnly,
@@ -82,8 +84,14 @@ class InputField extends HookWidget {
         maxLines: maxLines,
         readOnly: readOnly,
         onChanged: onChanged,
-        validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
-        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
+        validator: effectiveValidators.isEmpty
+            ? null
+            : FormBuilderValidators.compose(effectiveValidators),
+        decoration: InputDecoration(
+          hintText: hintText,
+          suffixIcon: suffixIcon,
+          isDense: true,
+        ),
       );
     } else {
       field = TextFormField(
@@ -96,8 +104,14 @@ class InputField extends HookWidget {
         maxLines: maxLines,
         readOnly: readOnly,
         onChanged: onChanged,
-        validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
-        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
+        validator: effectiveValidators.isEmpty
+            ? null
+            : FormBuilderValidators.compose(effectiveValidators),
+        decoration: InputDecoration(
+          hintText: hintText,
+          suffixIcon: suffixIcon,
+          isDense: true,
+        ),
       );
     }
 
@@ -123,7 +137,13 @@ class InputField extends HookWidget {
           Row(
             spacing: Insets.xs,
             children: [
-              Expanded(child: Text(title!, style: context.text.titleSmall?.medium, maxLines: 1).required(isRequired)),
+              Expanded(
+                child: Text(
+                  title!,
+                  style: context.text.titleSmall?.medium,
+                  maxLines: 1,
+                ).required(isRequired),
+              ),
               ?titleAction,
             ],
           ),

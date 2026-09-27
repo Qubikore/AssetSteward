@@ -36,7 +36,10 @@ class DepartmentsCtrl extends _$DepartmentsCtrl {
     return result;
   }
 
-  Future<Either<Failure, DepartmentModel>> updateDepartment(int id, QMap data) async {
+  Future<Either<Failure, DepartmentModel>> updateDepartment(
+    int id,
+    QMap data,
+  ) async {
     final result = await _repo.updateDepartment(id, data);
 
     result.map((updatedDepartment) {
@@ -62,7 +65,9 @@ class DepartmentsCtrl extends _$DepartmentsCtrl {
     result.map((_) {
       if (state.value != null) {
         final List<DepartmentModel> currentList = state.value!;
-        final newList = currentList.where((element) => element.id != id).toList();
+        final newList = currentList
+            .where((element) => element.id != id)
+            .toList();
         state = AsyncData(newList);
       }
     });

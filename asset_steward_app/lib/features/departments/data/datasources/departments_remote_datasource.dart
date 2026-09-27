@@ -15,10 +15,15 @@ class DepartmentsRemoteDS {
     DepartmentModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<List<DepartmentModel>>(response.data);
 
-    if (res case ApiResponse(success: true, data: final List<DepartmentModel> data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final List<DepartmentModel> data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -27,10 +32,15 @@ class DepartmentsRemoteDS {
     DepartmentModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<DepartmentModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final DepartmentModel department)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final DepartmentModel department,
+    )) {
       return department;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -39,10 +49,15 @@ class DepartmentsRemoteDS {
     DepartmentModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<DepartmentModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final DepartmentModel department)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final DepartmentModel department,
+    )) {
       return department;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -51,7 +66,9 @@ class DepartmentsRemoteDS {
     final res = ApiResponse.fromMap<void>(response.data);
 
     if (!res.success) {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

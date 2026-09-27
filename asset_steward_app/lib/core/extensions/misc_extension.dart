@@ -47,9 +47,17 @@ extension NumEx on num {
   String currency({bool compact = false, int decimalDigits = 2}) {
     final digits = isInt ? 0 : decimalDigits;
     if (compact) {
-      return NumberFormat.compactCurrency(name: 'BDT', symbol: 'Tk', decimalDigits: digits).format(normalize());
+      return NumberFormat.compactCurrency(
+        name: 'BDT',
+        symbol: '৳',
+        decimalDigits: digits,
+      ).format(normalize());
     }
-    return NumberFormat.currency(name: 'BDT', symbol: 'Tk', decimalDigits: digits).format(normalize());
+    return NumberFormat.currency(
+      name: 'BDT',
+      symbol: '৳',
+      decimalDigits: digits,
+    ).format(normalize());
   }
 
   String compact() {

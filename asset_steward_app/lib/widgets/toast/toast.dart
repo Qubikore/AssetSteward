@@ -88,7 +88,12 @@ class Toast {
     );
   }
 
-  static void showSuccess(String message, {BuildContext? context, String? title, IconData? icon}) {
+  static void showSuccess(
+    String message, {
+    BuildContext? context,
+    String? title,
+    IconData? icon,
+  }) {
     show(
       title ?? 'Success',
       subtitle: message,
@@ -98,7 +103,12 @@ class Toast {
     );
   }
 
-  static void showError(String message, {BuildContext? context, String? title, IconData? icon}) {
+  static void showError(
+    String message, {
+    BuildContext? context,
+    String? title,
+    IconData? icon,
+  }) {
     show(
       title ?? 'Error',
       subtitle: message,
@@ -109,7 +119,12 @@ class Toast {
     );
   }
 
-  static void showWarning(String message, {BuildContext? context, String? title, IconData? icon}) {
+  static void showWarning(
+    String message, {
+    BuildContext? context,
+    String? title,
+    IconData? icon,
+  }) {
     show(
       title ?? 'Warning',
       subtitle: message,
@@ -119,7 +134,12 @@ class Toast {
     );
   }
 
-  static void showInfo(String message, {BuildContext? context, String? title, IconData? icon}) {
+  static void showInfo(
+    String message, {
+    BuildContext? context,
+    String? title,
+    IconData? icon,
+  }) {
     show(
       title ?? 'Info',
       subtitle: message,
@@ -137,7 +157,9 @@ class Toast {
 
     final effectiveContext = context ?? _globalContext;
     if (effectiveContext == null) {
-      Chirp.warning('Toast: No context available to show toast. Ensure ToastWrapper is added.');
+      Chirp.warning(
+        'Toast: No context available to show toast. Ensure ToastWrapper is added.',
+      );
       _toastsQueue.clear();
       return;
     }
@@ -209,7 +231,8 @@ class _ToastWidget extends StatefulWidget {
   State<_ToastWidget> createState() => _ToastWidgetState();
 }
 
-class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixin {
+class _ToastWidgetState extends State<_ToastWidget>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   final ScrollController _scrollController = ScrollController();
@@ -217,10 +240,16 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(duration: widget.data.transitionDuration, vsync: this);
+    _animationController = AnimationController(
+      duration: widget.data.transitionDuration,
+      vsync: this,
+    );
 
     _offsetAnimation =
-        Tween<Offset>(begin: Offset(0, widget.data.position == ToastPosition.top ? -1 : 1), end: Offset.zero).animate(
+        Tween<Offset>(
+          begin: Offset(0, widget.data.position == ToastPosition.top ? -1 : 1),
+          end: Offset.zero,
+        ).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: widget.data.curve,
@@ -235,11 +264,13 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.offset > 30 && widget.data.position == ToastPosition.top) {
+      if (_scrollController.offset > 30 &&
+          widget.data.position == ToastPosition.top) {
         _dismissAlert();
       }
 
-      if (_scrollController.offset < -30 && widget.data.position == ToastPosition.bottom) {
+      if (_scrollController.offset < -30 &&
+          widget.data.position == ToastPosition.bottom) {
         _dismissAlert();
       }
     });
@@ -263,16 +294,28 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
     final double baseVerticalPadding = widget.data.subtitle != null ? 9 : 15;
 
     if (widget.data.subtitle == null && widget.data.icon == null) {
-      return EdgeInsets.symmetric(vertical: baseVerticalPadding + 3, horizontal: baseHorizontalPadding + 20);
+      return EdgeInsets.symmetric(
+        vertical: baseVerticalPadding + 3,
+        horizontal: baseHorizontalPadding + 20,
+      );
     }
     if (widget.data.icon == null && widget.data.subtitle != null) {
-      return EdgeInsets.symmetric(horizontal: baseHorizontalPadding + 20, vertical: baseVerticalPadding);
+      return EdgeInsets.symmetric(
+        horizontal: baseHorizontalPadding + 20,
+        vertical: baseVerticalPadding,
+      );
     }
     if (widget.data.icon != null && widget.data.subtitle != null) {
-      return EdgeInsets.symmetric(horizontal: baseHorizontalPadding, vertical: baseVerticalPadding);
+      return EdgeInsets.symmetric(
+        horizontal: baseHorizontalPadding,
+        vertical: baseVerticalPadding,
+      );
     }
     if (widget.data.icon != null && widget.data.subtitle == null) {
-      return EdgeInsets.symmetric(horizontal: baseVerticalPadding, vertical: baseVerticalPadding);
+      return EdgeInsets.symmetric(
+        horizontal: baseVerticalPadding,
+        vertical: baseVerticalPadding,
+      );
     }
 
     return const EdgeInsets.all(0);
@@ -285,7 +328,9 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
     return Positioned(
       left: 0,
       top: widget.data.position == ToastPosition.top ? 3 : null,
-      bottom: widget.data.position == ToastPosition.bottom ? MediaQuery.of(context).viewPadding.bottom : null,
+      bottom: widget.data.position == ToastPosition.bottom
+          ? MediaQuery.of(context).viewPadding.bottom
+          : null,
       right: 0,
       child: SlideTransition(
         position: _offsetAnimation,
@@ -293,18 +338,30 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
           clipBehavior: Clip.none,
           controller: _scrollController,
           hitTestBehavior: HitTestBehavior.deferToChild,
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           child: SafeArea(
             child: Center(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
-                clipBehavior: widget.data.shape == ToastShape.squared ? Clip.none : Clip.antiAlias,
+                clipBehavior: widget.data.shape == ToastShape.squared
+                    ? Clip.none
+                    : Clip.antiAlias,
                 decoration: ShapeDecoration(
                   shape: widget.data.shape == ToastShape.squared
-                      ? const ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(Corners.md)))
+                      ? const ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(Corners.md),
+                          ),
+                        )
                       : const StadiumBorder(),
                   shadows: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 4)),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
                   ],
                 ),
                 child: Material(
@@ -319,7 +376,9 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
                             widget.data.icon,
                             color:
                                 widget.data.iconColor ??
-                                (widget.data.isDestructive ? context.colors.error : context.colors.primary),
+                                (widget.data.isDestructive
+                                    ? context.colors.error
+                                    : context.colors.primary),
                             size: iconSize,
                           ),
                         if (widget.data.icon != null) const Gap(Insets.sm),
@@ -348,7 +407,8 @@ class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixi
                                   style:
                                       widget.data.subtitleTextStyle ??
                                       context.text.labelMedium?.copyWith(
-                                        color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
+                                        color: context.colors.onSurfaceVariant
+                                            .withValues(alpha: 0.8),
                                       ),
                                 ),
                               ],

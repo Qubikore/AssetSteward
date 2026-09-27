@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
-Widget _build(Alignment value, Widget child) => Align(alignment: value, child: child);
+Widget _build(Alignment value, Widget child) =>
+    Align(alignment: value, child: child);
 
 /// TOPS
 class TopLeft extends StatelessWidget {

@@ -36,7 +36,10 @@ class LocationsCtrl extends _$LocationsCtrl {
     return result;
   }
 
-  Future<Either<Failure, LocationModel>> updateLocation(int id, QMap data) async {
+  Future<Either<Failure, LocationModel>> updateLocation(
+    int id,
+    QMap data,
+  ) async {
     final result = await _repo.updateLocation(id, data);
 
     result.map((updatedLocation) {
@@ -62,7 +65,9 @@ class LocationsCtrl extends _$LocationsCtrl {
     result.map((_) {
       if (state.value != null) {
         final List<LocationModel> currentList = state.value!;
-        final newList = currentList.where((element) => element.id != id).toList();
+        final newList = currentList
+            .where((element) => element.id != id)
+            .toList();
         state = AsyncData(newList);
       }
     });

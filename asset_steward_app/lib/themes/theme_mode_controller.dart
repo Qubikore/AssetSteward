@@ -13,7 +13,10 @@ class ThemeModeController extends _$ThemeModeController {
   ThemeMode build() {
     final storage = di<KeyValueStorage>();
     final themeName = storage.getString(_themeKey);
-    return ThemeMode.values.firstWhere((e) => e.name == themeName, orElse: () => ThemeMode.system);
+    return ThemeMode.values.firstWhere(
+      (e) => e.name == themeName,
+      orElse: () => ThemeMode.system,
+    );
   }
 
   void setThemeMode(ThemeMode mode) {

@@ -5,7 +5,13 @@ export 'package:go_router/go_router.dart';
 class RPaths {
   const RPaths._();
 
-  static const List<RPath> navRoutes = [home, assets, scan, maintenance, profile];
+  static const List<RPath> navRoutes = [
+    home,
+    assets,
+    scan,
+    maintenance,
+    profile,
+  ];
 
   static const login = RPath('/login');
   static const register = RPath('/register');

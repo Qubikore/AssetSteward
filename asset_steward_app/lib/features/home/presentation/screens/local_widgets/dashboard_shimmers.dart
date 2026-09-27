@@ -49,7 +49,8 @@ class UtilizationShimmer extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 3,
         separatorBuilder: (_, _) => const Gap(Insets.sm),
-        itemBuilder: (_, _) => const _ShimmerBox(height: 72, width: double.infinity),
+        itemBuilder: (_, _) =>
+            const _ShimmerBox(height: 72, width: double.infinity),
       ),
     );
   }
@@ -85,7 +86,10 @@ class _ShimmerBox extends StatelessWidget {
     return Container(
       height: height,
       width: width,
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
     );
   }
 }

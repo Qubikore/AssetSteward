@@ -14,10 +14,15 @@ class CategoriesRemoteDS {
     CategoryModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<List<CategoryModel>>(response.data);
 
-    if (res case ApiResponse(success: true, data: final List<CategoryModel> data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final List<CategoryModel> data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -26,10 +31,15 @@ class CategoriesRemoteDS {
     CategoryModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<CategoryModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final CategoryModel category)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final CategoryModel category,
+    )) {
       return category;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -38,10 +48,15 @@ class CategoriesRemoteDS {
     CategoryModelMapper.ensureInitialized();
     final res = ApiResponse.fromMap<CategoryModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final CategoryModel category)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final CategoryModel category,
+    )) {
       return category;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -50,7 +65,9 @@ class CategoriesRemoteDS {
     final res = ApiResponse.fromMap<void>(response.data);
 
     if (!res.success) {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

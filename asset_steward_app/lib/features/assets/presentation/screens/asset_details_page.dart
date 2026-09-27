@@ -1,12 +1,11 @@
-import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
-import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
+
+import 'asset_context_menu.dart';
 
 class AssetDetailsPage extends HookConsumerWidget {
   final int id;
@@ -17,93 +16,29 @@ class AssetDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
     final profileAsync = ref.watch(profileCtrlProvider);
+    final profile = profileAsync.value;
+    final isPrivileged = profile != null && (profile.role == .superAdmin || profile.role == .hr);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Asset Details'),
         actions: [
-          assetAsync.when(
-            data: (asset) => ContextMenu(
-              alignment: ContextMenuAlignment.end,
-              items: [
-                ContextMenuAction(
-                  title: 'Assign',
-                  leading: const Icon(HIStroke.userAdd01),
-                  onTap: () => Toast.showInfo('Assign feature coming soon'),
-                ),
-                ContextMenuAction(
-                  title: 'Transfer',
-                  leading: const Icon(HIStroke.arrowDataTransferHorizontal),
-                  onTap: () => Toast.showInfo('Transfer feature coming soon'),
-                ),
-                ContextMenuAction(
-                  title: 'Print Label',
-                  leading: const Icon(HIStroke.printer),
-                  onTap: () => Toast.showInfo('Print Label feature coming soon'),
-                ),
-                ContextMenuAction(
-                  title: 'Start Maintenance',
-                  leading: const Icon(HIStroke.settings02),
-                  onTap: () => Toast.showInfo('Maintenance feature coming soon'),
-                ),
-                const ContextMenuDivider(),
-                ContextMenuAction(
-                  title: 'Edit Asset',
-                  leading: const Icon(HIStroke.edit02),
-                  onTap: () => context.push(RPaths.createAsset.path, extra: asset),
-                ),
-                ContextMenuAction(
-                  title: 'Delete Asset',
-                  leading: const Icon(HIStroke.delete02),
-                  isDestructive: true,
-                  onTap: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Delete Asset'),
-                        content: const Text('Are you sure you want to delete this asset?'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                          FilledButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: context.colors.error,
-                              foregroundColor: context.colors.onError,
-                            ),
-                            child: const Text('Delete'),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (confirm == true) {
-                      final success = await ref.read(assetsCtrlProvider.notifier).deleteAsset(id);
-                      if (success && context.mounted) {
-                        context.pop();
-                      }
-                    }
-                  },
-                ),
-              ],
-              buttonBuilder: (context, open) =>
-                  IconButton(onPressed: open, icon: const Icon(HIStroke.moreVerticalCircle01)),
-            ),
-            loading: () => const SizedBox.shrink(),
-            error: (_, _) => const SizedBox.shrink(),
-          ),
+          AssetContextMenu(id: id),
+
           const Gap(8),
         ],
       ),
       body: AsyncBuilder(
         asyncValue: assetAsync,
         builder: (asset) {
-          final isPending = asset.status == AssetStatus.pendingApproval;
-          final profile = profileAsync.value;
-          final canApprove = profile != null && (profile.role == UserRole.superAdmin || profile.role == UserRole.hr);
+          final isPending = asset.status == .pendingApproval;
+          final canApprove = isPrivileged;
 
           return Column(
             children: [
               Expanded(
                 child: ListView(
+                  physics: kScrollPhysics,
                   padding: const EdgeInsets.all(Insets.lg),
                   children: [
                     // Header Section
@@ -116,12 +51,6 @@ class AssetDetailsPage extends HookConsumerWidget {
                       ),
                       child: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(color: context.colors.primaryContainer, shape: BoxShape.circle),
-                            child: Icon(HIStroke.laptopProgramming, size: 48, color: context.colors.primary),
-                          ),
-                          const Gap(Insets.lg),
                           Text(asset.name, style: context.text.headlineSmall?.bold, textAlign: TextAlign.center),
                           const Gap(Insets.sm),
                           Container(
@@ -146,10 +75,10 @@ class AssetDetailsPage extends HookConsumerWidget {
                     _DetailCard(
                       children: [
                         _DetailRow(label: 'Asset Code', value: asset.assetCode),
-                        _DetailRow(label: 'Serial Number', value: asset.serialNumber ?? 'N/A'),
-                        _DetailRow(label: 'Category', value: asset.category?.name ?? 'Uncategorized'),
-                        _DetailRow(label: 'Location', value: asset.location?.name ?? 'Unassigned'),
-                        _DetailRow(label: 'Department', value: asset.department?.name ?? 'Unassigned'),
+                        _DetailRow(label: 'Serial Number', value: asset.serialNumber),
+                        _DetailRow(label: 'Category', value: asset.category?.name),
+                        _DetailRow(label: 'Location', value: asset.location?.name),
+                        _DetailRow(label: 'Department', value: asset.department?.name),
                       ],
                     ),
                     const Gap(Insets.lg),
@@ -158,10 +87,11 @@ class AssetDetailsPage extends HookConsumerWidget {
                     const Gap(Insets.md),
                     _DetailCard(
                       children: [
-                        _DetailRow(label: 'Vendor', value: asset.vendor ?? 'N/A'),
+                        _DetailRow(label: 'Vendor', value: asset.vendor),
+                        _DetailRow(label: 'Quantity', value: asset.quantity.toString()),
                         _DetailRow(label: 'Purchase Price', value: asset.purchasePrice.currency()),
                         _DetailRow(label: 'Purchase Date', value: asset.purchaseDate),
-                        _DetailRow(label: 'Expire Date', value: asset.expireDate ?? 'N/A'),
+                        _DetailRow(label: 'Expire Date', value: asset.expireDate),
                       ],
                     ),
                   ],
@@ -233,12 +163,14 @@ class _DetailCard extends StatelessWidget {
 
 class _DetailRow extends StatelessWidget {
   final String label;
-  final String value;
+  final String? value;
 
   const _DetailRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
+    final hasValue =
+        value != null && value!.isNotEmpty && value != 'N/A' && value != 'Uncategorized' && value != 'Unassigned';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -250,7 +182,14 @@ class _DetailRow extends StatelessWidget {
           ),
           Expanded(
             flex: 3,
-            child: Text(value, style: context.text.bodyMedium?.bold, textAlign: TextAlign.right),
+            child: Text(
+              hasValue ? value! : '--',
+              style: context.text.bodyMedium?.copyWith(
+                fontWeight: hasValue ? FontWeight.bold : FontWeight.normal,
+                color: hasValue ? context.colors.onSurface : context.colors.outline,
+              ),
+              textAlign: TextAlign.right,
+            ),
           ),
         ],
       ),

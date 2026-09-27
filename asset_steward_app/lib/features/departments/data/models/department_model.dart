@@ -10,8 +10,5 @@ class DepartmentModel with DepartmentModelMappable {
   final int id;
   final String name;
 
-  const DepartmentModel({
-    required this.id,
-    required this.name,
-  });
+  const DepartmentModel({required this.id, required this.name});
 }

@@ -17,12 +17,20 @@ class ErrorHandler {
 
     // Log unexpected errors so they aren't silently swallowed
     Chirp.error('Unexpected Error', error: e, stackTrace: stackTrace);
-    return Failure('An unexpected error occurred.', exception: e, stackTrace: stackTrace);
+    return Failure(
+      'An unexpected error occurred.',
+      exception: e,
+      stackTrace: stackTrace,
+    );
   }
 
   static Failure _handleDioException(DioException e, StackTrace? stackTrace) {
-    if (e.type == .connectionError || e.type == .connectionTimeout || e.type == .unknown) {
-      return const Failure('No internet connection. Please check your network.');
+    if (e.type == .connectionError ||
+        e.type == .connectionTimeout ||
+        e.type == .unknown) {
+      return const Failure(
+        'No internet connection. Please check your network.',
+      );
     }
 
     if (e.type == .receiveTimeout || e.type == .sendTimeout) {
@@ -55,6 +63,10 @@ class ErrorHandler {
       return Failure(serverMessage, exception: e, stackTrace: stackTrace);
     }
 
-    return Failure('Server error occurred (Code: $status)', exception: e, stackTrace: stackTrace);
+    return Failure(
+      'Server error occurred (Code: $status)',
+      exception: e,
+      stackTrace: stackTrace,
+    );
   }
 }

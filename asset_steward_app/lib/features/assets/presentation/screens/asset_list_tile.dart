@@ -6,6 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 import 'package:screwdriver/screwdriver.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 
 class AssetListTile extends ConsumerWidget {
   final AssetModel asset;
@@ -14,56 +16,79 @@ class AssetListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AssetModel(:purchasePrice, :serialNumber, :expireDate, :category, :location, :department) = asset;
+    final AssetModel(
+      :purchasePrice,
+      :serialNumber,
+      :expireDate,
+      :category,
+      :location,
+      :department,
+    ) = asset;
+    final profile = ref.watch(profileCtrlProvider).value;
+    final isPrivileged =
+        profile != null &&
+        (profile.role == UserRole.superAdmin || profile.role == UserRole.hr);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Slidable(
         key: ValueKey(asset.id),
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          children: [
-            SlidableAction(
-              onPressed: (context) {
-                context.push(RPaths.createAsset.path, extra: asset);
-              },
-              backgroundColor: context.colors.primaryContainer,
-              foregroundColor: context.colors.onPrimaryContainer,
-              icon: HIStroke.edit03,
-              label: 'Edit',
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-            ),
-            SlidableAction(
-              onPressed: (context) async {
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Delete Location'),
-                    content: Text('Are you sure you want to delete ${asset.name}?'),
-                    actions: [
-                      TextButton(onPressed: () => context.nPop(false), child: const Text('Cancel')),
-                      FilledButton(
-                        onPressed: () => context.nPop(true),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: context.colors.error,
-                          foregroundColor: context.colors.onError,
-                        ),
-                        child: const Text('Delete'),
-                      ),
-                    ],
+        endActionPane: !isPrivileged
+            ? null
+            : ActionPane(
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (context) {
+                      context.push(RPaths.createAsset.path, extra: asset);
+                    },
+                    backgroundColor: context.colors.primaryContainer,
+                    foregroundColor: context.colors.onPrimaryContainer,
+                    icon: HIStroke.edit03,
+                    label: 'Edit',
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(12),
+                    ),
                   ),
-                );
+                  SlidableAction(
+                    onPressed: (context) async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Delete Location'),
+                          content: Text(
+                            'Are you sure you want to delete ${asset.name}?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => context.nPop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            FilledButton(
+                              onPressed: () => context.nPop(true),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: context.colors.error,
+                                foregroundColor: context.colors.onError,
+                              ),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
 
-                if (confirm == true) {
-                  await ref.read(assetsCtrlProvider.notifier).deleteAsset(asset.id);
-                }
-              },
-              backgroundColor: context.colors.error,
-              foregroundColor: context.colors.onError,
-              icon: HIStroke.delete01,
-              label: 'Delete',
-            ),
-          ],
-        ),
+                      if (confirm == true) {
+                        await ref
+                            .read(assetsCtrlProvider.notifier)
+                            .deleteAsset(asset.id);
+                      }
+                    },
+                    backgroundColor: context.colors.error,
+                    foregroundColor: context.colors.onError,
+                    icon: HIStroke.delete01,
+                    label: 'Delete',
+                  ),
+                ],
+              ),
         child: GestureDetector(
           onTap: () => RPaths.assetDetails(asset.id.toString()).push(context),
           child: Container(
@@ -83,9 +108,17 @@ class AssetListTile extends ConsumerWidget {
                         spacing: 8,
                         children: [
                           Expanded(
-                            child: Text(asset.name, style: context.text.titleMedium, maxLines: 1, overflow: .ellipsis),
+                            child: Text(
+                              asset.name,
+                              style: context.text.titleMedium,
+                              maxLines: 1,
+                              overflow: .ellipsis,
+                            ),
                           ),
-                          Text(asset.purchasePrice.currency(), style: context.text.titleMedium),
+                          Text(
+                            asset.purchasePrice.currency(),
+                            style: context.text.titleMedium,
+                          ),
                         ],
                       ),
                       const Gap(2),
@@ -94,7 +127,9 @@ class AssetListTile extends ConsumerWidget {
                           children: [
                             TextSpan(
                               text: asset.status.name.sentenceCase,
-                              style: context.text.bodySmall?.textColor(asset.status.color),
+                              style: context.text.bodySmall?.textColor(
+                                asset.status.color,
+                              ),
                             ),
                           ],
                         ),
@@ -114,15 +149,25 @@ class AssetListTile extends ConsumerWidget {
                                 children: [
                                   WidgetSpan(
                                     alignment: .middle,
-                                    child: Icon(HIStroke.hashtag, size: 12, color: context.colors.outline),
+                                    child: Icon(
+                                      HIStroke.hashtag,
+                                      size: 12,
+                                      color: context.colors.outline,
+                                    ),
                                   ),
                                   TextSpan(text: '  $serialNumber'),
                                 ],
                               ),
-                              style: context.text.labelSmall?.textColor(context.colors.outline),
+                              style: context.text.labelSmall?.textColor(
+                                context.colors.outline,
+                              ),
                             ),
                           if (category != null && serialNumber.isNotNullOrBlank)
-                            Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+                            Icon(
+                              Icons.circle,
+                              size: 6,
+                              color: context.colors.outlineVariant,
+                            ),
 
                           if (category != null)
                             Text.rich(
@@ -130,16 +175,26 @@ class AssetListTile extends ConsumerWidget {
                                 children: [
                                   WidgetSpan(
                                     alignment: .middle,
-                                    child: Icon(HIStroke.tag01, size: 12, color: context.colors.outline),
+                                    child: Icon(
+                                      HIStroke.tag01,
+                                      size: 12,
+                                      color: context.colors.outline,
+                                    ),
                                   ),
                                   TextSpan(text: '  ${asset.category!.name}'),
                                 ],
                               ),
-                              style: context.text.labelSmall?.textColor(context.colors.outline),
+                              style: context.text.labelSmall?.textColor(
+                                context.colors.outline,
+                              ),
                             ),
 
                           if (category != null && department != null)
-                            Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+                            Icon(
+                              Icons.circle,
+                              size: 6,
+                              color: context.colors.outlineVariant,
+                            ),
 
                           if (department != null)
                             Text.rich(
@@ -147,12 +202,18 @@ class AssetListTile extends ConsumerWidget {
                                 children: [
                                   WidgetSpan(
                                     alignment: .middle,
-                                    child: Icon(HIStroke.building02, size: 12, color: context.colors.outline),
+                                    child: Icon(
+                                      HIStroke.building02,
+                                      size: 12,
+                                      color: context.colors.outline,
+                                    ),
                                   ),
                                   TextSpan(text: '  ${asset.department!.name}'),
                                 ],
                               ),
-                              style: context.text.labelSmall?.textColor(context.colors.outline),
+                              style: context.text.labelSmall?.textColor(
+                                context.colors.outline,
+                              ),
                             ),
                         ],
                       ),

@@ -15,7 +15,10 @@ class ProfileHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final orgAsync = ref.watch(organizationCtrlProvider);
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: Insets.sm, horizontal: Insets.md),
+      padding: const EdgeInsets.symmetric(
+        vertical: Insets.sm,
+        horizontal: Insets.md,
+      ),
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerHighest.op(0.3),
         borderRadius: BorderRadius.circular(16),
@@ -47,7 +50,9 @@ class ProfileHeader extends ConsumerWidget {
                           Expanded(
                             child: SelectableText(
                               org.name,
-                              style: context.text.titleMedium?.bold.textHeight(1),
+                              style: context.text.titleMedium?.bold.textHeight(
+                                1,
+                              ),
                               maxLines: 1,
                             ),
                           ),
@@ -59,12 +64,18 @@ class ProfileHeader extends ConsumerWidget {
                         const Gap(Insets.xs),
                         Row(
                           children: [
-                            Icon(HIStroke.mail01, size: 13, color: context.colors.outline),
+                            Icon(
+                              HIStroke.mail01,
+                              size: 13,
+                              color: context.colors.outline,
+                            ),
                             const Gap(Insets.sm),
                             Expanded(
                               child: SelectableText(
                                 org.email!,
-                                style: context.text.bodySmall?.textColor(context.colors.outline),
+                                style: context.text.bodySmall?.textColor(
+                                  context.colors.outline,
+                                ),
                                 maxLines: 1,
                               ),
                             ),
@@ -76,26 +87,42 @@ class ProfileHeader extends ConsumerWidget {
                         Row(
                           children: [
                             if (org.phone != null) ...[
-                              Icon(HIStroke.holdPhone, size: 12, color: context.colors.outline),
+                              Icon(
+                                HIStroke.holdPhone,
+                                size: 12,
+                                color: context.colors.outline,
+                              ),
                               const Gap(Insets.xs),
                               SelectableText(
                                 org.phone!,
                                 maxLines: 1,
-                                style: context.text.bodySmall?.textColor(context.colors.outline),
+                                style: context.text.bodySmall?.textColor(
+                                  context.colors.outline,
+                                ),
                               ),
                             ],
                             if (org.phone != null && org.location != null) ...[
                               const Gap(Insets.sm),
-                              Icon(Icons.circle, size: 5, color: context.colors.outline),
+                              Icon(
+                                Icons.circle,
+                                size: 5,
+                                color: context.colors.outline,
+                              ),
                               const Gap(Insets.sm),
                             ],
                             if (org.location != null) ...[
-                              Icon(HIStroke.location01, size: 12, color: context.colors.outline),
+                              Icon(
+                                HIStroke.location01,
+                                size: 12,
+                                color: context.colors.outline,
+                              ),
                               const Gap(Insets.xs),
                               Expanded(
                                 child: SelectableText(
                                   org.location!,
-                                  style: context.text.bodySmall?.textColor(context.colors.outline),
+                                  style: context.text.bodySmall?.textColor(
+                                    context.colors.outline,
+                                  ),
                                   maxLines: 1,
                                 ),
                               ),
@@ -133,11 +160,15 @@ class _ProfileInfo extends StatelessWidget {
           child: CircleAvatar(
             radius: 30,
             backgroundColor: context.colors.primaryContainer,
-            backgroundImage: data.profilePicture != null ? NetworkImage(data.profilePicture!) : null,
+            backgroundImage: data.profilePicture != null
+                ? NetworkImage(data.profilePicture!)
+                : null,
             child: data.profilePicture == null
                 ? Text(
                     '${data.firstname[0]}${data.lastname[0]}',
-                    style: context.text.headlineMedium?.copyWith(color: context.colors.onPrimaryContainer),
+                    style: context.text.headlineMedium?.copyWith(
+                      color: context.colors.onPrimaryContainer,
+                    ),
                   )
                 : null,
           ),
@@ -148,15 +179,25 @@ class _ProfileInfo extends StatelessWidget {
             crossAxisAlignment: .start,
             mainAxisAlignment: .center,
             children: [
-              SelectableText('${data.firstname} ${data.lastname}', style: context.text.titleMedium?.bold, maxLines: 1),
+              SelectableText(
+                '${data.firstname} ${data.lastname}',
+                style: context.text.titleMedium?.bold,
+                maxLines: 1,
+              ),
               Row(
                 children: [
-                  Icon(HIStroke.mail01, size: 13, color: context.colors.outline),
+                  Icon(
+                    HIStroke.mail01,
+                    size: 13,
+                    color: context.colors.outline,
+                  ),
                   const Gap(Insets.sm),
                   Expanded(
                     child: SelectableText(
                       data.email,
-                      style: context.text.bodySmall?.textColor(context.colors.outline),
+                      style: context.text.bodySmall?.textColor(
+                        context.colors.outline,
+                      ),
                       maxLines: 1,
                     ),
                   ),
@@ -167,19 +208,41 @@ class _ProfileInfo extends StatelessWidget {
                 Row(
                   children: [
                     if (data.gender != null) ...[
-                      Icon(HIStroke.userCircle02, size: 12, color: context.colors.outline),
+                      Icon(
+                        HIStroke.userCircle02,
+                        size: 12,
+                        color: context.colors.outline,
+                      ),
                       const Gap(Insets.xs),
-                      Text(data.gender!.titleCase, style: context.text.bodySmall?.textColor(context.colors.outline)),
+                      Text(
+                        data.gender!.titleCase,
+                        style: context.text.bodySmall?.textColor(
+                          context.colors.outline,
+                        ),
+                      ),
                     ],
                     if (data.gender != null && data.dob != null) ...[
                       const Gap(Insets.sm),
-                      Icon(Icons.circle, size: 5, color: context.colors.outline),
+                      Icon(
+                        Icons.circle,
+                        size: 5,
+                        color: context.colors.outline,
+                      ),
                       const Gap(Insets.sm),
                     ],
                     if (data.dob != null) ...[
-                      Icon(HIStroke.calendar01, size: 12, color: context.colors.outline),
+                      Icon(
+                        HIStroke.calendar01,
+                        size: 12,
+                        color: context.colors.outline,
+                      ),
                       const Gap(Insets.xs),
-                      Text(data.dob!, style: context.text.bodySmall?.textColor(context.colors.outline)),
+                      Text(
+                        data.dob!,
+                        style: context.text.bodySmall?.textColor(
+                          context.colors.outline,
+                        ),
+                      ),
                     ],
                   ],
                 ),
@@ -201,8 +264,16 @@ class _RoleChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      decoration: BoxDecoration(color: context.colors.primaryContainer, borderRadius: BorderRadius.circular(100)),
-      child: Text(role, style: context.text.labelSmall?.letterSpace(.5).textColor(context.colors.onPrimaryContainer)),
+      decoration: BoxDecoration(
+        color: context.colors.primaryContainer,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        role,
+        style: context.text.labelSmall
+            ?.letterSpace(.5)
+            .textColor(context.colors.onPrimaryContainer),
+      ),
     );
   }
 }

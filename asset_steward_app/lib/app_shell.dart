@@ -26,7 +26,9 @@ class AppShell extends HookConsumerWidget {
     final rootPath = context.routeState.fullPath?.split('/').lastOrNull;
 
     useEffect(() {
-      final index = RPaths.navRoutes.indexWhere((e) => e.path.removePrefix('/') == rootPath);
+      final index = RPaths.navRoutes.indexWhere(
+        (e) => e.path.removePrefix('/') == rootPath,
+      );
       if (index != -1) {
         currentIndex.value = index;
       }
@@ -34,7 +36,9 @@ class AppShell extends HookConsumerWidget {
     }, [rootPath]);
 
     useEffect(() {
-      final subscription = AppEventBus().on<SessionExpiredEvent>().listen((event) {
+      final subscription = AppEventBus().on<SessionExpiredEvent>().listen((
+        event,
+      ) {
         Toast.showError('Session expired. Please log in again.');
         ref.read(authCtrlProvider.notifier).logout();
       });
@@ -49,7 +53,8 @@ class AppShell extends HookConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final blurHeight = bottomPadding + 32 + 18;
-          final startBlurFraction = 1.0 - (blurHeight / constraints.maxHeight).clamp(0.0, 1.0);
+          final startBlurFraction =
+              1.0 - (blurHeight / constraints.maxHeight).clamp(0.0, 1.0);
 
           return ProgressiveBlurWidget(
             sigma: 10.0,
@@ -81,7 +86,13 @@ class AppShell extends HookConsumerWidget {
             decoration: ShapeDecoration(
               color: context.colors.surface,
               shape: const StadiumBorder(),
-              shadows: [BoxShadow(color: context.colors.shadow.op(0.1), blurRadius: 12, offset: const Offset(0, 8))],
+              shadows: [
+                BoxShadow(
+                  color: context.colors.shadow.op(0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -107,7 +118,11 @@ class AppShell extends HookConsumerWidget {
 }
 
 class _NavItem extends StatelessWidget {
-  const _NavItem({required this.item, required this.onTap, required this.selected});
+  const _NavItem({
+    required this.item,
+    required this.onTap,
+    required this.selected,
+  });
 
   final ({IconData icon, String label}) item;
   final VoidCallback onTap;
@@ -119,7 +134,10 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: selected ? 3 : 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: selected ? 3 : 8,
+        ),
         child: Cue.onToggle(
           toggled: selected,
           motion: const Spring.spatialSlow(),
@@ -130,7 +148,10 @@ class _NavItem extends StatelessWidget {
               final positiveValue = value.clamp(0.0, double.infinity);
               final alphaValue = value.clamp(0.0, 1.0);
 
-              final iconScale = (1.0 + (value * 0.15)).clamp(0.0, double.infinity);
+              final iconScale = (1.0 + (value * 0.15)).clamp(
+                0.0,
+                double.infinity,
+              );
 
               final indicatorWidth = positiveValue * 16.0;
               final indicatorHeight = positiveValue * 3.0;
@@ -145,7 +166,11 @@ class _NavItem extends StatelessWidget {
                     child: Icon(
                       item.icon,
                       size: 20.0,
-                      color: Color.lerp(context.colors.outline, context.colors.primary, alphaValue),
+                      color: Color.lerp(
+                        context.colors.outline,
+                        context.colors.primary,
+                        alphaValue,
+                      ),
                     ),
                   ),
                   Gap(gapHeight),
@@ -154,7 +179,9 @@ class _NavItem extends StatelessWidget {
                     height: indicatorHeight,
                     width: indicatorWidth,
                     decoration: ShapeDecoration(
-                      color: context.colors.primary.withAlpha((alphaValue * 255).toInt()),
+                      color: context.colors.primary.withAlpha(
+                        (alphaValue * 255).toInt(),
+                      ),
                       shape: const StadiumBorder(),
                     ),
                   ),

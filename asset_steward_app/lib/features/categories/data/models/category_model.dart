@@ -10,8 +10,5 @@ class CategoryModel with CategoryModelMappable {
   final int id;
   final String name;
 
-  const CategoryModel({
-    required this.id,
-    required this.name,
-  });
+  const CategoryModel({required this.id, required this.name});
 }

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 
 import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+
 import '../controllers/users_controller.dart';
 import 'create_user_sheet.dart';
 
@@ -15,10 +16,7 @@ class ManageUsersPage extends HookConsumerWidget {
     final usersAsync = ref.watch(usersCtrlProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Users'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Manage Users'), centerTitle: true),
       body: AsyncBuilder(
         asyncValue: usersAsync,
         providers: [usersCtrlProvider],
@@ -77,11 +75,15 @@ class _UserTile extends StatelessWidget {
           CircleAvatar(
             radius: 24,
             backgroundColor: context.colors.primaryContainer,
-            backgroundImage: user.profilePicture != null ? NetworkImage(user.profilePicture!) : null,
+            backgroundImage: user.profilePicture != null
+                ? NetworkImage(user.profilePicture!)
+                : null,
             child: user.profilePicture == null
                 ? Text(
                     '${user.firstname[0]}${user.lastname[0]}',
-                    style: context.text.titleMedium?.copyWith(color: context.colors.onPrimaryContainer),
+                    style: context.text.titleMedium?.copyWith(
+                      color: context.colors.onPrimaryContainer,
+                    ),
                   )
                 : null,
           ),
@@ -99,7 +101,9 @@ class _UserTile extends StatelessWidget {
                 const Gap(2),
                 Text(
                   user.email,
-                  style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
+                  style: context.text.bodySmall?.textColor(
+                    context.colors.onSurfaceVariant,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -115,7 +119,9 @@ class _UserTile extends StatelessWidget {
             ),
             child: Text(
               user.role.name.titleCase,
-              style: context.text.labelSmall?.bold.letterSpace(.5).textColor(context.colors.onPrimaryContainer),
+              style: context.text.labelSmall?.bold
+                  .letterSpace(.5)
+                  .textColor(context.colors.onPrimaryContainer),
             ),
           ),
         ],

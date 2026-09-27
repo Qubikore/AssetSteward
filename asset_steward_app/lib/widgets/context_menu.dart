@@ -1,5 +1,5 @@
 import 'package:asset_steward_app/main.export.dart';
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class ContextMenuItem {
   const ContextMenuItem();
@@ -62,8 +62,8 @@ class ContextMenuDivider extends ContextMenuItem {
   const ContextMenuDivider();
 }
 
-
 enum ContextMenuAlignment { start, center, end }
+
 enum ContextMenuPosition { top, bottom, auto }
 
 class ContextMenu extends StatefulWidget {
@@ -90,16 +90,27 @@ class ContextMenu extends StatefulWidget {
   State<ContextMenu> createState() => _ContextMenuState();
 }
 
-class _ContextMenuState extends State<ContextMenu> {
+class _ContextMenuState extends State<ContextMenu> with SingleTickerProviderStateMixin {
   bool _isOpen = false;
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   final GlobalKey _triggerKey = GlobalKey();
 
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 150),
+    reverseDuration: const Duration(milliseconds: 100),
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+  late final Animation<double> _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+
   @override
   void dispose() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    _controller.dispose();
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+    }
     super.dispose();
   }
 
@@ -133,6 +144,17 @@ class _ContextMenuState extends State<ContextMenu> {
         ? Alignment.topLeft
         : (openUpward ? Alignment.bottomLeft : Alignment.topLeft);
 
+    Alignment scaleAlignment;
+    if (widget.isSubmenu) {
+      scaleAlignment = Alignment.topLeft;
+    } else {
+      final double y = openUpward ? 1.0 : -1.0;
+      double x = -1.0;
+      if (widget.alignment == ContextMenuAlignment.center) x = 0.0;
+      if (widget.alignment == ContextMenuAlignment.end) x = 1.0;
+      scaleAlignment = Alignment(x, y);
+    }
+
     final Offset offset = _calculateOffset(
       triggerSize: triggerSize,
       triggerPos: triggerPos,
@@ -159,7 +181,14 @@ class _ContextMenuState extends State<ContextMenu> {
                   targetAnchor: targetAnchor,
                   followerAnchor: followerAnchor,
                   offset: offset,
-                  child: _ContextMenuPanel(width: widget.width, items: widget.items, onClose: _close),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      alignment: scaleAlignment,
+                      child: _ContextMenuPanel(width: widget.width, items: widget.items, onClose: _close),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -170,6 +199,7 @@ class _ContextMenuState extends State<ContextMenu> {
 
     Overlay.of(context).insert(_overlayEntry!);
     setState(() => _isOpen = true);
+    _controller.forward(from: 0.0);
   }
 
   Offset _calculateOffset({
@@ -218,36 +248,42 @@ class _ContextMenuState extends State<ContextMenu> {
   }
 
   void _close() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    if (mounted) {
-      setState(() => _isOpen = false);
-    }
+    if (!_isOpen) return;
+    _isOpen = false;
+    _controller.reverse().then((_) {
+      if (!mounted) return;
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.buttonBuilder != null) {
+      return CompositedTransformTarget(
+        link: _layerLink,
+        child: KeyedSubtree(key: _triggerKey, child: widget.buttonBuilder!(context, _open)),
+      );
+    }
+
     return CompositedTransformTarget(
       link: _layerLink,
-      child: GestureDetector(
-        key: _triggerKey,
-        onTap: widget.buttonBuilder != null ? null : _toggle,
-        behavior: HitTestBehavior.translucent,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: _triggerKey,
+          onTap: _toggle,
+          borderRadius: BorderRadius.circular(8.0),
+          hoverColor: context.colors.onSurface.withValues(alpha: 0.05),
+          splashColor: context.colors.onSurface.withValues(alpha: 0.1),
+          highlightColor: context.colors.onSurface.withValues(alpha: 0.05),
           child:
-              widget.buttonBuilder?.call(context, _open) ??
               widget.child ??
               Container(
                 width: 32,
                 height: 32,
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.colors.outline, strokeAlign: BorderSide.strokeAlignOutside),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(HIStroke.moreVertical, size: 20),
+                child: const Icon(HIStroke.moreHorizontal, size: 20),
               ),
         ),
       ),
@@ -276,8 +312,10 @@ class _ContextMenuPanel extends StatelessWidget {
           BoxShadow(color: const Color(0xFF000000).withValues(alpha: 0.08), blurRadius: 16, offset: const Offset(0, 4)),
         ],
       ),
-      child: ClipRRect(
+      child: Material(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(12.0),
+        clipBehavior: Clip.antiAlias,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -439,34 +477,20 @@ class _ContextMenuPanel extends StatelessWidget {
   }
 }
 
-class _HoverableMenuItem extends StatefulWidget {
+class _HoverableMenuItem extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
 
   const _HoverableMenuItem({required this.child, this.onTap});
 
   @override
-  State<_HoverableMenuItem> createState() => _HoverableMenuItemState();
-}
-
-class _HoverableMenuItemState extends State<_HoverableMenuItem> {
-  bool _isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: widget.onTap != null ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(color: _isHovered ? context.colors.primary.withValues(alpha: 0.1) : null),
-          child: widget.child,
-        ),
-      ),
+    return InkWell(
+      onTap: onTap,
+      hoverColor: context.colors.onSurface.withValues(alpha: 0.05),
+      splashColor: context.colors.onSurface.withValues(alpha: 0.1),
+      highlightColor: context.colors.onSurface.withValues(alpha: 0.05),
+      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), child: child),
     );
   }
 }

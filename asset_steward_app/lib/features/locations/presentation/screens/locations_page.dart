@@ -85,7 +85,8 @@ class _LocationTile extends HookConsumerWidget {
                   isScrollControlled: true,
                   useSafeArea: true,
                   showDragHandle: true,
-                  builder: (context) => CreateOrUpdateLocationSheet(location: location),
+                  builder: (context) =>
+                      CreateOrUpdateLocationSheet(location: location),
                 );
               },
               backgroundColor: context.colors.primaryContainer,
@@ -99,9 +100,14 @@ class _LocationTile extends HookConsumerWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Delete Location'),
-                    content: Text('Are you sure you want to delete ${location.name}?'),
+                    content: Text(
+                      'Are you sure you want to delete ${location.name}?',
+                    ),
                     actions: [
-                      TextButton(onPressed: () => context.nPop(false), child: const Text('Cancel')),
+                      TextButton(
+                        onPressed: () => context.nPop(false),
+                        child: const Text('Cancel'),
+                      ),
                       FilledButton(
                         onPressed: () => context.nPop(true),
                         style: FilledButton.styleFrom(
@@ -115,7 +121,9 @@ class _LocationTile extends HookConsumerWidget {
                 );
 
                 if (confirm == true) {
-                  final result = await ref.read(locationsCtrlProvider.notifier).deleteLocation(location.id);
+                  final result = await ref
+                      .read(locationsCtrlProvider.notifier)
+                      .deleteLocation(location.id);
                   result.fold(
                     (l) => Toast.showError(l.message),
                     (r) => Toast.showSuccess('Location deleted successfully'),
@@ -136,7 +144,10 @@ class _LocationTile extends HookConsumerWidget {
               CircleAvatar(
                 radius: 22,
                 backgroundColor: context.colors.primaryContainer.op2,
-                child: Icon(HIStroke.location01, color: context.colors.primaryContainer),
+                child: Icon(
+                  HIStroke.location01,
+                  color: context.colors.primaryContainer,
+                ),
               ),
               const Gap(Insets.md),
               Expanded(
@@ -153,7 +164,9 @@ class _LocationTile extends HookConsumerWidget {
                     if (location.address.isNotNullOrBlank)
                       Text(
                         location.address!,
-                        style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
+                        style: context.text.bodySmall?.textColor(
+                          context.colors.onSurfaceVariant,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

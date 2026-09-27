@@ -1,12 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 class Loader extends StatelessWidget {
-  const Loader({
-    super.key,
-    this.size = 24,
-    this.color,
-    this.strokeWidth = 3.0,
-  });
+  const Loader({super.key, this.size = 24, this.color, this.strokeWidth = 3.0});
 
   final double? size;
   final Color? color;
@@ -19,7 +14,9 @@ class Loader extends StatelessWidget {
         dimension: size,
         child: CircularProgressIndicator.adaptive(
           strokeWidth: strokeWidth,
-          valueColor: color != null ? AlwaysStoppedAnimation<Color>(color!) : null,
+          valueColor: color != null
+              ? AlwaysStoppedAnimation<Color>(color!)
+              : null,
         ),
       ),
     );

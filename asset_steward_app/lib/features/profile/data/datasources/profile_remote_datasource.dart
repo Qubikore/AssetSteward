@@ -18,17 +18,24 @@ class ProfileRemoteDS {
     if (res case ApiResponse(success: true, data: final ProfileData data)) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
   Future<OrganizationData> getOrganization() async {
     final response = await _dio.get(Endpoints.organizationMe);
     final res = ApiResponse.fromMap<OrganizationData>(response.data);
-    if (res case ApiResponse(success: true, data: final OrganizationData data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final OrganizationData data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -39,7 +46,9 @@ class ProfileRemoteDS {
     if (res case ApiResponse(success: true, data: final ProfileData data)) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

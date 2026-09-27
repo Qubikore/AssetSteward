@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../main.export.dart';
+
 import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
 
 @lazySingleton
@@ -15,10 +16,15 @@ class UsersRemoteDS {
     ProfileDataMapper.ensureInitialized();
     final res = ApiResponse.fromMap<List<ProfileData>>(response.data);
 
-    if (res case ApiResponse(success: true, data: final List<ProfileData> data)) {
+    if (res case ApiResponse(
+      success: true,
+      data: final List<ProfileData> data,
+    )) {
       return data;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 
@@ -30,7 +36,9 @@ class UsersRemoteDS {
     if (res case ApiResponse(success: true, data: final ProfileData user)) {
       return user;
     } else {
-      throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');
+      throw Failure(
+        res.message.isNotEmpty ? res.message : 'Invalid response format',
+      );
     }
   }
 }

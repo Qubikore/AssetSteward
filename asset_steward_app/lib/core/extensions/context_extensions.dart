@@ -19,7 +19,10 @@ extension RouteEx on BuildContext {
   void nPop<T extends Object?>([T? result]) => Navigator.of(this).pop(result);
 
   Future<T?> nPush<T extends Object?>(Widget page, {bool? fullScreen}) {
-    final route = MaterialPageRoute<T>(builder: (c) => page, fullscreenDialog: fullScreen ?? false);
+    final route = MaterialPageRoute<T>(
+      builder: (c) => page,
+      fullscreenDialog: fullScreen ?? false,
+    );
 
     return Navigator.of(this).push<T>(route);
   }

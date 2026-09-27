@@ -40,7 +40,9 @@ class CategoriesPage extends HookConsumerWidget {
                   decoration: BoxDecoration(
                     color: context.colors.surfaceContainerHighest.op(0.3),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+                    border: Border.all(
+                      color: context.colors.outlineVariant.op(0.5),
+                    ),
                   ),
                   child: Slidable(
                     key: ValueKey(category.id),
@@ -52,7 +54,9 @@ class CategoriesPage extends HookConsumerWidget {
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              builder: (context) => CreateOrUpdateCategorySheet(category: category),
+                              builder: (context) => CreateOrUpdateCategorySheet(
+                                category: category,
+                              ),
                             );
                           },
                           backgroundColor: context.colors.primary,
@@ -62,13 +66,17 @@ class CategoriesPage extends HookConsumerWidget {
                         ),
                         SlidableAction(
                           onPressed: (_) {
-                            ref.read(categoriesCtrlProvider.notifier).deleteCategory(category.id);
+                            ref
+                                .read(categoriesCtrlProvider.notifier)
+                                .deleteCategory(category.id);
                           },
                           backgroundColor: context.colors.error,
                           foregroundColor: context.colors.onError,
                           icon: HIStroke.delete01,
                           label: 'Delete',
-                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(12)),
+                          borderRadius: const BorderRadius.horizontal(
+                            right: Radius.circular(12),
+                          ),
                         ),
                       ],
                     ),
@@ -78,8 +86,12 @@ class CategoriesPage extends HookConsumerWidget {
                         children: [
                           CircleAvatar(
                             radius: 22,
-                            backgroundColor: context.colors.primaryContainer.op2,
-                            child: Icon(HIStroke.tag01, color: context.colors.primaryContainer),
+                            backgroundColor:
+                                context.colors.primaryContainer.op2,
+                            child: Icon(
+                              HIStroke.tag01,
+                              color: context.colors.primaryContainer,
+                            ),
                           ),
                           const Gap(Insets.md),
                           Expanded(

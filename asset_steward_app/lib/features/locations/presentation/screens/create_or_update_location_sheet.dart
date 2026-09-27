@@ -26,7 +26,11 @@ class CreateOrUpdateLocationSheet extends HookConsumerWidget {
     final isLoading = useState(false);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
+      padding: EdgeInsets.only(
+        left: Insets.lg,
+        right: Insets.lg,
+        bottom: context.viewInsets.bottom + Insets.xxl,
+      ),
       child: FormBuilder(
         key: formKey,
         initialValue: {'name': location?.name, 'address': location?.address},
@@ -37,7 +41,9 @@ class CreateOrUpdateLocationSheet extends HookConsumerWidget {
             const Gap(Insets.md),
             Text(
               location == null ? 'New Location' : 'Edit Location',
-              style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: context.text.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(Insets.xl),
@@ -78,7 +84,10 @@ class CreateOrUpdateLocationSheet extends HookConsumerWidget {
                             if (context.mounted) context.nPop();
                           });
                         } else {
-                          final result = await notifier.updateLocation(location!.id, data);
+                          final result = await notifier.updateLocation(
+                            location!.id,
+                            data,
+                          );
                           result.fold((l) => Toast.showError(l.message), (r) {
                             Toast.showSuccess('Location updated successfully');
                             if (context.mounted) context.nPop();
@@ -90,7 +99,9 @@ class CreateOrUpdateLocationSheet extends HookConsumerWidget {
                     },
               child: isLoading.value
                   ? const Loader(size: 20, color: Colors.white)
-                  : Text(location == null ? 'Create Location' : 'Update Location'),
+                  : Text(
+                      location == null ? 'Create Location' : 'Update Location',
+                    ),
             ),
           ],
         ),

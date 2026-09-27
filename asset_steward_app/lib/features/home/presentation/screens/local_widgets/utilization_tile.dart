@@ -20,8 +20,14 @@ class UtilizationTile extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: context.colors.primaryContainer.op1, shape: BoxShape.circle),
-            child: Icon(HIStroke.laptopProgramming, color: context.colors.primaryContainer),
+            decoration: BoxDecoration(
+              color: context.colors.primaryContainer.op1,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              HIStroke.laptopProgramming,
+              color: context.colors.primaryContainer,
+            ),
           ),
           const Gap(Insets.md),
           Expanded(
@@ -35,7 +41,12 @@ class UtilizationTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const Gap(2),
-                Text(util.assetCode, style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant)),
+                Text(
+                  util.assetCode,
+                  style: context.text.bodySmall?.textColor(
+                    context.colors.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
@@ -43,9 +54,15 @@ class UtilizationTile extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              StatBadge(icon: HIStroke.userAdd01, label: '${util.assignmentCount} uses'),
+              StatBadge(
+                icon: HIStroke.userAdd01,
+                label: '${util.assignmentCount} uses',
+              ),
               const Gap(4),
-              StatBadge(icon: HIStroke.settings01, label: '${util.maintenanceCount} fixes'),
+              StatBadge(
+                icon: HIStroke.settings01,
+                label: '${util.maintenanceCount} fixes',
+              ),
             ],
           ),
         ],
@@ -67,7 +84,12 @@ class StatBadge extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: context.colors.onSurfaceVariant),
         const Gap(4),
-        Text(label, style: context.text.labelSmall?.medium.textColor(context.colors.onSurfaceVariant)),
+        Text(
+          label,
+          style: context.text.labelSmall?.medium.textColor(
+            context.colors.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }

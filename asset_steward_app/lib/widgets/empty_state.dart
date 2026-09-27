@@ -39,9 +39,8 @@ class EmptyState extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
             if (subLabel != null) ...[
               const SizedBox(height: Insets.sm),
@@ -49,8 +48,8 @@ class EmptyState extends StatelessWidget {
                 subLabel!,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
             if (onReload != null || actions.isNotEmpty) ...[

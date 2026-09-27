@@ -77,20 +77,32 @@ class DecoContainer extends StatelessWidget {
     // Create border if we have both a color and width
     BoxBorder? border;
     if (borderColor != null && borderWidth != 0) {
-      border = Border.all(color: borderColor!, width: borderWidth, strokeAlign: strokeAlign);
+      border = Border.all(
+        color: borderColor!,
+        width: borderWidth,
+        strokeAlign: strokeAlign,
+      );
     }
 
-    BorderRadiusGeometry effectiveBorderRadius = BorderRadius.circular(borderRadius);
+    BorderRadiusGeometry effectiveBorderRadius = BorderRadius.circular(
+      borderRadius,
+    );
 
     if (borderRadiusGeo != null) effectiveBorderRadius = borderRadiusGeo!;
 
     final useShapeDecoration =
-        (useSuperellipse || (borderRadius >= 12 && borderRadius < 100)) && shape != BoxShape.circle && gradient == null;
+        (useSuperellipse || (borderRadius >= 12 && borderRadius < 100)) &&
+        shape != BoxShape.circle &&
+        gradient == null;
 
     final shapeBorder = ContinuousRectangleBorder(
       borderRadius: effectiveBorderRadius,
       side: borderColor != null && borderWidth != 0
-          ? BorderSide(color: borderColor!, width: borderWidth, strokeAlign: strokeAlign)
+          ? BorderSide(
+              color: borderColor!,
+              width: borderWidth,
+              strokeAlign: strokeAlign,
+            )
           : BorderSide.none,
     );
 
@@ -99,7 +111,9 @@ class DecoContainer extends StatelessWidget {
         : BoxDecoration(
             color: color,
             border: border,
-            borderRadius: shape == BoxShape.circle ? null : effectiveBorderRadius,
+            borderRadius: shape == BoxShape.circle
+                ? null
+                : effectiveBorderRadius,
             boxShadow: shadows,
             gradient: gradient,
             shape: shape ?? BoxShape.rectangle,
@@ -111,7 +125,10 @@ class DecoContainer extends StatelessWidget {
             child: child,
           )
         : clipChild
-        ? ClipRRect(borderRadius: effectiveBorderRadius as BorderRadius, child: child)
+        ? ClipRRect(
+            borderRadius: effectiveBorderRadius as BorderRadius,
+            child: child,
+          )
         : child;
 
     return IgnorePointer(

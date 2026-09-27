@@ -49,7 +49,8 @@ class Pads {
   static const EdgeInsets vXXL = EdgeInsets.symmetric(vertical: Insets.xxl);
 
   /// Helper to create symmetric padding
-  static EdgeInsets sym({double h = 0, double v = 0}) => EdgeInsets.symmetric(horizontal: h, vertical: v);
+  static EdgeInsets sym({double h = 0, double v = 0}) =>
+      EdgeInsets.symmetric(horizontal: h, vertical: v);
 
   /// Helper to create custom padding with fallbacks
   static EdgeInsets only({

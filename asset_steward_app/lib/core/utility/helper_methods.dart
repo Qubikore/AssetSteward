@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 
 Null identityNull<T>(T a) => null;
 
-Future wait(Function() fn, [double ms = 0]) => Future.delayed(Duration(milliseconds: ms.toInt()), fn);
+Future wait(Function() fn, [double ms = 0]) =>
+    Future.delayed(Duration(milliseconds: ms.toInt()), fn);
 
 class Haptic {
   const Haptic._();

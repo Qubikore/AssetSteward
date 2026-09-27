@@ -54,7 +54,9 @@ class UImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = borderRadius != null ? BorderRadius.circular(borderRadius!) : BorderRadius.zero;
+    final radius = borderRadius != null
+        ? BorderRadius.circular(borderRadius!)
+        : BorderRadius.zero;
     final hasRadius = borderRadius != null && borderRadius! > 0;
 
     final double? h = dimension ?? height;
@@ -75,7 +77,9 @@ class UImage extends StatelessWidget {
       errorPlaceholder: Center(
         child: Icon(
           isAvatar ? HIStroke.user : HIStroke.image01,
-          color: isAvatar ? context.colors.primary : context.colors.onSurfaceVariant,
+          color: isAvatar
+              ? context.colors.primary
+              : context.colors.onSurfaceVariant,
           size: size,
         ),
       ),
@@ -88,7 +92,10 @@ class UImage extends StatelessWidget {
         borderRadius: radius,
         color: backgroundColor,
         border: (borderColor != null || borderWidth != null)
-            ? Border.all(color: borderColor ?? context.colors.outline, width: borderWidth ?? 1.0)
+            ? Border.all(
+                color: borderColor ?? context.colors.outline,
+                width: borderWidth ?? 1.0,
+              )
             : null,
       ),
       clipBehavior: hasRadius ? Clip.antiAlias : Clip.none,
@@ -104,10 +111,7 @@ class UImage extends StatelessWidget {
               color: Colors.transparent,
               borderRadius: radius,
               clipBehavior: hasRadius ? Clip.antiAlias : Clip.none,
-              child: InkWell(
-                borderRadius: radius,
-                onTap: onImgTap,
-              ),
+              child: InkWell(borderRadius: radius, onTap: onImgTap),
             ),
           ),
         ],

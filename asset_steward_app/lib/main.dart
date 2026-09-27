@@ -27,7 +27,11 @@ void main() async {
   await configureDependencies();
 
   FlutterError.onError = (details) {
-    Chirp.error(details.summary, error: details.exception, stackTrace: details.stack);
+    Chirp.error(
+      details.summary,
+      error: details.exception,
+      stackTrace: details.stack,
+    );
     FlutterError.presentError(details);
   };
 

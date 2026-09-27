@@ -186,8 +186,9 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
         );
       },
       itemBuilder: (context, item) {
-        if (widget.itemBuilder != null)
+        if (widget.itemBuilder != null) {
           return widget.itemBuilder!(context, item);
+        }
         return _AutocompleteItem(
           label: widget.itemLabel(item),
           selected: item == widget.value,
@@ -206,8 +207,9 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
       },
       suggestionsCallback: (pattern) {
         final needle = pattern.trim().toLowerCase();
-        if (needle.isEmpty)
+        if (needle.isEmpty) {
           return widget.items.take(widget.maxVisibleItems).toList();
+        }
 
         return widget.items
             .where(

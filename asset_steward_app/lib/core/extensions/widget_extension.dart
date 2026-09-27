@@ -15,7 +15,9 @@ extension TestWiEx on Text {
               if (isRequired)
                 TextSpan(
                   text: '*',
-                  style: (style ?? context.text.bodyMedium)?.copyWith(color: context.colors.error),
+                  style: (style ?? context.text.bodyMedium)?.copyWith(
+                    color: context.colors.error,
+                  ),
                 ),
             ],
           ),
@@ -32,13 +34,18 @@ extension WidgetEx on Widget {
     return GestureDetector(onTap: onTap, onLongPress: onLongPress, child: this);
   }
 
-  Widget conditionalExpanded(bool condition, [int flex = 1]) => condition ? Expanded(flex: flex, child: this) : this;
-  Widget conditionalFlexible(bool condition, [int flex = 1]) => condition ? Flexible(flex: flex, child: this) : this;
+  Widget conditionalExpanded(bool condition, [int flex = 1]) =>
+      condition ? Expanded(flex: flex, child: this) : this;
+  Widget conditionalFlexible(bool condition, [int flex = 1]) =>
+      condition ? Flexible(flex: flex, child: this) : this;
 
   Widget debugView() {
     if (kReleaseMode) return this;
     final colors = [...Colors.accents, ...Colors.primaries];
-    return ColoredBox(color: colors[Random().nextInt(colors.length)], child: this);
+    return ColoredBox(
+      color: colors[Random().nextInt(colors.length)],
+      child: this,
+    );
   }
 
   Widget withSF([String? title]) => Scaffold(
@@ -73,7 +80,8 @@ extension SeparatedIterableEx on Iterable<Widget> {
     return result;
   }
 
-  List<Widget> gapBy(double gap, {bool includeLast = false}) => separatedBy(Gap(gap), includeLast: includeLast);
+  List<Widget> gapBy(double gap, {bool includeLast = false}) =>
+      separatedBy(Gap(gap), includeLast: includeLast);
 }
 
 extension ColorEX on Color {

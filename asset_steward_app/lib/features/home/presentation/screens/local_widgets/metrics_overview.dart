@@ -43,7 +43,11 @@ class MetricsOverview extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: MetricCard(title: 'Assigned', value: metrics.assignedAssets.toString(), icon: HIStroke.userAdd01),
+              child: MetricCard(
+                title: 'Assigned',
+                value: metrics.assignedAssets.toString(),
+                icon: HIStroke.userAdd01,
+              ),
             ),
             const Gap(Insets.sm),
             Expanded(

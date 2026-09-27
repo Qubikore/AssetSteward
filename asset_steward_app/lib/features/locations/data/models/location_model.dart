@@ -11,9 +11,5 @@ class LocationModel with LocationModelMappable {
   final String name;
   final String? address;
 
-  const LocationModel({
-    required this.id,
-    required this.name,
-    this.address,
-  });
+  const LocationModel({required this.id, required this.name, this.address});
 }

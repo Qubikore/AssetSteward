@@ -16,7 +16,8 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => CreateOrUpdateDepartmentSheet(department: department),
+      builder: (context) =>
+          CreateOrUpdateDepartmentSheet(department: department),
     );
   }
 
@@ -26,7 +27,11 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
     final isLoading = useState(false);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
+      padding: EdgeInsets.only(
+        left: Insets.lg,
+        right: Insets.lg,
+        bottom: context.viewInsets.bottom + Insets.xxl,
+      ),
       child: FormBuilder(
         key: formKey,
         initialValue: {'name': department?.name},
@@ -37,7 +42,9 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
             const Gap(Insets.md),
             Text(
               department == null ? 'New Department' : 'Edit Department',
-              style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: context.text.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(Insets.xl),
@@ -61,9 +68,13 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
 
                         try {
                           if (department == null) {
-                            final result = await ref.read(departmentsCtrlProvider.notifier).createDepartment(data);
+                            final result = await ref
+                                .read(departmentsCtrlProvider.notifier)
+                                .createDepartment(data);
                             result.fold((l) => Toast.showError(l.message), (r) {
-                              Toast.showSuccess('Department created successfully');
+                              Toast.showSuccess(
+                                'Department created successfully',
+                              );
                               if (context.mounted) context.nPop();
                             });
                           } else {
@@ -71,7 +82,9 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
                                 .read(departmentsCtrlProvider.notifier)
                                 .updateDepartment(department!.id, data);
                             result.fold((l) => Toast.showError(l.message), (r) {
-                              Toast.showSuccess('Department updated successfully');
+                              Toast.showSuccess(
+                                'Department updated successfully',
+                              );
                               if (context.mounted) context.nPop();
                             });
                           }
@@ -82,7 +95,11 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
                     },
               child: isLoading.value
                   ? const Loader(size: 20, color: Colors.white)
-                  : Text(department == null ? 'Create Department' : 'Update Department'),
+                  : Text(
+                      department == null
+                          ? 'Create Department'
+                          : 'Update Department',
+                    ),
             ),
           ],
         ),
