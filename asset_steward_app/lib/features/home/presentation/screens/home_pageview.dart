@@ -1,6 +1,5 @@
 import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
 import 'package:asset_steward_app/features/departments/presentation/controllers/departments_controller.dart';
-import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,7 +20,6 @@ class HomePageview extends HookConsumerWidget {
     final metricsAsync = ref.watch(dashboardMetricsCtrlProvider);
     final utilizationAsync = ref.watch(assetUtilizationCtrlProvider);
     final departmentsAsync = ref.watch(departmentsCtrlProvider);
-    final locationsAsync = ref.watch(locationsCtrlProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard'), centerTitle: true),
@@ -33,6 +31,7 @@ class HomePageview extends HookConsumerWidget {
           ref.invalidate(locationsCtrlProvider);
         },
         child: ListView(
+          physics: kScrollPhysics,
           padding: const EdgeInsets.symmetric(
             horizontal: Insets.lg,
             vertical: Insets.md,
@@ -46,8 +45,17 @@ class HomePageview extends HookConsumerWidget {
             ),
             const Gap(Insets.lg),
 
-            Text('Asset Utilization', style: context.text.titleMedium?.bold),
-            const Gap(Insets.md),
+            Row(
+              spacing: Insets.md,
+              children: [
+                Expanded(child: Text('Asset Utilization', style: context.text.titleMedium?.bold)),
+                TextButton(
+                  onPressed: () => RPaths.createAsset.push(context),
+                  child: Text('+ Add Asset', style: context.text.labelMedium?.textColor(context.colors.primary)),
+                ),
+              ],
+            ),
+
             AsyncBuilder<List<AssetUtilization>>(
               asyncValue: utilizationAsync,
               providers: [assetUtilizationCtrlProvider],
@@ -82,7 +90,7 @@ class HomePageview extends HookConsumerWidget {
                         ),
                         const Gap(Insets.lg),
                         FilledButton.icon(
-                          onPressed: () => context.push(RPaths.createAsset.path),
+                          onPressed: () => RPaths.createAsset.push(context),
                           icon: const Icon(HIStroke.plusSign),
                           label: const Text('Add Asset'),
                         ),
@@ -92,6 +100,7 @@ class HomePageview extends HookConsumerWidget {
                 }
 
                 return ListView.separated(
+                  padding: .zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: utilizations.length > 5 ? 5 : utilizations.length,
@@ -107,9 +116,14 @@ class HomePageview extends HookConsumerWidget {
             const Gap(Insets.xs),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              spacing: Insets.md,
               children: [
                 Text('Departments', style: context.text.titleMedium?.bold),
-                TextButton(onPressed: () => context.push(RPaths.departments.path), child: const Text('View All')),
+                TextButton(
+                  onPressed: () => context.push(RPaths.departments.path),
+                  child: Text('View All', style: context.text.labelMedium?.textColor(context.colors.primary)),
+                ),
               ],
             ),
             AsyncBuilder<List<DepartmentModel>>(
@@ -137,40 +151,6 @@ class HomePageview extends HookConsumerWidget {
                 );
               },
             ),
-
-            // const Gap(Insets.md),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Locations', style: context.text.titleMedium?.bold),
-                TextButton(onPressed: () => context.push(RPaths.locations.path), child: const Text('View All')),
-              ],
-            ),
-            AsyncBuilder<List<LocationModel>>(
-              asyncValue: locationsAsync,
-              providers: [locationsCtrlProvider],
-              allowEmpty: true,
-              onLoading: () => const MiniListShimmer(),
-              builder: (locations) {
-                if (locations.isEmpty) {
-                  return Text(
-                    'No locations configured.',
-                    style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
-                  );
-                }
-                final list = locations.take(2).toList();
-                return Column(
-                  children: list
-                      .map(
-                        (l) => Padding(
-                          padding: const EdgeInsets.only(bottom: Insets.sm),
-                          child: _MiniEntityTile(title: l.name, subtitle: l.address, icon: HIStroke.location01),
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ),
           ],
         ),
       ),
@@ -180,10 +160,9 @@ class HomePageview extends HookConsumerWidget {
 
 class _MiniEntityTile extends StatelessWidget {
   final String title;
-  final String? subtitle;
   final IconData icon;
 
-  const _MiniEntityTile({required this.title, this.subtitle, required this.icon});
+  const _MiniEntityTile({required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -206,21 +185,7 @@ class _MiniEntityTile extends StatelessWidget {
           ),
           const Gap(Insets.md),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: context.text.bodyMedium?.bold, maxLines: 1, overflow: TextOverflow.ellipsis),
-                if (subtitle != null && subtitle!.isNotEmpty) ...[
-                  const Gap(2),
-                  Text(
-                    subtitle!,
-                    style: context.text.bodySmall?.textColor(context.colors.onSurfaceVariant),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ],
-            ),
+            child: Text(title, style: context.text.bodyMedium?.bold, maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
         ],
       ),

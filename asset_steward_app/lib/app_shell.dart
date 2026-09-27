@@ -7,6 +7,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:progressive_blur/progressive_blur.dart';
 import 'package:screwdriver/screwdriver.dart';
 
+final _navBarItems = [
+  (icon: HIStroke.home01, label: 'Dashboard'),
+  (icon: HIStroke.archive02, label: 'Assets'),
+  (icon: HIStroke.scan, label: 'Scan'),
+  (icon: HIStroke.repair, label: 'Maintenance'),
+  (icon: HIStroke.userCircle, label: 'Profile'),
+];
+
 class AppShell extends HookConsumerWidget {
   const AppShell({super.key, required this.child});
 
@@ -15,6 +23,15 @@ class AppShell extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = useState(0);
+    final rootPath = context.routeState.fullPath?.split('/').lastOrNull;
+
+    useEffect(() {
+      final index = RPaths.navRoutes.indexWhere((e) => e.path.removePrefix('/') == rootPath);
+      if (index != -1) {
+        currentIndex.value = index;
+      }
+      return null;
+    }, [rootPath]);
 
     useEffect(() {
       final subscription = AppEventBus().on<SessionExpiredEvent>().listen((event) {
@@ -26,14 +43,6 @@ class AppShell extends HookConsumerWidget {
 
     final mq = context.mq;
     final bottomPadding = mq.padding.bottom + 56 + 10;
-
-    final navBarItems = [
-      (icon: HIStroke.home01, label: 'Dashboard'),
-      (icon: HIStroke.archive02, label: 'Assets'),
-      (icon: HIStroke.scan, label: 'Scan'),
-      (icon: HIStroke.repair, label: 'Maintenance'),
-      (icon: HIStroke.userCircle, label: 'Profile'),
-    ];
 
     return Scaffold(
       extendBody: true,
@@ -77,7 +86,7 @@ class AppShell extends HookConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ...navBarItems.mapIndexed((i, item) {
+                ..._navBarItems.mapIndexed((i, item) {
                   final selected = currentIndex.value == i;
                   return _NavItem(
                     item: item,

@@ -26,6 +26,7 @@ class MetricsOverview extends StatelessWidget {
                 title: 'Total Assets',
                 value: metrics.totalAssets.toString(),
                 icon: HIStroke.deliveryBox01,
+                onTap: () => RPaths.assets.go(context),
               ),
             ),
             const Gap(Insets.sm),
@@ -42,11 +43,7 @@ class MetricsOverview extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: MetricCard(
-                title: 'Assigned',
-                value: metrics.assignedAssets.toString(),
-                icon: HIStroke.userAdd01,
-              ),
+              child: MetricCard(title: 'Assigned', value: metrics.assignedAssets.toString(), icon: HIStroke.userAdd01),
             ),
             const Gap(Insets.sm),
             Expanded(

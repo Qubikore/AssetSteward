@@ -150,7 +150,7 @@ class CreateAssetPage extends HookConsumerWidget {
                                 decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
                                 inputType: InputType.date,
                                 format: DateFormat('yyyy-MM-dd'),
-                                validator: FormBuilderValidators.required(),
+
                                 valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
                               ),
                             ],
@@ -176,11 +176,11 @@ class CreateAssetPage extends HookConsumerWidget {
                       builder: (categories) {
                         final category = categories.firstWhereOrNull((c) => c.name == asset?.categoryName);
                         return AutocompleteFormBox<CategoryModel>(
-                          name: 'category',
+                          name: 'categoryId',
                           label: 'Category',
                           placeholder: 'Select a category...',
                           initialValue: category,
-                          validator: FormBuilderValidators.required(),
+
                           items: categories,
                           itemLabel: (c) => c.name,
                           valueTransformer: (x) => x?.id,
@@ -199,11 +199,11 @@ class CreateAssetPage extends HookConsumerWidget {
                       builder: (locations) {
                         final location = locations.firstWhereOrNull((c) => c.name == asset?.locationName);
                         return AutocompleteFormBox<LocationModel>(
-                          name: 'location',
+                          name: 'locationId',
                           label: 'Location',
                           placeholder: 'Select a location...',
                           initialValue: location,
-                          validator: FormBuilderValidators.required(),
+
                           items: locations,
                           itemLabel: (l) => l.name,
                           valueTransformer: (x) => x?.id,
@@ -222,11 +222,11 @@ class CreateAssetPage extends HookConsumerWidget {
                       builder: (departments) {
                         final department = departments.firstWhereOrNull((c) => c.name == asset?.locationName);
                         return AutocompleteFormBox<DepartmentModel>(
-                          name: 'department',
+                          name: 'departmentId',
                           label: 'Department',
                           placeholder: 'Select a department...',
                           initialValue: department,
-                          validator: FormBuilderValidators.required(),
+
                           items: departments,
                           itemLabel: (d) => d.name,
                           valueTransformer: (x) => x?.id,

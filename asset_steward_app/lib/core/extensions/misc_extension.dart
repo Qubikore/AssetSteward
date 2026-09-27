@@ -76,8 +76,11 @@ extension NumEx on num {
 }
 
 extension ObjEx<T extends Object?> on T {
-  T log() {
-    if (kDebugMode) inspect(this);
+  T log([bool ins = false]) {
+    if (kDebugMode) {
+      if (ins) inspect(this);
+      Chirp.info(toString());
+    }
     return this;
   }
 }
