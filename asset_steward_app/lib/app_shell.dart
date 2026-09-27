@@ -27,11 +27,19 @@ class AppShell extends HookConsumerWidget {
     final mq = context.mq;
     final bottomPadding = mq.padding.bottom + 56 + 10;
 
+    final navBarItems = [
+      (icon: HIStroke.home01, label: 'Dashboard'),
+      (icon: HIStroke.archive02, label: 'Assets'),
+      (icon: HIStroke.scan, label: 'Scan'),
+      (icon: HIStroke.repair, label: 'Maintenance'),
+      (icon: HIStroke.userCircle, label: 'Profile'),
+    ];
+
     return Scaffold(
       extendBody: true,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final blurHeight = bottomPadding + 32 + 20;
+          final blurHeight = bottomPadding + 32 + 18;
           final startBlurFraction = 1.0 - (blurHeight / constraints.maxHeight).clamp(0.0, 1.0);
 
           return ProgressiveBlurWidget(
@@ -69,7 +77,7 @@ class AppShell extends HookConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ..._navBarItems.mapIndexed((i, item) {
+                ...navBarItems.mapIndexed((i, item) {
                   final selected = currentIndex.value == i;
                   return _NavItem(
                     item: item,
@@ -88,14 +96,6 @@ class AppShell extends HookConsumerWidget {
     );
   }
 }
-
-final _navBarItems = [
-  (icon: HIStroke.home01, label: 'Dashboard'),
-  (icon: HIStroke.archive02, label: 'Assets'),
-  (icon: HIStroke.qrCodeScan, label: 'Scan'),
-  (icon: HIStroke.wrench01, label: 'Maintenance'),
-  (icon: HIStroke.user, label: 'Profile'),
-];
 
 class _NavItem extends StatelessWidget {
   const _NavItem({required this.item, required this.onTap, required this.selected});
