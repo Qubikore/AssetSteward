@@ -215,6 +215,17 @@ public class AssetService {
         return stream.map(AssetResponse::new).collect(Collectors.toList());
     }
 
+    public AssetResponse getAssetById(Long assetId, User currentUser) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        return new AssetResponse(asset);
+    }
+
     public List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> getAllAssignments(String status, User currentUser) {
         java.util.stream.Stream<Assignment> stream = assignmentRepository.findAll().stream().filter(a -> a.getAsset() != null && a.getAsset().getOrganization() != null && a.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId()));
         
@@ -264,6 +275,7 @@ public class AssetService {
         return new AssetResponse(asset);
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void deleteAsset(Long assetId, User currentUser) {
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
@@ -271,6 +283,10 @@ public class AssetService {
         if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
             throw new RuntimeException("Asset does not belong to your organization");
         }
+
+        // Delete dependencies first to avoid foreign key constraint violations
+        assignmentRepository.deleteByAssetId(assetId);
+        assetHistoryService.deleteByAssetId(assetId);
 
         assetRepository.delete(asset);
     }

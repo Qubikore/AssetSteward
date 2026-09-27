@@ -24,4 +24,8 @@ public class AssetHistoryService {
         history.setNotes(notes);
         assetHistoryRepository.save(history);
     }
+
+    public void deleteByAssetId(Long assetId) {
+        assetHistoryRepository.deleteByAssetId(assetId);
+    }
 }

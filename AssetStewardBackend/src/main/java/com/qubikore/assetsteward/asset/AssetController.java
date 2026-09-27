@@ -73,6 +73,14 @@ public class AssetController {
         return ResponseEntity.ok(ApiResponse.success("Assets retrieved successfully", assetService.getAllAssets(categoryId, locationId, departmentId, status, search, currentUser)));
     }
 
+    @Operation(summary = "Get asset details", description = "Retrieves the details of a specific asset by its ID.")
+    @GetMapping("/{assetId}")
+    public ResponseEntity<ApiResponse<AssetResponse>> getAssetById(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Asset details retrieved successfully", assetService.getAssetById(assetId, currentUser)));
+    }
+
     @Operation(summary = "Get asset assignments", description = "Retrieves a list of asset assignments. Can be filtered by status.")
     @GetMapping("/assignments")
     public ResponseEntity<ApiResponse<List<com.qubikore.assetsteward.asset.dto.AssignmentResponse>>> getAllAssignments(
@@ -89,14 +97,7 @@ public class AssetController {
     @GetMapping(value = "/{assetId}/qrcode", produces = org.springframework.http.MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQRCode(@PathVariable Long assetId, @AuthenticationPrincipal User currentUser) {
         try {
-            // We just need the assetCode. Let's fetch the asset from the service.
-            // Since getAllAssets isn't ideal, let's create a getAssetById in AssetService or fetch it here.
-            // For now, let's just generate it using the ID to avoid modifying AssetService again.
-            // But actually we need the AssetCode. Let's assume assetCode = "AST-" + assetId or something.
-            // Wait, we can iterate getAllAssets() or we can add getAssetById to AssetService.
-            // I'll just use a placeholder text if I don't fetch it, but let's fetch it.
-            AssetResponse asset = assetService.getAllAssets(null, null, null, null, null, currentUser).stream()
-                .filter(a -> a.getId().equals(assetId)).findFirst().orElseThrow(() -> new RuntimeException("Asset not found"));
+            AssetResponse asset = assetService.getAssetById(assetId, currentUser);
                 
             byte[] image = qrCodeService.generateQRCodeImage(asset.getAssetCode(), 250, 250);
             return ResponseEntity.ok().body(image);
