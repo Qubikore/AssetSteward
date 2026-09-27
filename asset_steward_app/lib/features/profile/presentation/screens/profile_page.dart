@@ -16,6 +16,7 @@ class ProfilePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileCtrlProvider);
+    final orgAsync = ref.watch(organizationCtrlProvider);
 
     return Scaffold(
       appBar: AppBar(

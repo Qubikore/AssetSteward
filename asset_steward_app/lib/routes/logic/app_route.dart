@@ -1,5 +1,5 @@
 import 'package:asset_steward_app/main.export.dart';
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 
 class AppRoute extends GoRoute {
@@ -19,7 +19,7 @@ class AppRoute extends GoRoute {
          },
          pageBuilder: (context, state) {
            final pageContent = builder(state);
-           return NoTransitionPage(name: path.path.snakeCase, child: pageContent);
+           return MaterialPage(name: path.path.snakeCase, child: pageContent);
          },
        );
 }

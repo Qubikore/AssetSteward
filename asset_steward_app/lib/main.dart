@@ -1,16 +1,23 @@
+@MappableLib(generateInitializerForScope: InitializerScope.package)
+library;
+
 import 'dart:developer' show log;
 
 import 'package:asset_steward_app/main.export.dart';
 import 'package:chirp_addons/chirp_addons.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:progressive_blur/progressive_blur.dart' as progressive_blur;
 
+import 'main.init.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeMappers();
   await progressive_blur.ProgressiveBlurWidget.precache();
-  
+
   Chirp.root = ChirpLogger()
     ..addConsoleWriter(
       output: log,

@@ -13,7 +13,6 @@ class ProfileRemoteDS {
 
   Future<ProfileData> getProfile() async {
     final response = await _dio.get(Endpoints.profile);
-    ProfileDataMapper.ensureInitialized();
     final res = ApiResponse.fromMap<ProfileData>(response.data);
 
     if (res case ApiResponse(success: true, data: final ProfileData data)) {
@@ -26,7 +25,6 @@ class ProfileRemoteDS {
   Future<OrganizationData> getOrganization() async {
     final response = await _dio.get(Endpoints.organizationMe);
     final res = ApiResponse.fromMap<OrganizationData>(response.data);
-
     if (res case ApiResponse(success: true, data: final OrganizationData data)) {
       return data;
     } else {

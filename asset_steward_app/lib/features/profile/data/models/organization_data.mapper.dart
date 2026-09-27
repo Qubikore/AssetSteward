@@ -26,17 +26,17 @@ class OrganizationDataMapper extends ClassMapperBase<OrganizationData> {
   static const Field<OrganizationData, int> _f$id = Field('id', _$id);
   static String _$name(OrganizationData v) => v.name;
   static const Field<OrganizationData, String> _f$name = Field('name', _$name);
-  static String _$phone(OrganizationData v) => v.phone;
+  static String? _$phone(OrganizationData v) => v.phone;
   static const Field<OrganizationData, String> _f$phone = Field(
     'phone',
     _$phone,
   );
-  static String _$email(OrganizationData v) => v.email;
+  static String? _$email(OrganizationData v) => v.email;
   static const Field<OrganizationData, String> _f$email = Field(
     'email',
     _$email,
   );
-  static String _$location(OrganizationData v) => v.location;
+  static String? _$location(OrganizationData v) => v.location;
   static const Field<OrganizationData, String> _f$location = Field(
     'location',
     _$location,
@@ -147,16 +147,16 @@ class _OrganizationDataCopyWithImpl<$R, $Out>
   $R call({
     int? id,
     String? name,
-    String? phone,
-    String? email,
-    String? location,
+    Object? phone = $none,
+    Object? email = $none,
+    Object? location = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
       if (name != null) #name: name,
-      if (phone != null) #phone: phone,
-      if (email != null) #email: email,
-      if (location != null) #location: location,
+      if (phone != $none) #phone: phone,
+      if (email != $none) #email: email,
+      if (location != $none) #location: location,
     }),
   );
   @override
