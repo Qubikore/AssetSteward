@@ -13,6 +13,7 @@ class Insets {
   static const double xxl = 32;
   static const double xxxl = 48;
   static const double offset = 64;
+  static const double ext = 128;
 }
 
 class Pads {

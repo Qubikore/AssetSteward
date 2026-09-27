@@ -34,7 +34,10 @@ class ProfilePage extends HookConsumerWidget {
         builder: (data) => RefreshIndicator(
           onRefresh: () => ref.refresh(profileCtrlProvider.future),
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md).copyWith(top: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Insets.lg,
+              vertical: Insets.md,
+            ).copyWith(top: 6).withBottomEx(),
             children: [
               ProfileHeader(data: data),
               const Gap(Insets.lg),

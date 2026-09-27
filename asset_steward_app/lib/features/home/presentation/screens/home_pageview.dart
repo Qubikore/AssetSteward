@@ -36,7 +36,7 @@ class HomePageview extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: Insets.lg,
             vertical: Insets.md,
-          ).copyWith(top: 6, bottom: Insets.xxl),
+          ).copyWith(top: 6).withBottomEx(),
           children: [
             AsyncBuilder<DashboardMetrics>(
               asyncValue: metricsAsync,

@@ -13,39 +13,41 @@ class AssetsPageview extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final assetsAsync = ref.watch(assetsCtrlProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Assets')),
-      body: RefreshIndicator(
-        onRefresh: () async => ref.invalidate(assetsCtrlProvider),
-        child: AsyncBuilder<List<AssetModel>>(
-          asyncValue: assetsAsync,
-          providers: [assetsCtrlProvider],
-          allowEmpty: true,
-          builder: (assets) {
-            if (assets.isEmpty) {
-              return const EmptyState(
-                label: 'No assets',
-                subLabel: 'Click the + button to add a new asset.',
-                icon: Icon(HIStroke.laptopProgramming),
-              );
-            }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Assets')),
+        body: RefreshIndicator(
+          onRefresh: () async => ref.invalidate(assetsCtrlProvider),
+          child: AsyncBuilder<List<AssetModel>>(
+            asyncValue: assetsAsync,
+            providers: [assetsCtrlProvider],
+            allowEmpty: true,
+            builder: (assets) {
+              if (assets.isEmpty) {
+                return const EmptyState(
+                  label: 'No assets',
+                  subLabel: 'Click the + button to add a new asset.',
+                  icon: Icon(HIStroke.laptopProgramming),
+                );
+              }
 
-            return ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md).copyWith(bottom: 100),
-              itemCount: assets.length,
-              separatorBuilder: (context, index) => const Gap(Insets.md),
-              itemBuilder: (context, index) {
-                final asset = assets[index];
-                return AssetListTile(asset: asset);
-              },
-            );
-          },
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md).copyWith(bottom: 100),
+                itemCount: assets.length,
+                separatorBuilder: (context, index) => const Gap(Insets.md),
+                itemBuilder: (context, index) {
+                  final asset = assets[index];
+                  return AssetListTile(asset: asset);
+                },
+              );
+            },
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(RPaths.createAsset.path),
-        icon: const Icon(HIStroke.plusSign),
-        label: const Text('Add Asset'),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => context.push(RPaths.createAsset.path),
+          icon: const Icon(HIStroke.plusSign),
+          label: const Text('Add Asset'),
+        ),
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension ValueEx on ValueNotifier<bool> {
   void toggle() => value = !value;
@@ -78,4 +80,8 @@ extension ObjEx<T extends Object?> on T {
     if (kDebugMode) inspect(this);
     return this;
   }
+}
+
+extension EdgeInsetsEx on EdgeInsets {
+  EdgeInsets withBottomEx() => copyWith(bottom: bottom + Insets.ext);
 }

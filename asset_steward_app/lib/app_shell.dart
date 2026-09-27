@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
+import 'package:cue/cue.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -22,49 +23,50 @@ class AppShell extends HookConsumerWidget {
       return subscription.cancel;
     }, const []);
 
-    return Scaffold(
-      body: child,
-      bottomNavigationBar: Container(
-        constraints: const .tightFor(height: kBottomNavigationBarHeight),
-        decoration: ShapeDecoration(
-          color: context.colors.surfaceContainer,
-          shape: const RoundedSuperellipseBorder(borderRadius: .vertical(top: Radius.circular(24))),
-        ),
-        child: Row(
-          spacing: Insets.md,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ..._navBarItems.mapIndexed((i, item) {
-              final selected = currentIndex.value == i;
-              return _NavItem(
-                item: item,
-                onTap: () {
-                  currentIndex.value = i;
-                  RPaths.navRoutes[i].go(context);
-                },
-                selected: selected,
-              );
-            }),
-          ],
-        ),
-      ),
-    );
+    final mq = context.mq;
+    final bottomPadding = mq.padding.bottom + 56 + 10.0; // 56 height + 10 margin
 
     return Scaffold(
-      body: child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex.value,
-        onDestinationSelected: (index) {
-          currentIndex.value = index;
-          RPaths.navRoutes[index].go(context);
-        },
-        destinations: const [
-          NavigationDestination(icon: Icon(HIStroke.home01, size: 20), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(HIStroke.archive02, size: 20), label: 'Assets'),
-          NavigationDestination(icon: Icon(HIStroke.qrCodeScan, size: 20), label: 'Scan'),
-          NavigationDestination(icon: Icon(HIStroke.wrench01, size: 20), label: 'Maintenance'),
-          NavigationDestination(icon: Icon(HIStroke.user, size: 20), label: 'Profile'),
-        ],
+      extendBody: true,
+      body: MediaQuery(
+        data: mq.copyWith(
+          padding: EdgeInsets.only(
+            left: mq.padding.left,
+            top: mq.padding.top,
+            right: mq.padding.right,
+            bottom: bottomPadding,
+          ),
+        ),
+        child: child,
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+          child: Container(
+            height: 56,
+            decoration: ShapeDecoration(
+              color: context.colors.surface, // Changed to match UI
+              shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(50)),
+              shadows: [BoxShadow(color: context.colors.shadow.op(0.1), blurRadius: 16, offset: const Offset(0, 8))],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ..._navBarItems.mapIndexed((i, item) {
+                  final selected = currentIndex.value == i;
+                  return _NavItem(
+                    item: item,
+                    onTap: () {
+                      currentIndex.value = i;
+                      RPaths.navRoutes[i].go(context);
+                    },
+                    selected: selected,
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -79,28 +81,67 @@ final _navBarItems = [
 ];
 
 class _NavItem extends StatelessWidget {
-  const new({required this.item, required this.onTap, required this.selected});
+  const _NavItem({required this.item, required this.onTap, required this.selected});
 
   final ({IconData icon, String label}) item;
-  final Function() onTap;
-
+  final VoidCallback onTap;
   final bool selected;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: Insets.sm, vertical: Insets.sm),
-        decoration: BoxDecoration(color: context.colors.surfaceContainerHighest.op3),
-        child: Icon(
-          item.icon,
-          size: selected ? 25 : 20,
-          color: selected ? context.colors.primary : context.colors.outline,
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: selected ? 3 : 8),
+        child: Cue.onToggle(
+          toggled: selected,
+          motion: const Spring.spatialSlow(),
+          child: TweenActor<double>.value(
+            from: 0.0,
+            to: 1.0,
+            builder: (context, value, child) {
+              // Spring physics can dip below 0.0 or overshoot 1.0.
+              // We must clamp values to avoid negative sizes and out-of-bounds alpha.
+              final positiveValue = value.clamp(0.0, double.infinity);
+              final alphaValue = value.clamp(0.0, 1.0);
+
+              // Use Transform.scale for pure center alignment without layout shifts
+              // Scale from 1.0 to 1.15 (equivalent to size 20 -> 23)
+              final iconScale = (1.0 + (value * 0.15)).clamp(0.0, double.infinity);
+
+              // Compact indicator width
+              final indicatorWidth = positiveValue * 16.0;
+              // Subtle indicator height and gap
+              final indicatorHeight = positiveValue * 3.0;
+              final gapHeight = positiveValue * 4.0;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Transform.scale(
+                    scale: iconScale,
+                    child: Icon(
+                      item.icon,
+                      size: 20.0,
+                      color: Color.lerp(context.colors.outline, context.colors.primary, alphaValue),
+                    ),
+                  ),
+                  Gap(gapHeight),
+                  // Indicator
+                  Container(
+                    height: indicatorHeight,
+                    width: indicatorWidth,
+                    decoration: ShapeDecoration(
+                      color: context.colors.primary.withAlpha((alphaValue * 255).toInt()),
+                      shape: const StadiumBorder(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
