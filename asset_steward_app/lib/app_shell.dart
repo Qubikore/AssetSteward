@@ -4,6 +4,7 @@ import 'package:cue/cue.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:progressive_blur/progressive_blur.dart';
 import 'package:screwdriver/screwdriver.dart';
 
 class AppShell extends HookConsumerWidget {
@@ -24,20 +25,36 @@ class AppShell extends HookConsumerWidget {
     }, const []);
 
     final mq = context.mq;
-    final bottomPadding = mq.padding.bottom + 56 + 10.0; // 56 height + 10 margin
+    final bottomPadding = mq.padding.bottom + 56 + 10;
 
     return Scaffold(
       extendBody: true,
-      body: MediaQuery(
-        data: mq.copyWith(
-          padding: EdgeInsets.only(
-            left: mq.padding.left,
-            top: mq.padding.top,
-            right: mq.padding.right,
-            bottom: bottomPadding,
-          ),
-        ),
-        child: child,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final blurHeight = bottomPadding + 32 + 20;
+          final startBlurFraction = 1.0 - (blurHeight / constraints.maxHeight).clamp(0.0, 1.0);
+
+          return ProgressiveBlurWidget(
+            sigma: 10.0,
+            linearGradientBlur: LinearGradientBlur(
+              start: .topCenter,
+              end: .bottomCenter,
+              stops: [0.0, startBlurFraction, 1.0],
+              values: [0.0, 0.0, 1.0],
+            ),
+            child: MediaQuery(
+              data: mq.copyWith(
+                padding: EdgeInsets.only(
+                  left: mq.padding.left,
+                  top: mq.padding.top,
+                  right: mq.padding.right,
+                  bottom: bottomPadding,
+                ),
+              ),
+              child: child,
+            ),
+          );
+        },
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -45,9 +62,9 @@ class AppShell extends HookConsumerWidget {
           child: Container(
             height: 56,
             decoration: ShapeDecoration(
-              color: context.colors.surface, // Changed to match UI
-              shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(50)),
-              shadows: [BoxShadow(color: context.colors.shadow.op(0.1), blurRadius: 16, offset: const Offset(0, 8))],
+              color: context.colors.surface,
+              shape: const StadiumBorder(),
+              shadows: [BoxShadow(color: context.colors.shadow.op(0.1), blurRadius: 12, offset: const Offset(0, 8))],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,18 +118,12 @@ class _NavItem extends StatelessWidget {
             from: 0.0,
             to: 1.0,
             builder: (context, value, child) {
-              // Spring physics can dip below 0.0 or overshoot 1.0.
-              // We must clamp values to avoid negative sizes and out-of-bounds alpha.
               final positiveValue = value.clamp(0.0, double.infinity);
               final alphaValue = value.clamp(0.0, 1.0);
 
-              // Use Transform.scale for pure center alignment without layout shifts
-              // Scale from 1.0 to 1.15 (equivalent to size 20 -> 23)
               final iconScale = (1.0 + (value * 0.15)).clamp(0.0, double.infinity);
 
-              // Compact indicator width
               final indicatorWidth = positiveValue * 16.0;
-              // Subtle indicator height and gap
               final indicatorHeight = positiveValue * 3.0;
               final gapHeight = positiveValue * 4.0;
 
@@ -129,7 +140,7 @@ class _NavItem extends StatelessWidget {
                     ),
                   ),
                   Gap(gapHeight),
-                  // Indicator
+
                   Container(
                     height: indicatorHeight,
                     width: indicatorWidth,

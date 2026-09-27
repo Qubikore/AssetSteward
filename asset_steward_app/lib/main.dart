@@ -5,9 +5,12 @@ import 'package:chirp_addons/chirp_addons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:progressive_blur/progressive_blur.dart' as progressive_blur;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await progressive_blur.ProgressiveBlurWidget.precache();
+  
   Chirp.root = ChirpLogger()
     ..addConsoleWriter(
       output: log,
