@@ -12,6 +12,14 @@ class CreateOrUpdateLocationSheet extends HookConsumerWidget {
 
   const CreateOrUpdateLocationSheet({super.key, this.location});
 
+  static Future<T?> show<T>(BuildContext context, LocationModel? category) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => CreateOrUpdateLocationSheet(location: category),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());

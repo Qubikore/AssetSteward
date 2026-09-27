@@ -9,6 +9,7 @@ class AutocompleteFormBox<T> extends FormBuilderField<T> {
     required super.name,
     String? placeholder,
     String? label,
+    Widget? labelAction,
     required List<T> items,
     required String Function(T item) itemLabel,
     ValueChanged<T?>? onChanged,
@@ -26,6 +27,7 @@ class AutocompleteFormBox<T> extends FormBuilderField<T> {
                AutocompleteBox<T>(
                  placeholder: placeholder,
                  label: label,
+                 labelAction: labelAction,
                  value: field.value,
                  items: items,
                  itemLabel: itemLabel,
@@ -64,6 +66,7 @@ class AutocompleteBox<T> extends StatefulWidget {
     this.label,
     required this.items,
     required this.itemLabel,
+    this.labelAction,
     this.itemTextValue,
     this.value,
     this.onChanged,
@@ -77,9 +80,17 @@ class AutocompleteBox<T> extends StatefulWidget {
     this.isRequired = false,
     this.enabled = true,
   });
+  static AutocompleteBox loading(String label) => AutocompleteBox<dynamic>(
+    label: label,
+    placeholder: 'Loading...',
+    items: const [],
+    itemLabel: (c) => c,
+    enabled: false,
+  );
 
   final String? placeholder;
   final String? label;
+  final Widget? labelAction;
   final List<T> items;
   final String Function(T item) itemLabel;
   final String Function(T item)? itemTextValue;
@@ -161,6 +172,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
           focusNode: focusNode,
           hintText: widget.placeholder,
           title: widget.label,
+          titleAction: widget.labelAction,
           onChanged: (_) {},
           isRequired: widget.isRequired,
           outsideSuffix: widget.suffix,

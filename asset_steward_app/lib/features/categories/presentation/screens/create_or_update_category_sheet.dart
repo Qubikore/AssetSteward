@@ -11,6 +11,14 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
 
   const CreateOrUpdateCategorySheet({super.key, this.category});
 
+  static Future<T?> show<T>(BuildContext context, CategoryModel? category) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => CreateOrUpdateCategorySheet(category: category),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
@@ -26,9 +34,7 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
       ),
       child: FormBuilder(
         key: formKey,
-        initialValue: {
-          if (isEdit) 'name': category!.name,
-        },
+        initialValue: {if (isEdit) 'name': category!.name},
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,12 +44,7 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
               style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const Gap(Insets.xl),
-            const InputField(
-              name: 'name',
-              title: 'Category Name',
-              hintText: 'e.g. Laptops',
-              isRequired: true,
-            ),
+            const InputField(name: 'name', title: 'Category Name', hintText: 'e.g. Laptops', isRequired: true),
             const Gap(Insets.xxl),
             FilledButton(
               onPressed: isLoading.value
@@ -53,9 +54,7 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
                         isLoading.value = true;
                         final form = formKey.currentState!.value;
 
-                        final payload = {
-                          'name': form['name'],
-                        };
+                        final payload = {'name': form['name']};
 
                         final success = isEdit
                             ? await ref.read(categoriesCtrlProvider.notifier).updateCategory(category!.id, payload)
@@ -64,7 +63,9 @@ class CreateOrUpdateCategorySheet extends HookConsumerWidget {
                         isLoading.value = false;
 
                         if (success) {
-                          Toast.showSuccess(isEdit ? 'Category updated successfully!' : 'Category created successfully!');
+                          Toast.showSuccess(
+                            isEdit ? 'Category updated successfully!' : 'Category created successfully!',
+                          );
                           context.nPop();
                         }
                       }

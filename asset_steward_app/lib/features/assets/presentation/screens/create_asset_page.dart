@@ -2,11 +2,14 @@ import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
 import 'package:asset_steward_app/features/categories/presentation/controllers/categories_controller.dart';
+import 'package:asset_steward_app/features/categories/presentation/screens/create_or_update_category_sheet.dart';
 import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
 import 'package:asset_steward_app/features/departments/presentation/controllers/departments_controller.dart';
+import 'package:asset_steward_app/features/departments/presentation/screens/create_or_update_department_sheet.dart';
 import 'package:asset_steward_app/features/home/presentation/controllers/home_controllers.dart';
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
+import 'package:asset_steward_app/features/locations/presentation/screens/create_or_update_location_sheet.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,30 +44,22 @@ class CreateAssetPage extends HookConsumerWidget {
           ).copyWith(bottom: context.viewInsets.bottom + Insets.xxl),
           child: FormBuilder(
             key: formKey,
-            initialValue: asset != null
-                ? {
-                    'name': asset!.name,
-                    'description': '',
-                    'assetCode': asset!.assetCode,
-                    'serialNumber': asset!.serialNumber,
-                    'purchaseDate': DateTime.tryParse(asset!.purchaseDate) ?? DateTime.now(),
-                    'purchasePrice': asset!.purchasePrice.toString(),
-                    'vendor': asset!.vendor,
-                    'quantity': asset!.quantity.toString(),
-                    'category': categoriesAsync.value?.firstWhereOrNull((c) => c.name == asset!.categoryName),
-                    'location': locationsAsync.value?.firstWhereOrNull((l) => l.name == asset!.locationName),
-                    'department': departmentsAsync.value?.firstWhereOrNull((d) => d.name == asset!.departmentName),
-                  }
-                : {},
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const _Section(
+                _Section(
                   title: 'General Information',
                   icon: HIStroke.laptopProgramming,
                   children: [
-                    InputField(name: 'name', title: 'Asset Name', hintText: 'e.g. MacBook Pro M3', isRequired: true),
-                    Gap(Insets.md),
+                    InputField(
+                      name: 'name',
+                      title: 'Asset Name',
+                      hintText: 'e.g. MacBook Pro M3',
+                      initialValue: asset?.name,
+                      isRequired: true,
+                    ),
+                    const Gap(Insets.md),
                     Row(
                       spacing: Insets.md,
                       children: [
@@ -73,7 +68,7 @@ class CreateAssetPage extends HookConsumerWidget {
                             name: 'assetCode',
                             title: 'Asset Code',
                             hintText: 'e.g. LPT-001',
-                            isRequired: true,
+                            initialValue: asset?.assetCode,
                           ),
                         ),
 
@@ -82,7 +77,7 @@ class CreateAssetPage extends HookConsumerWidget {
                             name: 'serialNumber',
                             title: 'Serial Number',
                             hintText: 'e.g. C02X...',
-                            isRequired: true,
+                            initialValue: asset?.serialNumber,
                           ),
                         ),
                       ],
@@ -102,6 +97,7 @@ class CreateAssetPage extends HookConsumerWidget {
                             name: 'purchasePrice',
                             title: 'Purchase Price (\$)',
                             hintText: 'e.g. 100.00',
+                            initialValue: asset?.purchasePrice.toString(),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             isRequired: true,
                             validators: [FormBuilderValidators.numeric()],
@@ -113,6 +109,7 @@ class CreateAssetPage extends HookConsumerWidget {
                             name: 'quantity',
                             title: 'Quantity',
                             hintText: 'e.g. 10',
+                            initialValue: (asset?.quantity ?? 1).toString(),
                             keyboardType: TextInputType.number,
                             isRequired: true,
                             validators: [FormBuilderValidators.numeric()],
@@ -129,9 +126,9 @@ class CreateAssetPage extends HookConsumerWidget {
                             children: [
                               Text('Purchase Date', style: context.text.titleSmall?.medium).required(),
                               const Gap(Insets.xs),
-
                               FormBuilderDateTimePicker(
                                 name: 'purchaseDate',
+                                initialValue: DateTime.tryParse(asset?.purchaseDate ?? ' ') ?? DateTime.now(),
                                 decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
                                 inputType: InputType.date,
                                 format: DateFormat('yyyy-MM-dd'),
@@ -149,6 +146,7 @@ class CreateAssetPage extends HookConsumerWidget {
                               Text('Expiry/Warranty Date', style: context.text.titleSmall?.medium),
                               FormBuilderDateTimePicker(
                                 name: 'expireDate',
+                                initialValue: DateTime.tryParse(asset?.expireDate ?? ' '),
                                 decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
                                 inputType: InputType.date,
                                 format: DateFormat('yyyy-MM-dd'),
@@ -162,12 +160,7 @@ class CreateAssetPage extends HookConsumerWidget {
                     ),
 
                     const Gap(Insets.md),
-                    const InputField(
-                      name: 'vendor',
-                      title: 'Vendor/Supplier',
-                      hintText: 'e.g. Apple Inc.',
-                      isRequired: true,
-                    ),
+                    const InputField(name: 'vendor', title: 'Vendor/Supplier', hintText: 'e.g. Apple Inc.'),
                   ],
                 ),
                 const Gap(Insets.xl),
@@ -176,45 +169,73 @@ class CreateAssetPage extends HookConsumerWidget {
                   title: 'Categorization & Location',
                   icon: HIStroke.tag01,
                   children: [
-                    AutocompleteFormBox<CategoryModel>(
-                      name: 'category',
-                      label: 'Category',
-                      placeholder: 'Select a category...',
-                      validator: FormBuilderValidators.required(),
-                      isRequired: true,
-                      items: categoriesAsync.maybeWhen(data: (cats) => cats, orElse: () => []),
-                      itemLabel: (c) => c.name,
-                      valueTransformer: (x) => x?.id,
+                    AsyncBuilder(
+                      asyncValue: categoriesAsync,
+                      allowEmpty: true,
+                      onLoading: () => AutocompleteBox.loading('Category'),
+                      builder: (categories) {
+                        final category = categories.firstWhereOrNull((c) => c.name == asset?.categoryName);
+                        return AutocompleteFormBox<CategoryModel>(
+                          name: 'category',
+                          label: 'Category',
+                          placeholder: 'Select a category...',
+                          initialValue: category,
+                          validator: FormBuilderValidators.required(),
+                          items: categories,
+                          itemLabel: (c) => c.name,
+                          valueTransformer: (x) => x?.id,
+                          labelAction: Text(
+                            '+ Add Category',
+                            style: context.text.labelMedium?.textColor(context.colors.primary),
+                          ).clickable(onTap: () => CreateOrUpdateCategorySheet.show(context, null)),
+                        );
+                      },
                     ),
                     const Gap(Insets.md),
-                    Row(
-                      spacing: Insets.md,
-                      children: [
-                        Expanded(
-                          child: AutocompleteFormBox<LocationModel>(
-                            name: 'location',
-                            label: 'Location',
-                            placeholder: 'Select a location...',
-                            validator: FormBuilderValidators.required(),
-                            isRequired: true,
-                            items: locationsAsync.maybeWhen(data: (locs) => locs, orElse: () => []),
-                            itemLabel: (l) => l.name,
-                            valueTransformer: (x) => x?.id,
-                          ),
-                        ),
-                        Expanded(
-                          child: AutocompleteFormBox<DepartmentModel>(
-                            name: 'department',
-                            label: 'Department',
-                            placeholder: 'Select a department...',
-                            validator: FormBuilderValidators.required(),
-                            isRequired: true,
-                            items: departmentsAsync.maybeWhen(data: (deps) => deps, orElse: () => []),
-                            itemLabel: (d) => d.name,
-                            valueTransformer: (x) => x?.id,
-                          ),
-                        ),
-                      ],
+                    AsyncBuilder(
+                      asyncValue: locationsAsync,
+                      allowEmpty: true,
+                      onLoading: () => AutocompleteBox.loading('Location'),
+                      builder: (locations) {
+                        final location = locations.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        return AutocompleteFormBox<LocationModel>(
+                          name: 'location',
+                          label: 'Location',
+                          placeholder: 'Select a location...',
+                          initialValue: location,
+                          validator: FormBuilderValidators.required(),
+                          items: locations,
+                          itemLabel: (l) => l.name,
+                          valueTransformer: (x) => x?.id,
+                          labelAction: Text(
+                            '+ Add Location',
+                            style: context.text.labelMedium?.textColor(context.colors.primary),
+                          ).clickable(onTap: () => CreateOrUpdateLocationSheet.show(context, null)),
+                        );
+                      },
+                    ),
+                    const Gap(Insets.md),
+                    AsyncBuilder(
+                      asyncValue: departmentsAsync,
+                      allowEmpty: true,
+                      onLoading: () => AutocompleteBox.loading('Location'),
+                      builder: (departments) {
+                        final department = departments.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        return AutocompleteFormBox<DepartmentModel>(
+                          name: 'department',
+                          label: 'Department',
+                          placeholder: 'Select a department...',
+                          initialValue: department,
+                          validator: FormBuilderValidators.required(),
+                          items: departments,
+                          itemLabel: (d) => d.name,
+                          valueTransformer: (x) => x?.id,
+                          labelAction: Text(
+                            '+ Add Department',
+                            style: context.text.labelMedium?.textColor(context.colors.primary),
+                          ).clickable(onTap: () => CreateOrUpdateDepartmentSheet.show(context, null)),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -289,14 +310,7 @@ class _Section extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: context.colors.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: context.colors.onPrimaryContainer, size: 20),
-              ),
+              Icon(icon, color: context.colors.primary, size: 18),
               const Gap(Insets.md),
               Text(title, style: context.text.titleMedium?.bold),
             ],

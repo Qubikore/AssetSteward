@@ -12,22 +12,24 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
 
   const CreateOrUpdateDepartmentSheet({super.key, this.department});
 
+  static Future<T?> show<T>(BuildContext context, DepartmentModel? department) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => CreateOrUpdateDepartmentSheet(department: department),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        left: Insets.lg,
-        right: Insets.lg,
-        bottom: context.viewInsets.bottom + Insets.xxl,
-      ),
+      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
       child: FormBuilder(
         key: formKey,
-        initialValue: {
-          'name': department?.name,
-        },
+        initialValue: {'name': department?.name},
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,9 +57,7 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
                         isLoading.value = true;
                         final form = formKey.currentState!.value;
 
-                        final data = {
-                          'name': form['name'],
-                        };
+                        final data = {'name': form['name']};
 
                         try {
                           if (department == null) {
@@ -67,7 +67,9 @@ class CreateOrUpdateDepartmentSheet extends HookConsumerWidget {
                               if (context.mounted) context.nPop();
                             });
                           } else {
-                            final result = await ref.read(departmentsCtrlProvider.notifier).updateDepartment(department!.id, data);
+                            final result = await ref
+                                .read(departmentsCtrlProvider.notifier)
+                                .updateDepartment(department!.id, data);
                             result.fold((l) => Toast.showError(l.message), (r) {
                               Toast.showSuccess('Department updated successfully');
                               if (context.mounted) context.nPop();

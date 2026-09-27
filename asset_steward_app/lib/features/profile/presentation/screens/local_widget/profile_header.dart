@@ -28,81 +28,86 @@ class ProfileHeader extends ConsumerWidget {
           AsyncBuilder(
             asyncValue: orgAsync,
             providers: [organizationCtrlProvider],
-            builder: (org) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(Insets.sm),
-                const Divider(height: 0),
-                const Gap(Insets.sm),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      spacing: Insets.xs,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            org.name,
-                            style: context.text.titleMedium?.bold.textHeight(1),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-
-                        _RoleChip(role: data.role.name.titleCase),
-                      ],
-                    ),
-                    if (org.email != null) ...[
-                      const Gap(Insets.xs),
+            onLoading: () => const SizedBox.shrink(),
+            onError: (e, s) => const SizedBox.shrink(),
+            builder: (org) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(Insets.sm),
+                  const Divider(height: 0),
+                  const Gap(Insets.sm),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Row(
+                        spacing: Insets.xs,
                         children: [
-                          Icon(HIStroke.mail01, size: 13, color: context.colors.outline),
-                          const Gap(Insets.sm),
                           Expanded(
-                            child: Text(
-                              org.email!,
-                              style: context.text.bodySmall?.textColor(context.colors.outline),
+                            child: SelectableText(
+                              org.name,
+                              style: context.text.titleMedium?.bold.textHeight(1),
                               maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
+
+                          _RoleChip(role: data.role.name.titleCase),
                         ],
                       ),
-                    ],
-                    if (org.phone != null || org.location != null) ...[
-                      const Gap(Insets.xxs),
-                      Row(
-                        children: [
-                          if (org.phone != null) ...[
-                            Icon(HIStroke.holdPhone, size: 12, color: context.colors.outline),
-                            const Gap(Insets.xs),
-                            Text(org.phone!, style: context.text.bodySmall?.textColor(context.colors.outline)),
-                          ],
-                          if (org.phone != null && org.location != null) ...[
+                      if (org.email != null) ...[
+                        const Gap(Insets.xs),
+                        Row(
+                          children: [
+                            Icon(HIStroke.mail01, size: 13, color: context.colors.outline),
                             const Gap(Insets.sm),
-                            Icon(Icons.circle, size: 5, color: context.colors.outline),
-                            const Gap(Insets.sm),
-                          ],
-                          if (org.location != null) ...[
-                            Icon(HIStroke.location01, size: 12, color: context.colors.outline),
-                            const Gap(Insets.xs),
                             Expanded(
-                              child: Text(
-                                org.location!,
+                              child: SelectableText(
+                                org.email!,
                                 style: context.text.bodySmall?.textColor(context.colors.outline),
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
-                        ],
-                      ),
+                        ),
+                      ],
+                      if (org.phone != null || org.location != null) ...[
+                        const Gap(Insets.xxs),
+                        Row(
+                          children: [
+                            if (org.phone != null) ...[
+                              Icon(HIStroke.holdPhone, size: 12, color: context.colors.outline),
+                              const Gap(Insets.xs),
+                              SelectableText(
+                                org.phone!,
+                                maxLines: 1,
+                                style: context.text.bodySmall?.textColor(context.colors.outline),
+                              ),
+                            ],
+                            if (org.phone != null && org.location != null) ...[
+                              const Gap(Insets.sm),
+                              Icon(Icons.circle, size: 5, color: context.colors.outline),
+                              const Gap(Insets.sm),
+                            ],
+                            if (org.location != null) ...[
+                              Icon(HIStroke.location01, size: 12, color: context.colors.outline),
+                              const Gap(Insets.xs),
+                              Expanded(
+                                child: SelectableText(
+                                  org.location!,
+                                  style: context.text.bodySmall?.textColor(context.colors.outline),
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -143,22 +148,16 @@ class _ProfileInfo extends StatelessWidget {
             crossAxisAlignment: .start,
             mainAxisAlignment: .center,
             children: [
-              Text(
-                '${data.firstname} ${data.lastname}',
-                style: context.text.titleMedium?.bold,
-                maxLines: 1,
-                overflow: .ellipsis,
-              ),
+              SelectableText('${data.firstname} ${data.lastname}', style: context.text.titleMedium?.bold, maxLines: 1),
               Row(
                 children: [
                   Icon(HIStroke.mail01, size: 13, color: context.colors.outline),
                   const Gap(Insets.sm),
                   Expanded(
-                    child: Text(
+                    child: SelectableText(
                       data.email,
                       style: context.text.bodySmall?.textColor(context.colors.outline),
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

@@ -9,6 +9,7 @@ class InputField extends HookWidget {
   const InputField({
     super.key,
     this.title,
+    this.titleAction,
     this.name,
     this.hintText,
     this.validators = const [],
@@ -27,6 +28,7 @@ class InputField extends HookWidget {
   });
 
   final String? title;
+  final Widget? titleAction;
   final String? name;
   final String? hintText;
   final List<FormFieldValidator<String>> validators;
@@ -81,7 +83,7 @@ class InputField extends HookWidget {
         readOnly: readOnly,
         onChanged: onChanged,
         validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
-        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon),
+        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
       );
     } else {
       field = TextFormField(
@@ -95,7 +97,7 @@ class InputField extends HookWidget {
         readOnly: readOnly,
         onChanged: onChanged,
         validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
-        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon),
+        decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
       );
     }
 
@@ -118,7 +120,13 @@ class InputField extends HookWidget {
         crossAxisAlignment: .start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title!, style: context.text.titleSmall?.medium).required(isRequired),
+          Row(
+            spacing: Insets.xs,
+            children: [
+              Expanded(child: Text(title!, style: context.text.titleSmall?.medium, maxLines: 1).required(isRequired)),
+              ?titleAction,
+            ],
+          ),
           const Gap(Insets.xs),
           content,
         ],
