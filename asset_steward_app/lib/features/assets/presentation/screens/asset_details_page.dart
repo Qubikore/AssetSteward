@@ -17,7 +17,7 @@ class AssetDetailsPage extends HookConsumerWidget {
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
     final profileAsync = ref.watch(profileCtrlProvider);
     final profile = profileAsync.value;
-    final isPrivileged = profile != null && (profile.role == .superAdmin || profile.role == .hr);
+    final isPrivileged = profile?.isPrivileged ?? false;
 
     return Scaffold(
       appBar: AppBar(

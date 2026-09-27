@@ -29,4 +29,14 @@ class ProfileData with ProfileDataMappable {
 
   static const fromMap = ProfileDataMapper.fromMap;
   static const fromJson = ProfileDataMapper.fromJson;
+
+  String? get avatar {
+    if (profilePicture == null) return null;
+    if (profilePicture!.startsWith('http://localhost:8080/')) {
+      return 'https://assetsteward-backend.onrender.com/api/v1/${profilePicture!.replaceAll('http://localhost:8080/', '')}';
+    }
+    return profilePicture;
+  }
+
+  bool get isPrivileged => (role == .superAdmin || role == .hr);
 }

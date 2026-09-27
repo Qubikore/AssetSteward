@@ -10,6 +10,7 @@ import 'package:asset_steward_app/features/home/presentation/controllers/home_co
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
 import 'package:asset_steward_app/features/locations/presentation/screens/create_or_update_location_sheet.dart';
+import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -33,13 +34,13 @@ class CreateAssetPage extends HookConsumerWidget {
     final departmentsAsync = ref.watch(departmentsCtrlProvider);
     final categoriesAsync = ref.watch(categoriesCtrlProvider);
 
+    final profile = ref.watch(profileCtrlProvider).value;
+    final isPrivileged = profile?.isPrivileged ?? false;
+
     return GestureDetector(
       onTap: () => InputUtils.unFocus(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(asset == null ? 'Add New Asset' : 'Edit Asset'),
-          centerTitle: true,
-        ),
+        appBar: AppBar(title: Text(asset == null ? 'Add New Asset' : 'Edit Asset'), centerTitle: true),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: Insets.lg,
@@ -85,9 +86,7 @@ class CreateAssetPage extends HookConsumerWidget {
                             title: 'Purchase Price',
                             hintText: 'e.g. 100.00',
                             initialValue: asset?.purchasePrice.toString(),
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             isRequired: true,
                             validators: [FormBuilderValidators.numeric()],
                           ),
@@ -113,26 +112,16 @@ class CreateAssetPage extends HookConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Purchase Date',
-                                style: context.text.titleSmall?.medium,
-                              ).required(),
+                              Text('Purchase Date', style: context.text.titleSmall?.medium).required(),
                               const Gap(Insets.xs),
                               FormBuilderDateTimePicker(
                                 name: 'purchaseDate',
-                                initialValue:
-                                    DateTime.tryParse(
-                                      asset?.purchaseDate ?? ' ',
-                                    ) ??
-                                    DateTime.now(),
-                                decoration: const InputDecoration(
-                                  hintText: 'yyyy-MM-dd',
-                                ),
+                                initialValue: DateTime.tryParse(asset?.purchaseDate ?? ' ') ?? DateTime.now(),
+                                decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
                                 inputType: InputType.date,
                                 format: DateFormat('yyyy-MM-dd'),
                                 validator: FormBuilderValidators.required(),
-                                valueTransformer: (x) =>
-                                    x?.formatDate('yyyy-MM-dd'),
+                                valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
                               ),
                             ],
                           ),
@@ -142,23 +131,15 @@ class CreateAssetPage extends HookConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Expiry/Warranty Date',
-                                style: context.text.titleSmall?.medium,
-                              ),
+                              Text('Expiry/Warranty Date', style: context.text.titleSmall?.medium),
                               FormBuilderDateTimePicker(
                                 name: 'expireDate',
-                                initialValue: DateTime.tryParse(
-                                  asset?.expireDate ?? ' ',
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: 'yyyy-MM-dd',
-                                ),
+                                initialValue: DateTime.tryParse(asset?.expireDate ?? ' '),
+                                decoration: const InputDecoration(hintText: 'yyyy-MM-dd'),
                                 inputType: InputType.date,
                                 format: DateFormat('yyyy-MM-dd'),
 
-                                valueTransformer: (x) =>
-                                    x?.formatDate('yyyy-MM-dd'),
+                                valueTransformer: (x) => x?.formatDate('yyyy-MM-dd'),
                               ),
                             ],
                           ),
@@ -167,11 +148,7 @@ class CreateAssetPage extends HookConsumerWidget {
                     ),
 
                     const Gap(Insets.md),
-                    const InputField(
-                      name: 'vendor',
-                      title: 'Vendor/Supplier',
-                      hintText: 'e.g. Apple Inc.',
-                    ),
+                    const InputField(name: 'vendor', title: 'Vendor/Supplier', hintText: 'e.g. Apple Inc.'),
                   ],
                 ),
                 const Gap(Insets.xl),
@@ -185,30 +162,21 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Category'),
                       builder: (categories) {
-                        final category = categories.firstWhereOrNull(
-                          (c) => c.id == asset?.category?.id,
-                        );
+                        final category = categories.firstWhereOrNull((c) => c.id == asset?.category?.id);
                         return AutocompleteFormBox<CategoryModel>(
                           name: 'categoryId',
                           label: 'Category',
                           placeholder: 'Select a category...',
                           initialValue: category,
-
                           items: categories,
                           itemLabel: (c) => c.name,
                           valueTransformer: (x) => x?.id,
-                          labelAction:
-                              Text(
-                                '+ Add Category',
-                                style: context.text.labelMedium?.textColor(
-                                  context.colors.primary,
-                                ),
-                              ).clickable(
-                                onTap: () => CreateOrUpdateCategorySheet.show(
-                                  context,
-                                  null,
-                                ),
-                              ),
+                          labelAction: !isPrivileged
+                              ? null
+                              : Text(
+                                  '+ Add Category',
+                                  style: context.text.labelMedium?.textColor(context.colors.primary),
+                                ).clickable(onTap: () => CreateOrUpdateCategorySheet.show(context, null)),
                         );
                       },
                     ),
@@ -218,30 +186,21 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (locations) {
-                        final location = locations.firstWhereOrNull(
-                          (c) => c.id == asset?.location?.id,
-                        );
+                        final location = locations.firstWhereOrNull((c) => c.id == asset?.location?.id);
                         return AutocompleteFormBox<LocationModel>(
                           name: 'locationId',
                           label: 'Location',
                           placeholder: 'Select a location...',
                           initialValue: location,
-
                           items: locations,
                           itemLabel: (l) => l.name,
                           valueTransformer: (x) => x?.id,
-                          labelAction:
-                              Text(
-                                '+ Add Location',
-                                style: context.text.labelMedium?.textColor(
-                                  context.colors.primary,
-                                ),
-                              ).clickable(
-                                onTap: () => CreateOrUpdateLocationSheet.show(
-                                  context,
-                                  null,
-                                ),
-                              ),
+                          labelAction: !isPrivileged
+                              ? null
+                              : Text(
+                                  '+ Add Location',
+                                  style: context.text.labelMedium?.textColor(context.colors.primary),
+                                ).clickable(onTap: () => CreateOrUpdateLocationSheet.show(context, null)),
                         );
                       },
                     ),
@@ -251,9 +210,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (departments) {
-                        final department = departments.firstWhereOrNull(
-                          (c) => c.id == asset?.department?.id,
-                        );
+                        final department = departments.firstWhereOrNull((c) => c.id == asset?.department?.id);
                         return AutocompleteFormBox<DepartmentModel>(
                           name: 'departmentId',
                           label: 'Department',
@@ -263,18 +220,12 @@ class CreateAssetPage extends HookConsumerWidget {
                           items: departments,
                           itemLabel: (d) => d.name,
                           valueTransformer: (x) => x?.id,
-                          labelAction:
-                              Text(
-                                '+ Add Department',
-                                style: context.text.labelMedium?.textColor(
-                                  context.colors.primary,
-                                ),
-                              ).clickable(
-                                onTap: () => CreateOrUpdateDepartmentSheet.show(
-                                  context,
-                                  null,
-                                ),
-                              ),
+                          labelAction: !isPrivileged
+                              ? null
+                              : Text(
+                                  '+ Add Department',
+                                  style: context.text.labelMedium?.textColor(context.colors.primary),
+                                ).clickable(onTap: () => CreateOrUpdateDepartmentSheet.show(context, null)),
                         );
                       },
                     ),
@@ -296,33 +247,23 @@ class CreateAssetPage extends HookConsumerWidget {
 
                           final bool success;
                           if (asset != null) {
-                            success = await ref
-                                .read(assetsCtrlProvider.notifier)
-                                .updateAsset(asset!.id, payload);
+                            success = await ref.read(assetsCtrlProvider.notifier).updateAsset(asset!.id, payload);
                           } else {
-                            success = await ref
-                                .read(assetsCtrlProvider.notifier)
-                                .createAsset(payload);
+                            success = await ref.read(assetsCtrlProvider.notifier).createAsset(payload);
                           }
 
                           isLoading.value = false;
 
                           if (success) {
                             Toast.showSuccess(
-                              asset != null
-                                  ? 'Asset updated successfully!'
-                                  : 'Asset created successfully!',
+                              asset != null ? 'Asset updated successfully!' : 'Asset created successfully!',
                             );
                             if (context.mounted) context.nPop();
 
                             ref.invalidate(dashboardMetricsCtrlProvider);
                             ref.invalidate(assetUtilizationCtrlProvider);
                           } else {
-                            Toast.showError(
-                              asset != null
-                                  ? 'Failed to update asset'
-                                  : 'Failed to create asset',
-                            );
+                            Toast.showError(asset != null ? 'Failed to update asset' : 'Failed to create asset');
                           }
                         },
                   child: isLoading.value
@@ -345,11 +286,7 @@ class _Section extends StatelessWidget {
   final IconData icon;
   final List<Widget> children;
 
-  const _Section({
-    required this.title,
-    required this.icon,
-    required this.children,
-  });
+  const _Section({required this.title, required this.icon, required this.children});
 
   @override
   Widget build(BuildContext context) {
