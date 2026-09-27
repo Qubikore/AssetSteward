@@ -5,6 +5,7 @@ import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/assign_asset_sheet.dart';
 
 class AssetContextMenu extends ConsumerWidget {
   const new({super.key, required this.id});
@@ -44,7 +45,7 @@ class AssetContextMenu extends ConsumerWidget {
             ContextMenuAction(
               title: 'Assign',
               leading: const Icon(HIStroke.userAdd01),
-              onTap: () => Toast.showInfo('Assign feature coming soon'),
+              onTap: () => AssignAssetSheet.show(context, asset),
             ),
           if (isPrivileged)
             ContextMenuAction(
