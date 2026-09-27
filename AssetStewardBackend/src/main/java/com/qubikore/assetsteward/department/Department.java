@@ -3,7 +3,9 @@ package com.qubikore.assetsteward.department;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "departments")
+@Table(name = "departments", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "organization_id"})
+})
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
