@@ -1,3 +1,6 @@
+import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
+import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
+import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 
 part 'asset_model.mapper.dart';
@@ -17,9 +20,9 @@ class AssetModel with AssetModelMappable {
   final String? vendor;
   final int quantity;
   final String status;
-  final String? categoryName;
-  final String? locationName;
-  final String? departmentName;
+  final CategoryModel? category;
+  final LocationModel? location;
+  final DepartmentModel? department;
 
   const AssetModel({
     required this.id,
@@ -32,9 +35,9 @@ class AssetModel with AssetModelMappable {
     this.vendor,
     this.quantity = 0,
     required this.status,
-    this.categoryName,
-    this.locationName,
-    this.departmentName,
+    this.category,
+    this.location,
+    this.department,
   });
 
   bool get isAvailable => status.toLowerCase() == 'available';

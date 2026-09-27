@@ -3,7 +3,9 @@ package com.qubikore.assetsteward.category;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "organization_id"})
+})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

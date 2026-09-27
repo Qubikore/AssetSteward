@@ -67,8 +67,9 @@ class CreateAssetPage extends HookConsumerWidget {
                           child: InputField(
                             name: 'assetCode',
                             title: 'Asset Code',
-                            hintText: 'e.g. LPT-001',
+                            hintText: asset == null ? 'Auto-generated on save' : 'e.g. LPT-001',
                             initialValue: asset?.assetCode,
+                            readOnly: asset == null, // Make read-only when creating
                           ),
                         ),
 
@@ -174,7 +175,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Category'),
                       builder: (categories) {
-                        final category = categories.firstWhereOrNull((c) => c.name == asset?.categoryName);
+                        final category = categories.firstWhereOrNull((c) => c.name == asset?.category?.name);
                         return AutocompleteFormBox<CategoryModel>(
                           name: 'category',
                           label: 'Category',
@@ -197,7 +198,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (locations) {
-                        final location = locations.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        final location = locations.firstWhereOrNull((c) => c.name == asset?.location?.name);
                         return AutocompleteFormBox<LocationModel>(
                           name: 'location',
                           label: 'Location',
@@ -220,7 +221,7 @@ class CreateAssetPage extends HookConsumerWidget {
                       allowEmpty: true,
                       onLoading: () => AutocompleteBox.loading('Location'),
                       builder: (departments) {
-                        final department = departments.firstWhereOrNull((c) => c.name == asset?.locationName);
+                        final department = departments.firstWhereOrNull((c) => c.name == asset?.department?.name);
                         return AutocompleteFormBox<DepartmentModel>(
                           name: 'department',
                           label: 'Department',

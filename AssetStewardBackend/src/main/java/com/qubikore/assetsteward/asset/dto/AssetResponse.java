@@ -14,9 +14,9 @@ public class AssetResponse {
     private String vendor;
     private Integer quantity;
     private String status;
-    private String categoryName;
-    private String locationName;
-    private String departmentName;
+    private com.qubikore.assetsteward.category.CategoryResponse category;
+    private com.qubikore.assetsteward.location.LocationResponse location;
+    private com.qubikore.assetsteward.department.DepartmentResponse department;
 
     public AssetResponse(Asset asset) {
         this.id = asset.getId();
@@ -29,9 +29,9 @@ public class AssetResponse {
         this.vendor = asset.getVendor();
         this.quantity = asset.getQuantity();
         this.status = asset.getStatus().name();
-        this.categoryName = asset.getCategory() != null ? asset.getCategory().getName() : null;
-        this.locationName = asset.getLocation() != null ? asset.getLocation().getName() : null;
-        this.departmentName = asset.getDepartment() != null ? asset.getDepartment().getName() : null;
+        this.category = asset.getCategory() != null ? new com.qubikore.assetsteward.category.CategoryResponse(asset.getCategory()) : null;
+        this.location = asset.getLocation() != null ? new com.qubikore.assetsteward.location.LocationResponse(asset.getLocation()) : null;
+        this.department = asset.getDepartment() != null ? new com.qubikore.assetsteward.department.DepartmentResponse(asset.getDepartment()) : null;
     }
 
     public Long getId() { return id; }
@@ -44,7 +44,7 @@ public class AssetResponse {
     public String getVendor() { return vendor; }
     public Integer getQuantity() { return quantity; }
     public String getStatus() { return status; }
-    public String getCategoryName() { return categoryName; }
-    public String getLocationName() { return locationName; }
-    public String getDepartmentName() { return departmentName; }
+    public com.qubikore.assetsteward.category.CategoryResponse getCategory() { return category; }
+    public com.qubikore.assetsteward.location.LocationResponse getLocation() { return location; }
+    public com.qubikore.assetsteward.department.DepartmentResponse getDepartment() { return department; }
 }

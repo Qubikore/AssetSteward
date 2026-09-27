@@ -84,10 +84,10 @@ class AssetListTile extends ConsumerWidget {
                     Row(
                       spacing: Insets.sm,
                       children: [
-                        if (asset.categoryName.isNotNullOrBlank)
-                          _Badge(icon: HIStroke.tag01, text: asset.categoryName!),
-                        if (asset.departmentName.isNotNullOrBlank)
-                          _Badge(icon: HIStroke.building02, text: asset.departmentName!),
+                        if (asset.category?.name.isNotNullOrBlank == true)
+                          _Badge(icon: HIStroke.tag01, text: asset.category!.name),
+                        if (asset.department?.name.isNotNullOrBlank == true)
+                          _Badge(icon: HIStroke.building02, text: asset.department!.name),
                       ],
                     ),
                   ],

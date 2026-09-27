@@ -39,7 +39,11 @@ public class AssetService {
 
     public AssetResponse createAsset(AssetRequest request, User currentUser) {
         Asset asset = new Asset();
-        asset.setAssetCode(request.getAssetCode());
+        String code = request.getAssetCode();
+        if (code == null || code.trim().isEmpty()) {
+            code = "AST-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
+        asset.setAssetCode(code);
         asset.setName(request.getName());
         asset.setSerialNumber(request.getSerialNumber());
         asset.setPurchaseDate(request.getPurchaseDate());

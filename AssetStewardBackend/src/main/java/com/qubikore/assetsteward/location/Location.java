@@ -3,7 +3,9 @@ package com.qubikore.assetsteward.location;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "organization_id"})
+})
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
