@@ -65,7 +65,7 @@ class AssetListTile extends ConsumerWidget {
           ],
         ),
         child: GestureDetector(
-          onTap: () => RPaths.createAsset.push(context, extra: asset),
+          onTap: () => RPaths.assetDetails(asset.id.toString()).push(context),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -93,10 +93,8 @@ class AssetListTile extends ConsumerWidget {
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: asset.status.sentenceCase,
-                              style: context.text.bodySmall?.textColor(
-                                asset.isAvailable ? Colors.green.shade600 : context.colors.outline,
-                              ),
+                              text: asset.status.name.sentenceCase,
+                              style: context.text.bodySmall?.textColor(asset.status.color),
                             ),
                           ],
                         ),

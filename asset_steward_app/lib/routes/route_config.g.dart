@@ -9,17 +9,19 @@ part of 'route_config.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AppRouter)
+@ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
-final class AppRouterProvider extends $NotifierProvider<AppRouter, GoRouter> {
+final class AppRouterProvider
+    extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
+    with $Provider<GoRouter> {
   AppRouterProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'appRouterProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -29,7 +31,13 @@ final class AppRouterProvider extends $NotifierProvider<AppRouter, GoRouter> {
 
   @$internal
   @override
-  AppRouter create() => AppRouter();
+  $ProviderElement<GoRouter> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GoRouter create(Ref ref) {
+    return appRouter(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(GoRouter value) {
@@ -40,22 +48,4 @@ final class AppRouterProvider extends $NotifierProvider<AppRouter, GoRouter> {
   }
 }
 
-String _$appRouterHash() => r'a74648af41162cb30587554555810d7a65530865';
-
-abstract class _$AppRouter extends $Notifier<GoRouter> {
-  GoRouter build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<GoRouter, GoRouter>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<GoRouter, GoRouter>,
-              GoRouter,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$appRouterHash() => r'1942b61d43689bb55beb32d3f1374fb30e2e99d3';

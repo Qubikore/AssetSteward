@@ -8,6 +8,64 @@
 
 part of 'asset_model.dart';
 
+class AssetStatusMapper extends EnumMapper<AssetStatus> {
+  AssetStatusMapper._();
+
+  static AssetStatusMapper? _instance;
+  static AssetStatusMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = AssetStatusMapper._());
+    }
+    return _instance!;
+  }
+
+  static AssetStatus fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  AssetStatus decode(dynamic value) {
+    switch (value) {
+      case r'available':
+        return AssetStatus.available;
+      case r'assigned':
+        return AssetStatus.assigned;
+      case r'maintenance':
+        return AssetStatus.maintenance;
+      case r'pending_approval':
+        return AssetStatus.pendingApproval;
+      case r'retired':
+        return AssetStatus.retired;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(AssetStatus self) {
+    switch (self) {
+      case AssetStatus.available:
+        return r'available';
+      case AssetStatus.assigned:
+        return r'assigned';
+      case AssetStatus.maintenance:
+        return r'maintenance';
+      case AssetStatus.pendingApproval:
+        return r'pending_approval';
+      case AssetStatus.retired:
+        return r'retired';
+    }
+  }
+}
+
+extension AssetStatusMapperExtension on AssetStatus {
+  String toValue() {
+    AssetStatusMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<AssetStatus>(this) as String;
+  }
+}
+
 class AssetModelMapper extends ClassMapperBase<AssetModel> {
   AssetModelMapper._();
 
@@ -15,6 +73,7 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
   static AssetModelMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AssetModelMapper._());
+      AssetStatusMapper.ensureInitialized();
       CategoryModelMapper.ensureInitialized();
       LocationModelMapper.ensureInitialized();
       DepartmentModelMapper.ensureInitialized();
@@ -44,8 +103,11 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     'purchaseDate',
     _$purchaseDate,
   );
-  static String _$status(AssetModel v) => v.status;
-  static const Field<AssetModel, String> _f$status = Field('status', _$status);
+  static AssetStatus _$status(AssetModel v) => v.status;
+  static const Field<AssetModel, AssetStatus> _f$status = Field(
+    'status',
+    _$status,
+  );
   static String? _$serialNumber(AssetModel v) => v.serialNumber;
   static const Field<AssetModel, String> _f$serialNumber = Field(
     'serialNumber',
@@ -194,7 +256,7 @@ abstract class AssetModelCopyWith<$R, $In extends AssetModel, $Out>
     String? name,
     double? purchasePrice,
     String? purchaseDate,
-    String? status,
+    AssetStatus? status,
     String? serialNumber,
     String? expireDate,
     String? vendor,
@@ -231,7 +293,7 @@ class _AssetModelCopyWithImpl<$R, $Out>
     String? name,
     double? purchasePrice,
     String? purchaseDate,
-    String? status,
+    AssetStatus? status,
     Object? serialNumber = $none,
     Object? expireDate = $none,
     Object? vendor = $none,

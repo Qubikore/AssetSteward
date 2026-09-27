@@ -2,8 +2,33 @@ import 'package:asset_steward_app/features/categories/data/models/category_model
 import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
 
 part 'asset_model.mapper.dart';
+
+@MappableEnum(caseStyle: CaseStyle.snakeCase)
+enum AssetStatus {
+  available,
+  assigned,
+  maintenance,
+  pendingApproval,
+  retired;
+
+  Color get color {
+    switch (this) {
+      case AssetStatus.available:
+        return Colors.green;
+      case AssetStatus.assigned:
+        return Colors.blue;
+      case AssetStatus.maintenance:
+        return Colors.orange;
+      case AssetStatus.pendingApproval:
+        return Colors.orange.shade700;
+      case AssetStatus.retired:
+        return Colors.grey;
+    }
+  }
+}
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class AssetModel with AssetModelMappable {
@@ -19,7 +44,7 @@ class AssetModel with AssetModelMappable {
   final double purchasePrice;
   final String? vendor;
   final int quantity;
-  final String status;
+  final AssetStatus status;
   final CategoryModel? category;
   final LocationModel? location;
   final DepartmentModel? department;
@@ -40,5 +65,5 @@ class AssetModel with AssetModelMappable {
     this.department,
   });
 
-  bool get isAvailable => status.toLowerCase() == 'available';
+  bool get isAvailable => status == AssetStatus.available;
 }

@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/app_shell.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/asset_details_page.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assets_pageview.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/create_asset_page.dart';
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
@@ -21,9 +22,6 @@ part 'route_config.g.dart';
 
 typedef RouteRedirect = FutureOr<String?> Function(BuildContext, GoRouterState);
 
-// String rootPath = RPaths.dashboard.path;
-final routerProvider = appRouterProvider;
-
 /// A listenable wrapper that triggers router redirection when the watched Riverpod provider changes.
 class MultiProviderListenable extends ChangeNotifier {
   MultiProviderListenable(Ref ref, List<dynamic> providers) {
@@ -33,75 +31,65 @@ class MultiProviderListenable extends ChangeNotifier {
   }
 }
 
-@riverpod
-class AppRouter extends _$AppRouter {
-  final _rootNavigator = GlobalKey<NavigatorState>(debugLabel: 'root');
-  final _shellNavigator = GlobalKey<NavigatorState>(debugLabel: 'shell');
+@Riverpod(keepAlive: true)
+GoRouter appRouter(Ref ref) {
+  final rootNavigator = GlobalKey<NavigatorState>(debugLabel: 'root');
+  final shellNavigator = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
-  GoRouter _appRouter(RouteRedirect? redirect) {
-    return GoRouter(
-      navigatorKey: _rootNavigator,
-      redirect: redirect,
-      refreshListenable: MultiProviderListenable(ref, [authCtrlProvider]),
-      initialLocation: RPaths.home.path,
-      routes: [
-        ShellRoute(
-          navigatorKey: _shellNavigator,
-          routes: _routes,
-          builder: (_, s, c) => AppShell(key: s.pageKey, child: c),
-        ),
+  Ctx._key = rootNavigator;
+  String? redirectLogic(BuildContext ctx, GoRouterState state) {
+    final current = state.uri.path;
+    Chirp.info('route redirect: $current');
 
-        GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPage()),
-        GoRoute(path: RPaths.register.path, builder: (context, state) => const RegisterPage()),
-        GoRoute(path: RPaths.manageUsers.path, builder: (context, state) => const ManageUsersPage()),
-        GoRoute(path: RPaths.locations.path, builder: (context, state) => const LocationsPage()),
-        GoRoute(path: RPaths.departments.path, builder: (context, state) => const DepartmentsPage()),
-        GoRoute(path: RPaths.categories.path, builder: (context, state) => const CategoriesPage()),
-        GoRoute(
-          path: RPaths.createAsset.path,
-          builder: (context, state) => CreateAssetPage(asset: state.extra as AssetModel?),
-        ),
-      ],
-      errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
-    );
-  }
+    final authState = ref.read(authCtrlProvider);
 
-  /// The app router list
-  List<RouteBase> get _routes => [
-    AppRoute(RPaths.home, (_) => const HomePageview()),
-    AppRoute(RPaths.assets, (_) => const AssetsPageview()),
-    AppRoute(RPaths.scan, (_) => const ScanPageview()),
-    AppRoute(RPaths.maintenance, (_) => const MaintenancePageview()),
-    AppRoute(RPaths.profile, (_) => const ProfilePage()),
-  ];
+    final isAuthenticated = authState.value == true;
+    final isLoginPage = current == RPaths.login.path;
+    final isRegisterPage = current == RPaths.register.path;
 
-  @override
-  GoRouter build() {
-    Ctx._key = _rootNavigator;
-    String? redirectLogic(ctx, GoRouterState state) {
-      final current = state.uri.path;
-      Chirp.info('route redirect: $current');
+    final isAuthPage = isLoginPage || isRegisterPage;
 
-      final authState = ref.read(authCtrlProvider);
-
-      final isAuthenticated = authState.value == true;
-      final isLoginPage = current == RPaths.login.path;
-      final isRegisterPage = current == RPaths.register.path;
-
-      final isAuthPage = isLoginPage || isRegisterPage;
-
-      if (!isAuthenticated && !isAuthPage) {
-        return RPaths.login.path;
-      } else if (isAuthenticated && isAuthPage) {
-        return RPaths.home.path;
-      }
-
-      return null;
+    if (!isAuthenticated && !isAuthPage) {
+      return RPaths.login.path;
+    } else if (isAuthenticated && isAuthPage) {
+      return RPaths.home.path;
     }
 
-    return _appRouter(redirectLogic);
+    return null;
   }
+
+  return GoRouter(
+    navigatorKey: rootNavigator,
+    redirect: redirectLogic,
+    refreshListenable: MultiProviderListenable(ref, [authCtrlProvider]),
+    initialLocation: RPaths.home.path,
+    routes: [
+      ShellRoute(
+        navigatorKey: shellNavigator,
+        routes: _routes,
+        builder: (_, s, c) => AppShell(key: s.pageKey, child: c),
+      ),
+      GoRoute(path: RPaths.login.path, builder: (context, state) => const LoginPage()),
+      GoRoute(path: RPaths.register.path, builder: (context, state) => const RegisterPage()),
+    ],
+    errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
+  );
 }
+
+/// The app router list
+List<RouteBase> get _routes => [
+  AppRoute(RPaths.home, (_) => const HomePageview()),
+  AppRoute(RPaths.assets, (_) => const AssetsPageview()),
+  AppRoute(RPaths.scan, (_) => const ScanPageview()),
+  AppRoute(RPaths.maintenance, (_) => const MaintenancePageview()),
+  AppRoute(RPaths.profile, (_) => const ProfilePage()),
+  AppRoute(RPaths.manageUsers, (_) => const ManageUsersPage()),
+  AppRoute(RPaths.locations, (_) => const LocationsPage()),
+  AppRoute(RPaths.departments, (_) => const DepartmentsPage()),
+  AppRoute(RPaths.categories, (_) => const CategoriesPage()),
+  AppRoute(RPaths.createAsset, (s) => CreateAssetPage(asset: s.extra as AssetModel?)),
+  AppRoute(RPaths.assetDetails(':id'), (s) => AssetDetailsPage(id: int.parse(s.pathParameters['id']!))),
+];
 
 class Ctx {
   const Ctx._();

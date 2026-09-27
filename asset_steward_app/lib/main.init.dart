@@ -20,6 +20,7 @@ void initializeMappers() {
   p0.ApiResponseMapper.ensureInitialized();
   p1.AssetLabelResponseMapper.ensureInitialized();
   p2.AssetModelMapper.ensureInitialized();
+  p2.AssetStatusMapper.ensureInitialized();
   p3.AssignmentResponseMapper.ensureInitialized();
   p4.CategoryModelMapper.ensureInitialized();
   p5.DepartmentModelMapper.ensureInitialized();
