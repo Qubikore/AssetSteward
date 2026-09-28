@@ -15,8 +15,7 @@ public class UserService {
     private final FileStorageService fileStorageService;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    @Value("${app.backend-url:http://localhost:8080}")
-    private String backendUrl;
+    // Removed @Value for backendUrl to use dynamic request context
 
     public UserService(UserRepository userRepository, FileStorageService fileStorageService, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -27,7 +26,7 @@ public class UserService {
     public ProfileResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return new ProfileResponse(user, backendUrl);
+        return new ProfileResponse(user, getBackendUrl());
     }
 
     public ProfileResponse updateProfile(String email, ProfileUpdateRequest request) {
@@ -56,19 +55,19 @@ public class UserService {
         }
 
         userRepository.save(user);
-        return new ProfileResponse(user, backendUrl);
+        return new ProfileResponse(user, getBackendUrl());
     }
 
     public java.util.List<ProfileResponse> getUsersForDashboard(User currentUser) {
         if (currentUser.getRole() == Role.SUPER_ADMIN) {
             return userRepository.findByOrganization(currentUser.getOrganization()).stream()
                     .filter(u -> u.getRole() != Role.SUPER_ADMIN)
-                    .map(u -> new ProfileResponse(u, backendUrl))
+                    .map(u -> new ProfileResponse(u, getBackendUrl()))
                     .toList();
         } else if (currentUser.getRole() == Role.HR) {
             return userRepository.findByOrganization(currentUser.getOrganization()).stream()
                     .filter(u -> u.getRole() == Role.USER)
-                    .map(u -> new ProfileResponse(u, backendUrl))
+                    .map(u -> new ProfileResponse(u, getBackendUrl()))
                     .toList();
         } else {
             throw new RuntimeException("Unauthorized to view dashboard");
@@ -104,6 +103,14 @@ public class UserService {
         user.setOrganization(currentUser.getOrganization());
         userRepository.save(user);
         
-        return new ProfileResponse(user, backendUrl);
+        return new ProfileResponse(user, getBackendUrl());
+    }
+
+    private String getBackendUrl() {
+        try {
+            return org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        } catch (Exception e) {
+            return "http://localhost:8080";
+        }
     }
 }

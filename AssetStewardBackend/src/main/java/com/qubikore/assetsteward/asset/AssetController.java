@@ -44,6 +44,15 @@ public class AssetController {
         return ResponseEntity.ok(ApiResponse.success("Asset approved successfully", response));
     }
 
+    @Operation(summary = "Reject an asset", description = "Rejects a pending asset. Only HR and Super Admin can perform this action.")
+    @PutMapping("/{assetId}/reject")
+    public ResponseEntity<ApiResponse<AssetResponse>> rejectAsset(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        AssetResponse response = assetService.rejectAsset(assetId, currentUser);
+        return ResponseEntity.ok(ApiResponse.success("Asset rejected successfully", response));
+    }
+
     @Operation(summary = "Assign an asset", description = "Assigns an available asset to a specific user.")
     @PostMapping("/assign")
     public ResponseEntity<ApiResponse<String>> assignAsset(
@@ -60,6 +69,15 @@ public class AssetController {
             @AuthenticationPrincipal User currentUser) {
         assetService.transferAsset(request, currentUser);
         return ResponseEntity.ok(ApiResponse.success("Asset transferred successfully", null));
+    }
+
+    @Operation(summary = "Return an asset", description = "Returns an already assigned asset.")
+    @PostMapping("/return")
+    public ResponseEntity<ApiResponse<String>> returnAsset(
+            @RequestBody com.qubikore.assetsteward.asset.dto.AssetReturnRequest request,
+            @AuthenticationPrincipal User currentUser) {
+        assetService.returnAsset(request, currentUser);
+        return ResponseEntity.ok(ApiResponse.success("Asset returned successfully", null));
     }
 
     @Operation(summary = "Get all assets", description = "Retrieves a list of all assets with optional filtering.")
@@ -93,6 +111,26 @@ public class AssetController {
         return ResponseEntity.ok(ApiResponse.success("Assignments retrieved successfully", assetService.getAllAssignments(status, currentUser)));
     }
 
+    @Operation(summary = "Get my assignments", description = "Retrieves a list of asset assignments for the currently logged-in user. Can be filtered by status.")
+    @GetMapping("/assignments/my")
+    public ResponseEntity<ApiResponse<List<com.qubikore.assetsteward.asset.dto.AssignmentResponse>>> getMyAssignments(
+            @io.swagger.v3.oas.annotations.Parameter(description = "Filter by status. Allowed values: 'active' (currently assigned), 'returned' (past assignments), or leave empty for all.") 
+            @RequestParam(required = false) String status,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("My assignments retrieved successfully", assetService.getMyAssignments(status, currentUser)));
+    }
+
+    @Operation(summary = "Get assignment details", description = "Retrieves the full details of a specific assignment by its ID.")
+    @GetMapping("/assignments/{assignmentId}")
+    public ResponseEntity<ApiResponse<com.qubikore.assetsteward.asset.dto.AssignmentResponse>> getAssignmentById(
+            @PathVariable Long assignmentId,
+            @AuthenticationPrincipal User currentUser) {
+        if (currentUser.getRole() != com.qubikore.assetsteward.user.Role.SUPER_ADMIN && currentUser.getRole() != com.qubikore.assetsteward.user.Role.HR) {
+            throw new RuntimeException("Only HR or Admin can view assignment details.");
+        }
+        return ResponseEntity.ok(ApiResponse.success("Assignment retrieved successfully", assetService.getAssignmentById(assignmentId, currentUser)));
+    }
+
     @Operation(summary = "Generate QR Code", description = "Generates a PNG QR code image for a specific asset based on its assetCode.")
     @GetMapping(value = "/{assetId}/qrcode", produces = org.springframework.http.MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQRCode(@PathVariable Long assetId, @AuthenticationPrincipal User currentUser) {
@@ -112,6 +150,15 @@ public class AssetController {
             @AuthenticationPrincipal User currentUser) {
         List<com.qubikore.assetsteward.asset.dto.AssetLabelResponse> labels = assetService.getAssetLabels(currentUser, qrCodeService);
         return ResponseEntity.ok(ApiResponse.success("Asset labels retrieved successfully", labels));
+    }
+
+    @Operation(summary = "Get single asset label", description = "Retrieves the label details (including QR code in base64) for a specific asset by its ID.")
+    @GetMapping("/{assetId}/label")
+    public ResponseEntity<ApiResponse<com.qubikore.assetsteward.asset.dto.AssetLabelResponse>> getAssetLabelById(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        com.qubikore.assetsteward.asset.dto.AssetLabelResponse label = assetService.getAssetLabelById(assetId, currentUser, qrCodeService);
+        return ResponseEntity.ok(ApiResponse.success("Asset label retrieved successfully", label));
     }
 
     @Operation(summary = "Update an asset", description = "Updates an existing asset's details.")

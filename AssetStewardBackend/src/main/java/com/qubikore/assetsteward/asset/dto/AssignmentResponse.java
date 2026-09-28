@@ -5,44 +5,29 @@ import java.time.LocalDateTime;
 
 public class AssignmentResponse {
     private Long id;
-    private Long assetId;
-    private String assetName;
-    private String assetCode;
-    
-    private Long assignedToUserId;
-    private String assignedToEmail;
-    
-    private Long assignedByUserId;
-    private String assignedByEmail;
-    
+    private AssetResponse asset;
+    private AssetResponse.CreatorResponse assignedTo;
+    private AssetResponse.CreatorResponse assignedBy;
     private LocalDateTime assignedAt;
     private LocalDateTime returnedAt;
+    private String returnReason;
 
     public AssignmentResponse(Assignment assignment) {
         this.id = assignment.getId();
-        this.assetId = assignment.getAsset().getId();
-        this.assetName = assignment.getAsset().getName();
-        this.assetCode = assignment.getAsset().getAssetCode();
-        
-        this.assignedToUserId = assignment.getAssignedTo().getId();
-        this.assignedToEmail = assignment.getAssignedTo().getEmail();
-        
-        this.assignedByUserId = assignment.getAssignedBy().getId();
-        this.assignedByEmail = assignment.getAssignedBy().getEmail();
-        
+        this.asset = new AssetResponse(assignment.getAsset());
+        this.assignedTo = new AssetResponse.CreatorResponse(assignment.getAssignedTo());
+        this.assignedBy = new AssetResponse.CreatorResponse(assignment.getAssignedBy());
         this.assignedAt = assignment.getAssignedAt();
         this.returnedAt = assignment.getReturnedAt();
+        this.returnReason = assignment.getReturnReason();
     }
 
     // Getters
     public Long getId() { return id; }
-    public Long getAssetId() { return assetId; }
-    public String getAssetName() { return assetName; }
-    public String getAssetCode() { return assetCode; }
-    public Long getAssignedToUserId() { return assignedToUserId; }
-    public String getAssignedToEmail() { return assignedToEmail; }
-    public Long getAssignedByUserId() { return assignedByUserId; }
-    public String getAssignedByEmail() { return assignedByEmail; }
+    public AssetResponse getAsset() { return asset; }
+    public AssetResponse.CreatorResponse getAssignedTo() { return assignedTo; }
+    public AssetResponse.CreatorResponse getAssignedBy() { return assignedBy; }
     public LocalDateTime getAssignedAt() { return assignedAt; }
     public LocalDateTime getReturnedAt() { return returnedAt; }
+    public String getReturnReason() { return returnReason; }
 }

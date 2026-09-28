@@ -101,6 +101,24 @@ public class AssetService {
         return new AssetResponse(asset);
     }
 
+    public AssetResponse rejectAsset(Long assetId, User currentUser) {
+        if (currentUser.getRole() != Role.SUPER_ADMIN && currentUser.getRole() != Role.HR) {
+            throw new RuntimeException("Only HR or Admin can reject assets.");
+        }
+
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getStatus() != AssetStatus.PENDING_APPROVAL) {
+            throw new RuntimeException("Asset is not pending approval.");
+        }
+
+        asset.setStatus(AssetStatus.REJECTED);
+        assetRepository.save(asset);
+        assetHistoryService.logAction(asset, currentUser, "REJECTED", "Asset request rejected by admin/HR.");
+        return new AssetResponse(asset);
+    }
+
     public void assignAsset(AssetAssignmentRequest request, User currentUser) {
         if (currentUser.getRole() != Role.SUPER_ADMIN && currentUser.getRole() != Role.HR) {
             throw new RuntimeException("Only HR or Admin can assign assets.");
@@ -175,6 +193,33 @@ public class AssetService {
         assetHistoryService.logAction(asset, currentUser, "TRANSFERRED", "Asset transferred from " + currentAssignment.getAssignedTo().getEmail() + " to " + assignedTo.getEmail());
     }
 
+    public void returnAsset(com.qubikore.assetsteward.asset.dto.AssetReturnRequest request, User currentUser) {
+        if (currentUser.getRole() != Role.SUPER_ADMIN && currentUser.getRole() != Role.HR) {
+            throw new RuntimeException("Only HR or Admin can return assets.");
+        }
+
+        Asset asset = assetRepository.findById(request.getAssetId())
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getStatus() != AssetStatus.ASSIGNED) {
+            throw new RuntimeException("Asset is not currently assigned, cannot return.");
+        }
+
+        Assignment currentAssignment = assignmentRepository.findAll().stream()
+                .filter(a -> a.getAsset().getId().equals(asset.getId()) && a.getReturnedAt() == null)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No active assignment found for this asset."));
+
+        currentAssignment.setReturnedAt(LocalDateTime.now());
+        currentAssignment.setReturnReason(request.getReason());
+        assignmentRepository.save(currentAssignment);
+
+        asset.setStatus(AssetStatus.RETURNED);
+        assetRepository.save(asset);
+
+        assetHistoryService.logAction(asset, currentUser, "RETURNED", "Asset returned. Reason: " + request.getReason());
+    }
+
     public List<com.qubikore.assetsteward.asset.dto.AssetLabelResponse> getAssetLabels(User currentUser, com.qubikore.assetsteward.asset.QRCodeService qrCodeService) {
         return assetRepository.findByOrganization(currentUser.getOrganization()).stream()
                 .map(asset -> {
@@ -186,6 +231,23 @@ public class AssetService {
                         throw new RuntimeException("Failed to generate QR code for asset: " + asset.getAssetCode());
                     }
                 }).collect(java.util.stream.Collectors.toList());
+    }
+
+    public com.qubikore.assetsteward.asset.dto.AssetLabelResponse getAssetLabelById(Long assetId, User currentUser, com.qubikore.assetsteward.asset.QRCodeService qrCodeService) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        try {
+            byte[] qrBytes = qrCodeService.generateQRCodeImage(asset.getAssetCode(), 200, 200);
+            String base64Qr = java.util.Base64.getEncoder().encodeToString(qrBytes);
+            return new com.qubikore.assetsteward.asset.dto.AssetLabelResponse(asset, "data:image/png;base64," + base64Qr);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate QR code for asset: " + asset.getAssetCode());
+        }
     }
 
     public List<AssetResponse> getAllAssets(Long categoryId, Long locationId, Long departmentId, String status, String search, User currentUser) {
@@ -212,7 +274,14 @@ public class AssetService {
             );
         }
 
-        return stream.map(AssetResponse::new).collect(Collectors.toList());
+        return stream
+                .sorted((a, b) -> {
+                    java.time.LocalDateTime timeA = a.getUpdatedAt() != null ? a.getUpdatedAt() : (a.getCreatedAt() != null ? a.getCreatedAt() : java.time.LocalDateTime.MIN);
+                    java.time.LocalDateTime timeB = b.getUpdatedAt() != null ? b.getUpdatedAt() : (b.getCreatedAt() != null ? b.getCreatedAt() : java.time.LocalDateTime.MIN);
+                    return timeB.compareTo(timeA);
+                })
+                .map(AssetResponse::new)
+                .collect(Collectors.toList());
     }
 
     public AssetResponse getAssetById(Long assetId, User currentUser) {
@@ -235,8 +304,37 @@ public class AssetService {
             stream = stream.filter(a -> a.getReturnedAt() != null);
         }
 
-        return stream.map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
+        return stream
+                .sorted((a, b) -> b.getId().compareTo(a.getId()))
+                .map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> getMyAssignments(String status, User currentUser) {
+        java.util.stream.Stream<Assignment> stream = assignmentRepository.findAll().stream()
+                .filter(a -> a.getAssignedTo() != null && a.getAssignedTo().getId().equals(currentUser.getId()));
+        
+        if ("active".equalsIgnoreCase(status)) {
+            stream = stream.filter(a -> a.getReturnedAt() == null);
+        } else if ("returned".equalsIgnoreCase(status)) {
+            stream = stream.filter(a -> a.getReturnedAt() != null);
+        }
+
+        return stream
+                .sorted((a, b) -> b.getId().compareTo(a.getId()))
+                .map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public com.qubikore.assetsteward.asset.dto.AssignmentResponse getAssignmentById(Long assignmentId, User currentUser) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                
+        if (assignment.getAsset() == null || assignment.getAsset().getOrganization() == null || !assignment.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Assignment does not belong to your organization");
+        }
+        
+        return new com.qubikore.assetsteward.asset.dto.AssignmentResponse(assignment);
     }
 
     public AssetResponse updateAsset(Long assetId, AssetRequest request, User currentUser) {

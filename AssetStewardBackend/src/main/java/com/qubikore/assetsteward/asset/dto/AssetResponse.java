@@ -17,6 +17,9 @@ public class AssetResponse {
     private com.qubikore.assetsteward.category.CategoryResponse category;
     private com.qubikore.assetsteward.location.LocationResponse location;
     private com.qubikore.assetsteward.department.DepartmentResponse department;
+    private CreatorResponse createdBy;
+    private java.time.LocalDateTime createdAt;
+    private java.time.LocalDateTime updatedAt;
 
     public AssetResponse(Asset asset) {
         this.id = asset.getId();
@@ -32,6 +35,31 @@ public class AssetResponse {
         this.category = asset.getCategory() != null ? new com.qubikore.assetsteward.category.CategoryResponse(asset.getCategory()) : null;
         this.location = asset.getLocation() != null ? new com.qubikore.assetsteward.location.LocationResponse(asset.getLocation()) : null;
         this.department = asset.getDepartment() != null ? new com.qubikore.assetsteward.department.DepartmentResponse(asset.getDepartment()) : null;
+        this.createdBy = asset.getCreatedBy() != null ? new CreatorResponse(asset.getCreatedBy()) : null;
+        this.createdAt = asset.getCreatedAt();
+        this.updatedAt = asset.getUpdatedAt();
+    }
+
+    public static class CreatorResponse {
+        private Long id;
+        private String firstname;
+        private String lastname;
+        private String email;
+        private String role;
+        
+        public CreatorResponse(com.qubikore.assetsteward.user.User user) {
+            this.id = user.getId();
+            this.firstname = user.getFirstname();
+            this.lastname = user.getLastname();
+            this.email = user.getEmail();
+            this.role = user.getRole() != null ? user.getRole().name() : null;
+        }
+
+        public Long getId() { return id; }
+        public String getFirstname() { return firstname; }
+        public String getLastname() { return lastname; }
+        public String getEmail() { return email; }
+        public String getRole() { return role; }
     }
 
     public Long getId() { return id; }
@@ -47,4 +75,7 @@ public class AssetResponse {
     public com.qubikore.assetsteward.category.CategoryResponse getCategory() { return category; }
     public com.qubikore.assetsteward.location.LocationResponse getLocation() { return location; }
     public com.qubikore.assetsteward.department.DepartmentResponse getDepartment() { return department; }
+    public CreatorResponse getCreatedBy() { return createdBy; }
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
 }

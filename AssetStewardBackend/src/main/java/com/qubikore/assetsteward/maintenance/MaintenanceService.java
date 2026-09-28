@@ -17,11 +17,13 @@ public class MaintenanceService {
     private final MaintenanceRepository maintenanceRepository;
     private final AssetRepository assetRepository;
     private final AssetHistoryService assetHistoryService;
+    private final com.qubikore.assetsteward.asset.AssignmentRepository assignmentRepository;
 
-    public MaintenanceService(MaintenanceRepository maintenanceRepository, AssetRepository assetRepository, AssetHistoryService assetHistoryService) {
+    public MaintenanceService(MaintenanceRepository maintenanceRepository, AssetRepository assetRepository, AssetHistoryService assetHistoryService, com.qubikore.assetsteward.asset.AssignmentRepository assignmentRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.assetRepository = assetRepository;
         this.assetHistoryService = assetHistoryService;
+        this.assignmentRepository = assignmentRepository;
     }
 
     public MaintenanceResponse startMaintenance(MaintenanceRequest request, User currentUser) {
@@ -35,6 +37,7 @@ public class MaintenanceService {
         m.setProvider(request.getProvider());
         m.setStartDate(request.getStartDate() != null ? request.getStartDate() : LocalDate.now());
         m.setStatus("IN_PROGRESS");
+        m.setStartedBy(currentUser);
 
         maintenanceRepository.save(m);
 
@@ -56,10 +59,21 @@ public class MaintenanceService {
 
         m.setStatus("COMPLETED");
         m.setEndDate(LocalDate.now());
+        m.setEndedBy(currentUser);
         maintenanceRepository.save(m);
 
         Asset asset = m.getAsset();
-        asset.setStatus(AssetStatus.AVAILABLE);
+        
+        // Check if there is an active assignment for this asset
+        boolean isActiveAssigned = assignmentRepository.findAll().stream()
+                .anyMatch(a -> a.getAsset().getId().equals(asset.getId()) && a.getReturnedAt() == null);
+        
+        if (isActiveAssigned) {
+            asset.setStatus(AssetStatus.ASSIGNED);
+        } else {
+            asset.setStatus(AssetStatus.AVAILABLE);
+        }
+        
         assetRepository.save(asset);
 
         assetHistoryService.logAction(asset, currentUser, "MAINTENANCE_COMPLETED", "Returned from maintenance.");

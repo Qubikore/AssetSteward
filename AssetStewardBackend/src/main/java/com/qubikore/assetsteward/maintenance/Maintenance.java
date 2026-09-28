@@ -33,6 +33,14 @@ public class Maintenance {
     @Column(nullable = false)
     private String status; // SCHEDULED, IN_PROGRESS, COMPLETED
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "started_by")
+    private com.qubikore.assetsteward.user.User startedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ended_by")
+    private com.qubikore.assetsteward.user.User endedBy;
+
     public Maintenance() {}
 
     public Long getId() { return id; }
@@ -51,4 +59,8 @@ public class Maintenance {
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public com.qubikore.assetsteward.user.User getStartedBy() { return startedBy; }
+    public void setStartedBy(com.qubikore.assetsteward.user.User startedBy) { this.startedBy = startedBy; }
+    public com.qubikore.assetsteward.user.User getEndedBy() { return endedBy; }
+    public void setEndedBy(com.qubikore.assetsteward.user.User endedBy) { this.endedBy = endedBy; }
 }
