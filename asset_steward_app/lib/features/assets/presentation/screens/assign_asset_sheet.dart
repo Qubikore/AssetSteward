@@ -1,5 +1,5 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
-import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
 import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
@@ -14,13 +14,16 @@ import 'package:material_ui/material_ui.dart';
 class AssignAssetSheet extends HookConsumerWidget {
   final AssetModel asset;
 
-  const AssignAssetSheet({super.key, required this.asset});
+  final bool isTransfer;
 
-  static Future<bool?> show(BuildContext context, AssetModel asset) {
+  const AssignAssetSheet({super.key, required this.asset, this.isTransfer = false});
+
+  static Future<bool?> show(BuildContext context, AssetModel asset, {bool isTransfer = false}) {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => AssignAssetSheet(asset: asset),
+      useRootNavigator: true,
+      builder: (context) => AssignAssetSheet(asset: asset, isTransfer: isTransfer),
     );
   }
 
@@ -46,7 +49,9 @@ class AssignAssetSheet extends HookConsumerWidget {
           payload['locationId'] = locationId;
         }
 
-        final success = await ref.read(assetsCtrlProvider.notifier).assignAsset(payload);
+        final success = isTransfer
+            ? await ref.read(assetDetailsCtrlProvider(asset.id).notifier).transferAsset(payload)
+            : await ref.read(assetDetailsCtrlProvider(asset.id).notifier).assignAsset(payload);
         if (success && context.mounted) {
           context.pop(true);
         } else {
@@ -67,12 +72,22 @@ class AssignAssetSheet extends HookConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Assign Asset', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                const Gap(8),
                 Text(
-                  'You are assigning ${asset.name}${asset.serialNumber != null ? ' (#${asset.serialNumber})' : ''}',
-                  style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
+                  isTransfer ? 'Transfer Asset' : 'Assign Asset',
+                  style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
+                const Gap(8),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: 'You are '),
+                      TextSpan(text: isTransfer ? 'transferring' : 'assigning'),
+                      TextSpan(text: ' ${asset.name}', style: context.text.bodyMedium?.bold),
+                    ],
+                  ),
+                  style: context.text.bodyMedium,
+                ),
+                // TODO: should show curent user's name
                 const Gap(24),
                 AsyncBuilder(
                   asyncValue: usersAsync,
@@ -81,7 +96,7 @@ class AssignAssetSheet extends HookConsumerWidget {
                   builder: (users) {
                     return AutocompleteFormBox<ProfileData>(
                       name: 'userId',
-                      label: 'Assign To',
+                      label: isTransfer ? 'Transfer To' : 'Assign To',
                       placeholder: 'Search and select a user...',
                       items: users,
                       itemLabel: (u) => '${u.firstname} ${u.lastname}',
@@ -109,7 +124,7 @@ class AssignAssetSheet extends HookConsumerWidget {
                   onPressed: isLoading.value ? null : onSubmit,
                   child: isLoading.value
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Text('Assign Asset'),
+                      : Text(isTransfer ? 'Transfer Asset' : 'Assign Asset'),
                 ),
               ],
             ),

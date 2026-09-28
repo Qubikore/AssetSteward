@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
 import 'package:asset_steward_app/features/categories/presentation/controllers/categories_controller.dart';
@@ -247,7 +248,7 @@ class CreateAssetPage extends HookConsumerWidget {
 
                           final bool success;
                           if (asset != null) {
-                            success = await ref.read(assetsCtrlProvider.notifier).updateAsset(asset!.id, payload);
+                            success = await ref.read(assetDetailsCtrlProvider(asset!.id).notifier).updateAsset(payload);
                           } else {
                             success = await ref.read(assetsCtrlProvider.notifier).createAsset(payload);
                           }

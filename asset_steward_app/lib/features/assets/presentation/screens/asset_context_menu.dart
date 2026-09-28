@@ -1,11 +1,11 @@
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
-import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/assign_asset_sheet.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:asset_steward_app/features/assets/presentation/screens/assign_asset_sheet.dart';
 
 class AssetContextMenu extends ConsumerWidget {
   const new({super.key, required this.id});
@@ -34,24 +34,24 @@ class AssetContextMenu extends ConsumerWidget {
                   builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
                 );
                 if (qty != null && context.mounted) {
-                  final success = await ref.read(assetsCtrlProvider.notifier).updateAsset(id, {'quantity': qty});
+                  final success = await ref.read(assetDetailsCtrlProvider(id).notifier).updateAsset({'quantity': qty});
                   if (success) {
                     ref.invalidate(assetDetailsCtrlProvider(id));
                   }
                 }
               },
             ),
-          if (isPrivileged)
+          if (isPrivileged && asset.status != AssetStatus.assigned)
             ContextMenuAction(
               title: 'Assign',
               leading: const Icon(HIStroke.userAdd01),
               onTap: () => AssignAssetSheet.show(context, asset),
             ),
-          if (isPrivileged)
+          if (isPrivileged && asset.status == AssetStatus.assigned)
             ContextMenuAction(
               title: 'Transfer',
               leading: const Icon(HIStroke.arrowDataTransferHorizontal),
-              onTap: () => Toast.showInfo('Transfer feature coming soon'),
+              onTap: () => AssignAssetSheet.show(context, asset, isTransfer: true),
             ),
           ContextMenuAction(
             title: 'Start Maintenance',
@@ -94,7 +94,7 @@ class AssetContextMenu extends ConsumerWidget {
                   ),
                 );
                 if (confirm == true) {
-                  final success = await ref.read(assetsCtrlProvider.notifier).deleteAsset(id);
+                  final success = await ref.read(assetDetailsCtrlProvider(id).notifier).deleteAsset();
                   if (success && context.mounted) context.pop();
                 }
               },

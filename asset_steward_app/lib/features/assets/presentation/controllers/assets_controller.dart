@@ -19,51 +19,8 @@ class AssetsCtrl extends _$AssetsCtrl {
     return result.fold((l) => throw l, (r) => r);
   }
 
-  Future<bool> assignAsset(QMap payload) async {
-    final result = await _repo.assignAsset(payload);
-    return result.fold(
-      (l) {
-        Toast.showError(l.message);
-        return false;
-      },
-      (r) {
-        Toast.showSuccess('Asset assigned successfully');
-        ref.invalidateSelf();
-        return true;
-      },
-    );
-  }
-
   Future<bool> createAsset(QMap payload) async {
     final result = await _repo.createAsset(payload);
-    return result.fold(
-      (l) {
-        Toast.showError(l.message);
-        return false;
-      },
-      (r) {
-        ref.invalidateSelf();
-        return true;
-      },
-    );
-  }
-
-  Future<bool> updateAsset(int id, QMap data) async {
-    final result = await _repo.updateAsset(id, data);
-    return result.fold(
-      (l) {
-        Toast.showError(l.message);
-        return false;
-      },
-      (r) {
-        ref.invalidateSelf();
-        return true;
-      },
-    );
-  }
-
-  Future<bool> deleteAsset(int id) async {
-    final result = await _repo.deleteAsset(id);
     return result.fold(
       (l) {
         Toast.showError(l.message);

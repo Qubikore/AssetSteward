@@ -50,9 +50,7 @@ class AutocompleteFormBox<T> extends FormBuilderField<T> {
                  const SizedBox(height: 6),
                  Text(
                    field.errorText ?? '',
-                   style: field.context.text.bodySmall?.textColor(
-                     field.context.colors.error,
-                   ),
+                   style: field.context.text.bodySmall?.textColor(field.context.colors.error),
                  ),
                ],
              ],
@@ -119,9 +117,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        widget.controller ??
-        TextEditingController(text: _labelForValue(widget.value));
+    _controller = widget.controller ?? TextEditingController(text: _labelForValue(widget.value));
     _focusNode = widget.focusNode ?? FocusNode();
     _controller.addListener(_onTextChanged);
   }
@@ -189,19 +185,12 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
         if (widget.itemBuilder != null) {
           return widget.itemBuilder!(context, item);
         }
-        return _AutocompleteItem(
-          label: widget.itemLabel(item),
-          selected: item == widget.value,
-          colors: colors,
-        );
+        return _AutocompleteItem(label: widget.itemLabel(item), selected: item == widget.value, colors: colors);
       },
       onSelected: (item) {
-        final newText =
-            widget.itemTextValue?.call(item) ?? widget.itemLabel(item);
+        final newText = widget.itemTextValue?.call(item) ?? widget.itemLabel(item);
         _controller.text = newText;
-        _controller.selection = TextSelection.collapsed(
-          offset: _controller.text.length,
-        );
+        _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
         widget.onChanged?.call(item);
         _focusNode.unfocus();
       },
@@ -212,9 +201,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
         }
 
         return widget.items
-            .where(
-              (item) => widget.itemLabel(item).toLowerCase().contains(needle),
-            )
+            .where((item) => widget.itemLabel(item).toLowerCase().contains(needle))
             .take(widget.maxVisibleItems)
             .toList();
       },
@@ -224,10 +211,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           color: colors.surface,
-          child: Text(
-            'No matches',
-            style: context.text.bodyMedium?.textColor(colors.onSurfaceVariant),
-          ),
+          child: Text('No matches', style: context.text.bodyMedium?.textColor(colors.onSurfaceVariant)),
         );
       },
       decorationBuilder: (context, child) {
@@ -244,10 +228,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: child,
-          ),
+          child: ClipRRect(borderRadius: BorderRadius.circular(12.0), child: child),
         );
       },
       offset: const Offset(0, 4),
@@ -256,11 +237,7 @@ class _AutocompleteBoxState<T> extends State<AutocompleteBox<T>> {
 }
 
 class _AutocompleteItem extends StatefulWidget {
-  const _AutocompleteItem({
-    required this.label,
-    required this.selected,
-    required this.colors,
-  });
+  const _AutocompleteItem({required this.label, required this.selected, required this.colors});
 
   final String label;
   final bool selected;
@@ -282,9 +259,7 @@ class _AutocompleteItemState extends State<_AutocompleteItem> {
       child: Container(
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        color: _hovered
-            ? widget.colors.surfaceContainerHighest
-            : widget.colors.surface,
+        color: _hovered ? widget.colors.surfaceContainerHighest : widget.colors.surface,
         child: Row(
           children: [
             Expanded(
@@ -293,18 +268,14 @@ class _AutocompleteItemState extends State<_AutocompleteItem> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.text.bodyMedium?.textColor(
-                  widget.selected
-                      ? widget.colors.primary
-                      : widget.colors.onSurface,
+                  widget.selected ? widget.colors.primary : widget.colors.onSurface,
                 ),
               ),
             ),
             if (widget.selected)
               CustomPaint(
                 size: const Size(16, 16),
-                painter: _AutocompleteCheckPainter(
-                  color: widget.colors.primary,
-                ),
+                painter: _AutocompleteCheckPainter(color: widget.colors.primary),
               ),
           ],
         ),
@@ -336,6 +307,5 @@ class _AutocompleteCheckPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _AutocompleteCheckPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _AutocompleteCheckPainter oldDelegate) => oldDelegate.color != color;
 }
