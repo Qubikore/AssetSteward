@@ -39,7 +39,7 @@ class AssetsPageview extends HookConsumerWidget {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => ref.invalidate(assetsCtrlProvider),
+          onRefresh: () async => ref.read(assetsCtrlProvider.notifier).refresh(),
           child: AsyncBuilder<List<AssetModel>>(
             asyncValue: assetsAsync,
             providers: [assetsCtrlProvider],

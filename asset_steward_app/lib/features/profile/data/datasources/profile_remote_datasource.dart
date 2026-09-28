@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../main.export.dart';
 import '../models/organization_data.dart';
-import '../models/profile_data.dart';
+import '../models/profile_model.dart';
 
 @lazySingleton
 class ProfileRemoteDS {
@@ -11,11 +11,11 @@ class ProfileRemoteDS {
 
   final Dio _dio;
 
-  Future<ProfileData> getProfile() async {
+  Future<ProfileModel> getProfile() async {
     final response = await _dio.get(Endpoints.profile);
-    final res = ApiResponse.fromMap<ProfileData>(response.data);
+    final res = ApiResponse.fromMap<ProfileModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final ProfileData data)) {
+    if (res case ApiResponse(success: true, data: final ProfileModel data)) {
       return data;
     } else {
       throw Failure(
@@ -39,11 +39,11 @@ class ProfileRemoteDS {
     }
   }
 
-  Future<ProfileData> updateProfile(FormData data) async {
+  Future<ProfileModel> updateProfile(FormData data) async {
     final response = await _dio.post(Endpoints.profile, data: data);
-    final res = ApiResponse.fromMap<ProfileData>(response.data);
+    final res = ApiResponse.fromMap<ProfileModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final ProfileData data)) {
+    if (res case ApiResponse(success: true, data: final ProfileModel data)) {
       return data;
     } else {
       throw Failure(

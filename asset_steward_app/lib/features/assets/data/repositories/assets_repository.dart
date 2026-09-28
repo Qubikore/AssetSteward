@@ -1,7 +1,7 @@
 import 'package:asset_steward_app/features/assets/data/datasources/assets_remote_ds.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
-import 'package:asset_steward_app/features/assets/data/models/assignment_response.dart';
+import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:injectable/injectable.dart';
 
@@ -47,7 +47,7 @@ class AssetsRepository with RepoRunner {
     return runRepoTask(() => _remoteDS.getAssetLabels());
   }
 
-  FutureResult<List<AssignmentResponse>> getAssetAssignments([String? status]) {
+  FutureResult<List<AssignmentModel>> getAssetAssignments([String? status]) {
     return runRepoTask(() => _remoteDS.getAssetAssignments(status));
   }
 }

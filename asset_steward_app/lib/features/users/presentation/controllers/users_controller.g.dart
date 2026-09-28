@@ -13,7 +13,7 @@ part of 'users_controller.dart';
 final usersCtrlProvider = UsersCtrlProvider._();
 
 final class UsersCtrlProvider
-    extends $AsyncNotifierProvider<UsersCtrl, List<ProfileData>> {
+    extends $AsyncNotifierProvider<UsersCtrl, List<ProfileModel>> {
   UsersCtrlProvider._()
     : super(
         from: null,
@@ -33,20 +33,20 @@ final class UsersCtrlProvider
   UsersCtrl create() => UsersCtrl();
 }
 
-String _$usersCtrlHash() => r'088e0866bb15ae3d319dbb535737d55380da3dbd';
+String _$usersCtrlHash() => r'2d60387e86cc87aea2d0c56b629e4f9984f65729';
 
-abstract class _$UsersCtrl extends $AsyncNotifier<List<ProfileData>> {
-  FutureOr<List<ProfileData>> build();
+abstract class _$UsersCtrl extends $AsyncNotifier<List<ProfileModel>> {
+  FutureOr<List<ProfileModel>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
-        this.ref as $Ref<AsyncValue<List<ProfileData>>, List<ProfileData>>;
+        this.ref as $Ref<AsyncValue<List<ProfileModel>>, List<ProfileModel>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<ProfileData>>, List<ProfileData>>,
-              AsyncValue<List<ProfileData>>,
+              AnyNotifier<AsyncValue<List<ProfileModel>>, List<ProfileModel>>,
+              AsyncValue<List<ProfileModel>>,
               Object?,
               Object?
             >;

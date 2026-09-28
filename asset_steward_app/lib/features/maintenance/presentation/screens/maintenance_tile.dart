@@ -1,4 +1,4 @@
-import 'package:asset_steward_app/features/maintenance/data/models/maintenance_response.dart';
+import 'package:asset_steward_app/features/maintenance/data/models/maintenance_model.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/controllers/maintenance_controller.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_details_dialog.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -9,7 +9,7 @@ import 'package:recase/recase.dart';
 import 'package:screwdriver/screwdriver.dart';
 
 class MaintenanceTile extends ConsumerWidget {
-  final MaintenanceResponse record;
+  final MaintenanceModel record;
 
   const MaintenanceTile({super.key, required this.record});
 

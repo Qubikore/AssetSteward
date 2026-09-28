@@ -1,12 +1,12 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'profile_data.mapper.dart';
+part 'profile_model.mapper.dart';
 
 @MappableEnum(caseStyle: CaseStyle.upperSnakeCase)
 enum UserRole { superAdmin, hr, user }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
-class ProfileData with ProfileDataMappable {
+class ProfileModel with ProfileModelMappable {
   final int id;
   final String firstname;
   final String lastname;
@@ -16,7 +16,7 @@ class ProfileData with ProfileDataMappable {
   final String? dob;
   final String? profilePicture;
 
-  const ProfileData({
+  const ProfileModel({
     required this.id,
     required this.firstname,
     required this.lastname,
@@ -27,8 +27,8 @@ class ProfileData with ProfileDataMappable {
     this.profilePicture,
   });
 
-  static const fromMap = ProfileDataMapper.fromMap;
-  static const fromJson = ProfileDataMapper.fromJson;
+  static const fromMap = ProfileModelMapper.fromMap;
+  static const fromJson = ProfileModelMapper.fromJson;
 
   String? get avatar {
     if (profilePicture == null) return null;
@@ -38,5 +38,7 @@ class ProfileData with ProfileDataMappable {
     return profilePicture;
   }
 
-  bool get isPrivileged => (role == .superAdmin || role == .hr);
+  bool get isPrivileged => (role == UserRole.superAdmin || role == UserRole.hr);
+
+  String get fullName => '$firstname $lastname';
 }

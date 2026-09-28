@@ -1,6 +1,6 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
-import 'package:asset_steward_app/features/assets/data/models/assignment_response.dart';
+import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -98,14 +98,14 @@ class AssetsRemoteDS {
     }
   }
 
-  Future<List<AssignmentResponse>> getAssetAssignments([String? status]) async {
+  Future<List<AssignmentModel>> getAssetAssignments([String? status]) async {
     final response = await _dio.get(
       Endpoints.assetAssignments,
       queryParameters: status != null ? {'status': status} : null,
     );
-    final res = ApiResponse.fromMap<List<AssignmentResponse>>(response.data);
+    final res = ApiResponse.fromMap<List<AssignmentModel>>(response.data);
 
-    if (res case ApiResponse(success: true, data: final List<AssignmentResponse> data)) {
+    if (res case ApiResponse(success: true, data: final List<AssignmentModel> data)) {
       return data;
     } else {
       throw Failure(res.message.isNotEmpty ? res.message : 'Invalid response format');

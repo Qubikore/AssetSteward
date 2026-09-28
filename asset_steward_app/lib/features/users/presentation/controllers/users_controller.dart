@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 import 'package:asset_steward_app/features/users/data/repositories/users_repository.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:fpdart/fpdart.dart';
@@ -12,16 +12,16 @@ part 'users_controller.g.dart';
 class UsersCtrl extends _$UsersCtrl {
   final _repo = di.get<UsersRepository>();
   @override
-  FutureOr<List<ProfileData>> build() async {
+  FutureOr<List<ProfileModel>> build() async {
     return _fetchUsers();
   }
 
-  Future<List<ProfileData>> _fetchUsers() async {
+  Future<List<ProfileModel>> _fetchUsers() async {
     final result = await _repo.getUsers();
     return result.fold((l) => throw l, (r) => r);
   }
 
-  Future<Either<Failure, ProfileData>> createUser(QMap data) async {
+  Future<Either<Failure, ProfileModel>> createUser(QMap data) async {
     final result = await _repo.createUser(data);
 
     result.map((user) {

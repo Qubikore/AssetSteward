@@ -4,10 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 
-import '../../../data/models/profile_data.dart';
+import '../../../data/models/profile_model.dart';
 
 class ProfileHeader extends ConsumerWidget {
-  final ProfileData data;
+  final ProfileModel data;
 
   const ProfileHeader({super.key, required this.data});
 
@@ -118,7 +118,7 @@ class ProfileHeader extends ConsumerWidget {
 class _ProfileInfo extends StatelessWidget {
   const new({required this.data});
 
-  final ProfileData data;
+  final ProfileModel data;
 
   @override
   Widget build(BuildContext context) {

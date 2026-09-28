@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../main.export.dart';
 import '../../data/models/organization_data.dart';
-import '../../data/models/profile_data.dart';
+import '../../data/models/profile_model.dart';
 import '../../data/repositories/profile_repository.dart';
 
 part 'profile_controller.g.dart';
@@ -11,13 +11,13 @@ part 'profile_controller.g.dart';
 @Riverpod(keepAlive: true)
 class ProfileCtrl extends _$ProfileCtrl {
   @override
-  FutureOr<ProfileData> build() async {
+  FutureOr<ProfileModel> build() async {
     final repo = di.get<ProfileRepository>();
     final result = await repo.getProfile();
     return result.fold((l) => throw l, (r) => r);
   }
 
-  FutureResult<ProfileData> updateProfile(FormData data) async {
+  FutureResult<ProfileModel> updateProfile(FormData data) async {
     final repo = di.get<ProfileRepository>();
     final result = await repo.updateProfile(data);
     if (result.isRight()) {

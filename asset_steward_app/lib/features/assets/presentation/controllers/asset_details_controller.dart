@@ -8,16 +8,26 @@ part 'asset_details_controller.g.dart';
 
 @Riverpod(keepAlive: true)
 class AssetDetailsCtrl extends _$AssetDetailsCtrl {
+  final _repo = di.get<AssetsRepository>();
+
   @override
   FutureOr<AssetModel> build(int id) async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.getAsset(id);
+    return _fetch();
+  }
+
+  Future<AssetModel> _fetch() async {
+    final result = await _repo.getAsset(id);
     return result.fold((l) => throw Exception(l.message), (r) => r);
   }
 
+  Future<void> refresh([bool silent = true]) async {
+    if (!silent) state = const AsyncLoading();
+
+    state = await AsyncValue.guard(_fetch);
+  }
+
   Future<bool> updateAsset(QMap data) async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.updateAsset(id, data);
+    final result = await _repo.updateAsset(id, data);
     return result.fold(
       (l) {
         Toast.showError(l.message);
@@ -33,8 +43,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   }
 
   Future<bool> transferAsset(QMap payload) async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.transferAsset(payload);
+    final result = await _repo.transferAsset(payload);
     return result.fold(
       (l) {
         Toast.showError(l.message);
@@ -49,8 +58,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   }
 
   Future<bool> deleteAsset() async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.deleteAsset(id);
+    final result = await _repo.deleteAsset(id);
     return result.fold(
       (l) {
         Toast.showError(l.message);
@@ -65,8 +73,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   }
 
   Future<bool> assignAsset(QMap payload) async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.assignAsset(payload);
+    final result = await _repo.assignAsset(payload);
     return result.fold(
       (l) {
         Toast.showError(l.message);
@@ -83,8 +90,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   }
 
   Future<bool> approve() async {
-    final repo = di.get<AssetsRepository>();
-    final result = await repo.approveAsset(id);
+    final result = await _repo.approveAsset(id);
     return result.fold(
       (l) {
         Toast.showError(l.message);

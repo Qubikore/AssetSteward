@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../main.export.dart';
 
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 
 @lazySingleton
 class UsersRemoteDS {
@@ -11,14 +11,14 @@ class UsersRemoteDS {
 
   final Dio _dio;
 
-  Future<List<ProfileData>> getUsers() async {
+  Future<List<ProfileModel>> getUsers() async {
     final response = await _dio.get(Endpoints.users);
-    ProfileDataMapper.ensureInitialized();
-    final res = ApiResponse.fromMap<List<ProfileData>>(response.data);
+    ProfileModelMapper.ensureInitialized();
+    final res = ApiResponse.fromMap<List<ProfileModel>>(response.data);
 
     if (res case ApiResponse(
       success: true,
-      data: final List<ProfileData> data,
+      data: final List<ProfileModel> data,
     )) {
       return data;
     } else {
@@ -28,12 +28,12 @@ class UsersRemoteDS {
     }
   }
 
-  Future<ProfileData> createUser(QMap data) async {
+  Future<ProfileModel> createUser(QMap data) async {
     final response = await _dio.post(Endpoints.users, data: data);
-    ProfileDataMapper.ensureInitialized();
-    final res = ApiResponse.fromMap<ProfileData>(response.data);
+    ProfileModelMapper.ensureInitialized();
+    final res = ApiResponse.fromMap<ProfileModel>(response.data);
 
-    if (res case ApiResponse(success: true, data: final ProfileData user)) {
+    if (res case ApiResponse(success: true, data: final ProfileModel user)) {
       return user;
     } else {
       throw Failure(

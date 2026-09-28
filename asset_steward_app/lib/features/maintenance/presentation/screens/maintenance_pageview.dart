@@ -20,25 +20,29 @@ class MaintenancePageview extends HookConsumerWidget {
           onPressed: () => StartMaintenanceSheet.show(context),
           child: const Icon(HIStroke.add01),
         ),
-        body: AsyncBuilder(
-          asyncValue: maintenanceAsync,
-          providers: [maintenanceCtrlProvider],
-          onEmpty: () => const EmptyState(
-            label: 'No Maintenance Records',
-            subLabel: 'There are no active or completed maintenance records.',
-            icon: Icon(HIStroke.repair),
+        body: RefreshIndicator(
+          onRefresh: () async => ref.read(maintenanceCtrlProvider.notifier).refresh(),
+          child: AsyncBuilder(
+            asyncValue: maintenanceAsync,
+            providers: [maintenanceCtrlProvider],
+            onEmpty: () => const EmptyState(
+              label: 'No Maintenance Records',
+              subLabel: 'There are no active or completed maintenance records.',
+              icon: Icon(HIStroke.repair),
+            ),
+            builder: (maintenanceList) {
+              return ListView.separated(
+                physics: kScrollPhysics,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                itemCount: maintenanceList.length,
+                separatorBuilder: (_, _) => const Gap(12),
+                itemBuilder: (context, index) {
+                  final record = maintenanceList[index];
+                  return MaintenanceTile(record: record);
+                },
+              );
+            },
           ),
-          builder: (maintenanceList) {
-            return ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              itemCount: maintenanceList.length,
-              separatorBuilder: (_, _) => const Gap(12),
-              itemBuilder: (context, index) {
-                final record = maintenanceList[index];
-                return MaintenanceTile(record: record);
-              },
-            );
-          },
         ),
       ),
     );

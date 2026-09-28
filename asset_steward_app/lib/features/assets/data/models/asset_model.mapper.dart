@@ -77,6 +77,7 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
       CategoryModelMapper.ensureInitialized();
       LocationModelMapper.ensureInitialized();
       DepartmentModelMapper.ensureInitialized();
+      ProfileModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -151,6 +152,24 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     _$department,
     opt: true,
   );
+  static ProfileModel? _$createdBy(AssetModel v) => v.createdBy;
+  static const Field<AssetModel, ProfileModel> _f$createdBy = Field(
+    'createdBy',
+    _$createdBy,
+    opt: true,
+  );
+  static String? _$createdAt(AssetModel v) => v.createdAt;
+  static const Field<AssetModel, String> _f$createdAt = Field(
+    'createdAt',
+    _$createdAt,
+    opt: true,
+  );
+  static String? _$updatedAt(AssetModel v) => v.updatedAt;
+  static const Field<AssetModel, String> _f$updatedAt = Field(
+    'updatedAt',
+    _$updatedAt,
+    opt: true,
+  );
 
   @override
   final MappableFields<AssetModel> fields = const {
@@ -167,6 +186,9 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     #category: _f$category,
     #location: _f$location,
     #department: _f$department,
+    #createdBy: _f$createdBy,
+    #createdAt: _f$createdAt,
+    #updatedAt: _f$updatedAt,
   };
 
   static AssetModel _instantiate(DecodingData data) {
@@ -184,6 +206,9 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
       category: data.dec(_f$category),
       location: data.dec(_f$location),
       department: data.dec(_f$department),
+      createdBy: data.dec(_f$createdBy),
+      createdAt: data.dec(_f$createdAt),
+      updatedAt: data.dec(_f$updatedAt),
     );
   }
 
@@ -250,6 +275,7 @@ abstract class AssetModelCopyWith<$R, $In extends AssetModel, $Out>
   CategoryModelCopyWith<$R, CategoryModel, CategoryModel>? get category;
   LocationModelCopyWith<$R, LocationModel, LocationModel>? get location;
   DepartmentModelCopyWith<$R, DepartmentModel, DepartmentModel>? get department;
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get createdBy;
   $R call({
     int? id,
     String? assetCode,
@@ -264,6 +290,9 @@ abstract class AssetModelCopyWith<$R, $In extends AssetModel, $Out>
     CategoryModel? category,
     LocationModel? location,
     DepartmentModel? department,
+    ProfileModel? createdBy,
+    String? createdAt,
+    String? updatedAt,
   });
   AssetModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -287,6 +316,9 @@ class _AssetModelCopyWithImpl<$R, $Out>
   get department =>
       $value.department?.copyWith.$chain((v) => call(department: v));
   @override
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get createdBy =>
+      $value.createdBy?.copyWith.$chain((v) => call(createdBy: v));
+  @override
   $R call({
     int? id,
     String? assetCode,
@@ -301,6 +333,9 @@ class _AssetModelCopyWithImpl<$R, $Out>
     Object? category = $none,
     Object? location = $none,
     Object? department = $none,
+    Object? createdBy = $none,
+    Object? createdAt = $none,
+    Object? updatedAt = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -316,6 +351,9 @@ class _AssetModelCopyWithImpl<$R, $Out>
       if (category != $none) #category: category,
       if (location != $none) #location: location,
       if (department != $none) #department: department,
+      if (createdBy != $none) #createdBy: createdBy,
+      if (createdAt != $none) #createdAt: createdAt,
+      if (updatedAt != $none) #updatedAt: updatedAt,
     }),
   );
   @override
@@ -333,6 +371,9 @@ class _AssetModelCopyWithImpl<$R, $Out>
     category: data.get(#category, or: $value.category),
     location: data.get(#location, or: $value.location),
     department: data.get(#department, or: $value.department),
+    createdBy: data.get(#createdBy, or: $value.createdBy),
+    createdAt: data.get(#createdAt, or: $value.createdAt),
+    updatedAt: data.get(#updatedAt, or: $value.updatedAt),
   );
 
   @override

@@ -2,7 +2,7 @@ import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 import 'package:asset_steward_app/features/users/presentation/controllers/users_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -40,7 +40,7 @@ class AssignAssetSheet extends HookConsumerWidget {
         isLoading.value = true;
 
         final data = formKey.currentState!.value;
-        final userId = (data['userId'] as ProfileData).id;
+        final userId = (data['userId'] as ProfileModel).id;
         final locationId = (data['locationId'] as LocationModel?)?.id;
 
         final payload = {'assetId': asset.id, 'userId': userId};
@@ -94,7 +94,7 @@ class AssignAssetSheet extends HookConsumerWidget {
                   allowEmpty: true,
                   onLoading: () => AutocompleteBox.loading('User'),
                   builder: (users) {
-                    return AutocompleteFormBox<ProfileData>(
+                    return AutocompleteFormBox<ProfileModel>(
                       name: 'userId',
                       label: isTransfer ? 'Transfer To' : 'Assign To',
                       placeholder: 'Search and select a user...',

@@ -1,5 +1,5 @@
-import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,6 +18,12 @@ class AssetsCtrl extends _$AssetsCtrl {
   Future<List<AssetModel>> _fetch() async {
     final result = await _repo.getAssets();
     return result.fold((l) => throw l, (r) => r);
+  }
+
+  Future<void> refresh([bool silent = true]) async {
+    if (!silent) state = const AsyncLoading();
+
+    state = await AsyncValue.guard(_fetch);
   }
 
   void addToList(AssetModel asset) {

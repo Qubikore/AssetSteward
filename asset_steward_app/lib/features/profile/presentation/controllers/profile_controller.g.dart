@@ -13,7 +13,7 @@ part of 'profile_controller.dart';
 final profileCtrlProvider = ProfileCtrlProvider._();
 
 final class ProfileCtrlProvider
-    extends $AsyncNotifierProvider<ProfileCtrl, ProfileData> {
+    extends $AsyncNotifierProvider<ProfileCtrl, ProfileModel> {
   ProfileCtrlProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class ProfileCtrlProvider
   ProfileCtrl create() => ProfileCtrl();
 }
 
-String _$profileCtrlHash() => r'35f35e7b595f7bc81d8e785f0fb3f68afea12693';
+String _$profileCtrlHash() => r'565469e57cff56deb542029f95bca44363306609';
 
-abstract class _$ProfileCtrl extends $AsyncNotifier<ProfileData> {
-  FutureOr<ProfileData> build();
+abstract class _$ProfileCtrl extends $AsyncNotifier<ProfileModel> {
+  FutureOr<ProfileModel> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<ProfileData>, ProfileData>;
+    final ref = this.ref as $Ref<AsyncValue<ProfileModel>, ProfileModel>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<ProfileData>, ProfileData>,
-              AsyncValue<ProfileData>,
+              AnyNotifier<AsyncValue<ProfileModel>, ProfileModel>,
+              AsyncValue<ProfileModel>,
               Object?,
               Object?
             >;

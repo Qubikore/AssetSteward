@@ -1,4 +1,4 @@
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -21,11 +21,7 @@ class CreateUserSheet extends HookConsumerWidget {
     final me = ref.watch(profileCtrlProvider).value;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        left: Insets.lg,
-        right: Insets.lg,
-        bottom: context.viewInsets.bottom + Insets.xxl,
-      ),
+      padding: EdgeInsets.only(left: Insets.lg, right: Insets.lg, bottom: context.viewInsets.bottom + Insets.xxl),
       child: FormBuilder(
         key: formKey,
         initialValue: const {'role': UserRole.user},
@@ -33,29 +29,16 @@ class CreateUserSheet extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Create New User',
-              style: context.text.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text('Create New User', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const Gap(Insets.xl),
             const Row(
               children: [
                 Expanded(
-                  child: InputField(
-                    name: 'firstname',
-                    title: 'First Name',
-                    isRequired: true,
-                  ),
+                  child: InputField(name: 'firstname', title: 'First Name', isRequired: true),
                 ),
                 Gap(Insets.md),
                 Expanded(
-                  child: InputField(
-                    name: 'lastname',
-                    title: 'Last Name',
-                    isRequired: true,
-                  ),
+                  child: InputField(name: 'lastname', title: 'Last Name', isRequired: true),
                 ),
               ],
             ),
@@ -82,16 +65,10 @@ class CreateUserSheet extends HookConsumerWidget {
               name: 'role',
               initialValue: .user,
               enabled: me?.role == .superAdmin,
-              decoration: const InputDecoration(
-                border: .none,
-                contentPadding: .zero,
-              ),
+              decoration: const InputDecoration(border: .none, contentPadding: .zero),
               materialTapTargetSize: .shrinkWrap,
               options: UserRole.values.map((role) {
-                return FormBuilderFieldOption(
-                  value: role,
-                  child: Text(role.name.titleCase),
-                );
+                return FormBuilderFieldOption(value: role, child: Text(role.name.titleCase));
               }).toList(),
               validator: FormBuilderValidators.required(),
             ),
@@ -114,9 +91,7 @@ class CreateUserSheet extends HookConsumerWidget {
                           'role': role.name.constantCase,
                         };
 
-                        final result = await ref
-                            .read(usersCtrlProvider.notifier)
-                            .createUser(payload);
+                        final result = await ref.read(usersCtrlProvider.notifier).createUser(payload);
                         isLoading.value = false;
 
                         result.fold((l) => Toast.showError(l.message), (r) {
@@ -125,9 +100,7 @@ class CreateUserSheet extends HookConsumerWidget {
                         });
                       }
                     },
-              child: isLoading.value
-                  ? const Loader(size: 20, color: Colors.white)
-                  : const Text('Create User'),
+              child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Create User'),
             ),
           ],
         ),

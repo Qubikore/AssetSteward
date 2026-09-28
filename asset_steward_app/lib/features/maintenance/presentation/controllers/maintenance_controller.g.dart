@@ -13,7 +13,7 @@ part of 'maintenance_controller.dart';
 final maintenanceCtrlProvider = MaintenanceCtrlProvider._();
 
 final class MaintenanceCtrlProvider
-    extends $AsyncNotifierProvider<MaintenanceCtrl, List<MaintenanceResponse>> {
+    extends $AsyncNotifierProvider<MaintenanceCtrl, List<MaintenanceModel>> {
   MaintenanceCtrlProvider._()
     : super(
         from: null,
@@ -33,28 +33,25 @@ final class MaintenanceCtrlProvider
   MaintenanceCtrl create() => MaintenanceCtrl();
 }
 
-String _$maintenanceCtrlHash() => r'8a756da593013878c3065c819275483bf6998214';
+String _$maintenanceCtrlHash() => r'e8969ea3ca25669b290cbc735abe711b07a959c9';
 
 abstract class _$MaintenanceCtrl
-    extends $AsyncNotifier<List<MaintenanceResponse>> {
-  FutureOr<List<MaintenanceResponse>> build();
+    extends $AsyncNotifier<List<MaintenanceModel>> {
+  FutureOr<List<MaintenanceModel>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
-            as $Ref<
-              AsyncValue<List<MaintenanceResponse>>,
-              List<MaintenanceResponse>
-            >;
+            as $Ref<AsyncValue<List<MaintenanceModel>>, List<MaintenanceModel>>;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<List<MaintenanceResponse>>,
-                List<MaintenanceResponse>
+                AsyncValue<List<MaintenanceModel>>,
+                List<MaintenanceModel>
               >,
-              AsyncValue<List<MaintenanceResponse>>,
+              AsyncValue<List<MaintenanceModel>>,
               Object?,
               Object?
             >;

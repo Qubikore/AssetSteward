@@ -98,7 +98,7 @@ class AssetDetailsPage extends HookConsumerWidget {
               values: [0.0, 0.0, 1.0],
             ),
             child: RefreshIndicator(
-              onRefresh: () async => ref.invalidate(assetDetailsCtrlProvider(id)),
+              onRefresh: () async => ref.read(assetDetailsCtrlProvider(id).notifier).refresh(),
               child: ListView(
                 physics: kScrollPhysics,
                 padding: const EdgeInsets.all(Insets.lg).withBottomEx(),

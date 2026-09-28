@@ -1,6 +1,7 @@
 import 'package:asset_steward_app/features/categories/data/models/category_model.dart';
 import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
 import 'package:asset_steward_app/features/locations/data/models/location_model.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
@@ -48,6 +49,9 @@ class AssetModel with AssetModelMappable {
   final CategoryModel? category;
   final LocationModel? location;
   final DepartmentModel? department;
+  final ProfileModel? createdBy;
+  final String? createdAt;
+  final String? updatedAt;
 
   const AssetModel({
     required this.id,
@@ -63,6 +67,9 @@ class AssetModel with AssetModelMappable {
     this.category,
     this.location,
     this.department,
+    this.createdBy,
+    this.createdAt,
+    this.updatedAt,
   });
 
   bool get isAvailable => status == AssetStatus.available;

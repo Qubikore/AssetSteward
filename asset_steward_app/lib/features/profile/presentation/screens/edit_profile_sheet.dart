@@ -10,11 +10,11 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 
-import '../../data/models/profile_data.dart';
+import '../../data/models/profile_model.dart';
 import '../controllers/profile_controller.dart';
 
 class EditProfileSheet extends HookConsumerWidget {
-  final ProfileData profile;
+  final ProfileModel profile;
 
   const EditProfileSheet({super.key, required this.profile});
 

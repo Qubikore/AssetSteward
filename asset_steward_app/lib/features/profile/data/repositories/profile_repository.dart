@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../main.export.dart';
 import '../datasources/profile_remote_datasource.dart';
 import '../models/organization_data.dart';
-import '../models/profile_data.dart';
+import '../models/profile_model.dart';
 
 @lazySingleton
 class ProfileRepository with RepoRunner {
@@ -12,7 +12,7 @@ class ProfileRepository with RepoRunner {
 
   final ProfileRemoteDS _remoteDS;
 
-  FutureResult<ProfileData> getProfile() async {
+  FutureResult<ProfileModel> getProfile() async {
     return runRepoTask(() => _remoteDS.getProfile());
   }
 
@@ -20,7 +20,7 @@ class ProfileRepository with RepoRunner {
     return runRepoTask(() => _remoteDS.getOrganization());
   }
 
-  FutureResult<ProfileData> updateProfile(FormData data) async {
+  FutureResult<ProfileModel> updateProfile(FormData data) async {
     return runRepoTask(() => _remoteDS.updateProfile(data));
   }
 }

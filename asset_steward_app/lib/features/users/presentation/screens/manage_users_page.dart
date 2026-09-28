@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
+import 'package:asset_steward_app/features/profile/data/models/profile_model.dart';
 
 import '../controllers/users_controller.dart';
 import 'create_user_sheet.dart';
@@ -57,7 +57,7 @@ class ManageUsersPage extends HookConsumerWidget {
 }
 
 class _UserTile extends StatelessWidget {
-  final ProfileData user;
+  final ProfileModel user;
 
   const _UserTile({required this.user});
 

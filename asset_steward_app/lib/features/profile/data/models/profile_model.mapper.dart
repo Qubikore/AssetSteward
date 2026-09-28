@@ -6,7 +6,7 @@
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
-part of 'profile_data.dart';
+part of 'profile_model.dart';
 
 class UserRoleMapper extends EnumMapper<UserRole> {
   UserRoleMapper._();
@@ -58,51 +58,51 @@ extension UserRoleMapperExtension on UserRole {
   }
 }
 
-class ProfileDataMapper extends ClassMapperBase<ProfileData> {
-  ProfileDataMapper._();
+class ProfileModelMapper extends ClassMapperBase<ProfileModel> {
+  ProfileModelMapper._();
 
-  static ProfileDataMapper? _instance;
-  static ProfileDataMapper ensureInitialized() {
+  static ProfileModelMapper? _instance;
+  static ProfileModelMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = ProfileDataMapper._());
+      MapperContainer.globals.use(_instance = ProfileModelMapper._());
       UserRoleMapper.ensureInitialized();
     }
     return _instance!;
   }
 
   @override
-  final String id = 'ProfileData';
+  final String id = 'ProfileModel';
 
-  static int _$id(ProfileData v) => v.id;
-  static const Field<ProfileData, int> _f$id = Field('id', _$id);
-  static String _$firstname(ProfileData v) => v.firstname;
-  static const Field<ProfileData, String> _f$firstname = Field(
+  static int _$id(ProfileModel v) => v.id;
+  static const Field<ProfileModel, int> _f$id = Field('id', _$id);
+  static String _$firstname(ProfileModel v) => v.firstname;
+  static const Field<ProfileModel, String> _f$firstname = Field(
     'firstname',
     _$firstname,
   );
-  static String _$lastname(ProfileData v) => v.lastname;
-  static const Field<ProfileData, String> _f$lastname = Field(
+  static String _$lastname(ProfileModel v) => v.lastname;
+  static const Field<ProfileModel, String> _f$lastname = Field(
     'lastname',
     _$lastname,
   );
-  static String _$email(ProfileData v) => v.email;
-  static const Field<ProfileData, String> _f$email = Field('email', _$email);
-  static UserRole _$role(ProfileData v) => v.role;
-  static const Field<ProfileData, UserRole> _f$role = Field('role', _$role);
-  static String? _$gender(ProfileData v) => v.gender;
-  static const Field<ProfileData, String> _f$gender = Field(
+  static String _$email(ProfileModel v) => v.email;
+  static const Field<ProfileModel, String> _f$email = Field('email', _$email);
+  static UserRole _$role(ProfileModel v) => v.role;
+  static const Field<ProfileModel, UserRole> _f$role = Field('role', _$role);
+  static String? _$gender(ProfileModel v) => v.gender;
+  static const Field<ProfileModel, String> _f$gender = Field(
     'gender',
     _$gender,
     opt: true,
   );
-  static String? _$dob(ProfileData v) => v.dob;
-  static const Field<ProfileData, String> _f$dob = Field(
+  static String? _$dob(ProfileModel v) => v.dob;
+  static const Field<ProfileModel, String> _f$dob = Field(
     'dob',
     _$dob,
     opt: true,
   );
-  static String? _$profilePicture(ProfileData v) => v.profilePicture;
-  static const Field<ProfileData, String> _f$profilePicture = Field(
+  static String? _$profilePicture(ProfileModel v) => v.profilePicture;
+  static const Field<ProfileModel, String> _f$profilePicture = Field(
     'profilePicture',
     _$profilePicture,
     key: r'profile_picture',
@@ -110,7 +110,7 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   );
 
   @override
-  final MappableFields<ProfileData> fields = const {
+  final MappableFields<ProfileModel> fields = const {
     #id: _f$id,
     #firstname: _f$firstname,
     #lastname: _f$lastname,
@@ -121,8 +121,8 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
     #profilePicture: _f$profilePicture,
   };
 
-  static ProfileData _instantiate(DecodingData data) {
-    return ProfileData(
+  static ProfileModel _instantiate(DecodingData data) {
+    return ProfileModel(
       id: data.dec(_f$id),
       firstname: data.dec(_f$firstname),
       lastname: data.dec(_f$lastname),
@@ -137,62 +137,64 @@ class ProfileDataMapper extends ClassMapperBase<ProfileData> {
   @override
   final Function instantiate = _instantiate;
 
-  static ProfileData fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<ProfileData>(map);
+  static ProfileModel fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<ProfileModel>(map);
   }
 
-  static ProfileData fromJson(String json) {
-    return ensureInitialized().decodeJson<ProfileData>(json);
+  static ProfileModel fromJson(String json) {
+    return ensureInitialized().decodeJson<ProfileModel>(json);
   }
 }
 
-mixin ProfileDataMappable {
+mixin ProfileModelMappable {
   String toJson() {
-    return ProfileDataMapper.ensureInitialized().encodeJson<ProfileData>(
-      this as ProfileData,
+    return ProfileModelMapper.ensureInitialized().encodeJson<ProfileModel>(
+      this as ProfileModel,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return ProfileDataMapper.ensureInitialized().encodeMap<ProfileData>(
-      this as ProfileData,
+    return ProfileModelMapper.ensureInitialized().encodeMap<ProfileModel>(
+      this as ProfileModel,
     );
   }
 
-  ProfileDataCopyWith<ProfileData, ProfileData, ProfileData> get copyWith =>
-      _ProfileDataCopyWithImpl<ProfileData, ProfileData>(
-        this as ProfileData,
+  ProfileModelCopyWith<ProfileModel, ProfileModel, ProfileModel> get copyWith =>
+      _ProfileModelCopyWithImpl<ProfileModel, ProfileModel>(
+        this as ProfileModel,
         $identity,
         $identity,
       );
   @override
   String toString() {
-    return ProfileDataMapper.ensureInitialized().stringifyValue(
-      this as ProfileData,
+    return ProfileModelMapper.ensureInitialized().stringifyValue(
+      this as ProfileModel,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return ProfileDataMapper.ensureInitialized().equalsValue(
-      this as ProfileData,
+    return ProfileModelMapper.ensureInitialized().equalsValue(
+      this as ProfileModel,
       other,
     );
   }
 
   @override
   int get hashCode {
-    return ProfileDataMapper.ensureInitialized().hashValue(this as ProfileData);
+    return ProfileModelMapper.ensureInitialized().hashValue(
+      this as ProfileModel,
+    );
   }
 }
 
-extension ProfileDataValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, ProfileData, $Out> {
-  ProfileDataCopyWith<$R, ProfileData, $Out> get $asProfileData =>
-      $base.as((v, t, t2) => _ProfileDataCopyWithImpl<$R, $Out>(v, t, t2));
+extension ProfileModelValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ProfileModel, $Out> {
+  ProfileModelCopyWith<$R, ProfileModel, $Out> get $asProfileModel =>
+      $base.as((v, t, t2) => _ProfileModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class ProfileDataCopyWith<$R, $In extends ProfileData, $Out>
+abstract class ProfileModelCopyWith<$R, $In extends ProfileModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     int? id,
@@ -204,17 +206,17 @@ abstract class ProfileDataCopyWith<$R, $In extends ProfileData, $Out>
     String? dob,
     String? profilePicture,
   });
-  ProfileDataCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  ProfileModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _ProfileDataCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, ProfileData, $Out>
-    implements ProfileDataCopyWith<$R, ProfileData, $Out> {
-  _ProfileDataCopyWithImpl(super.value, super.then, super.then2);
+class _ProfileModelCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ProfileModel, $Out>
+    implements ProfileModelCopyWith<$R, ProfileModel, $Out> {
+  _ProfileModelCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<ProfileData> $mapper =
-      ProfileDataMapper.ensureInitialized();
+  late final ClassMapperBase<ProfileModel> $mapper =
+      ProfileModelMapper.ensureInitialized();
   @override
   $R call({
     int? id,
@@ -238,7 +240,7 @@ class _ProfileDataCopyWithImpl<$R, $Out>
     }),
   );
   @override
-  ProfileData $make(CopyWithData data) => ProfileData(
+  ProfileModel $make(CopyWithData data) => ProfileModel(
     id: data.get(#id, or: $value.id),
     firstname: data.get(#firstname, or: $value.firstname),
     lastname: data.get(#lastname, or: $value.lastname),
@@ -250,8 +252,8 @@ class _ProfileDataCopyWithImpl<$R, $Out>
   );
 
   @override
-  ProfileDataCopyWith<$R2, ProfileData, $Out2> $chain<$R2, $Out2>(
+  ProfileModelCopyWith<$R2, ProfileModel, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
-  ) => _ProfileDataCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  ) => _ProfileModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
