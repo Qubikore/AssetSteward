@@ -334,7 +334,9 @@ public class AssetService {
             throw new RuntimeException("Assignment does not belong to your organization");
         }
         
-        return new com.qubikore.assetsteward.asset.dto.AssignmentResponse(assignment);
+        com.qubikore.assetsteward.asset.dto.AssignmentResponse response = new com.qubikore.assetsteward.asset.dto.AssignmentResponse(assignment);
+        response.setHistory(assetHistoryService.getHistoryByAssetId(assignment.getAsset().getId()));
+        return response;
     }
 
     public AssetResponse updateAsset(Long assetId, AssetRequest request, User currentUser) {

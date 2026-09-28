@@ -11,6 +11,7 @@ public class AssignmentResponse {
     private LocalDateTime assignedAt;
     private LocalDateTime returnedAt;
     private String returnReason;
+    private java.util.List<com.qubikore.assetsteward.assethistory.AssetHistoryResponse> history;
 
     public AssignmentResponse(Assignment assignment) {
         this.id = assignment.getId();
@@ -30,4 +31,6 @@ public class AssignmentResponse {
     public LocalDateTime getAssignedAt() { return assignedAt; }
     public LocalDateTime getReturnedAt() { return returnedAt; }
     public String getReturnReason() { return returnReason; }
+    public java.util.List<com.qubikore.assetsteward.assethistory.AssetHistoryResponse> getHistory() { return history; }
+    public void setHistory(java.util.List<com.qubikore.assetsteward.assethistory.AssetHistoryResponse> history) { this.history = history; }
 }
