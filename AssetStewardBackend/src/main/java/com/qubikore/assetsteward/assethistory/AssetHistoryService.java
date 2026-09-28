@@ -28,4 +28,11 @@ public class AssetHistoryService {
     public void deleteByAssetId(Long assetId) {
         assetHistoryRepository.deleteByAssetId(assetId);
     }
+
+    public java.util.List<AssetHistoryResponse> getHistoryByAssetId(Long assetId) {
+        return assetHistoryRepository.findByAssetIdOrderByTimestampDesc(assetId)
+                .stream()
+                .map(AssetHistoryResponse::new)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }
