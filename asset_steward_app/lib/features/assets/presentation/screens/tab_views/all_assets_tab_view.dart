@@ -49,7 +49,7 @@ class AllAssetsTabView extends HookConsumerWidget {
                 return ListView.separated(
                   physics: kScrollPhysics,
                   padding: const EdgeInsets.symmetric(horizontal: Insets.lg)
-                      .copyWith(bottom: context.viewInsets.bottom)
+                      .copyWith(bottom: context.viewInsets.bottom + 16)
                       .withBottomEx(),
                   itemCount: assets.length,
                   separatorBuilder: (context, index) => const Gap(Insets.md),

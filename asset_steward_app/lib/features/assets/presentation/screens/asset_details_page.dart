@@ -60,7 +60,7 @@ class AssetDetailsPage extends HookConsumerWidget {
                           onPressed: () async {
                             final reason = await showDialog<String>(
                               context: context,
-                              builder: (context) => const _RejectDialog(),
+                              builder: (context) => const RejectAssetDialog(),
                             );
                             if (reason != null) {
                               await ref.read(assetDetailsCtrlProvider(id).notifier).reject(reason);
@@ -80,7 +80,7 @@ class AssetDetailsPage extends HookConsumerWidget {
                           onPressed: () async {
                             final approved = await showDialog<bool>(
                               context: context,
-                              builder: (context) => const _ApproveDialog(),
+                              builder: (context) => const ApproveAssetDialog(),
                             );
                             if (approved == true) {
                               await ref.read(assetDetailsCtrlProvider(id).notifier).approve();
@@ -169,6 +169,7 @@ class AssetDetailsPage extends HookConsumerWidget {
                 AsyncBuilder(
                   asyncValue: ref.watch(assetAssignmentsProvider(id)),
                   providers: [assetAssignmentsProvider(id)],
+                  allowEmpty: true,
                   builder: (assignments) {
                     if (assignments.isEmpty) return const SizedBox.shrink();
                     return Column(
@@ -204,8 +205,8 @@ class AssetDetailsPage extends HookConsumerWidget {
   }
 }
 
-class _ApproveDialog extends StatelessWidget {
-  const _ApproveDialog();
+class ApproveAssetDialog extends StatelessWidget {
+  const ApproveAssetDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -220,8 +221,8 @@ class _ApproveDialog extends StatelessWidget {
   }
 }
 
-class _RejectDialog extends HookWidget {
-  const _RejectDialog();
+class RejectAssetDialog extends HookWidget {
+  const RejectAssetDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -40,14 +40,13 @@ class MyAssetsTabView extends HookConsumerWidget {
                 return ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: Insets.lg)
-                      .copyWith(bottom: context.viewInsets.bottom)
+                      .copyWith(bottom: context.viewInsets.bottom + 16)
                       .withBottomEx(),
                   itemCount: assignments.length,
                   separatorBuilder: (context, index) => const Gap(Insets.md),
                   itemBuilder: (context, index) {
                     final assignment = assignments[index];
-                    if (assignment.asset == null) return const SizedBox.shrink();
-                    return AssetListTile(asset: assignment.asset!);
+                    return AssetListTile(asset: assignment.asset);
                   },
                 );
               },

@@ -1,6 +1,7 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/asset_context_menu.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/asset_details_page.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -134,36 +135,44 @@ class AssetListTile extends ConsumerWidget {
                   if (asset.status == .pendingApproval && isPrivileged) ...[
                     const Gap(8),
                     SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () async {
-                          final approved = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Approve Asset'),
-                              content: const Text('Are you sure you want to approve this asset?'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                                FilledButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: context.colors.error,
-                                    foregroundColor: context.colors.onError,
-                                  ),
-                                  child: const Text('Approve'),
-                                ),
-                              ],
+                      height: 35,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                final reason = await showDialog<String>(
+                                  context: context,
+                                  builder: (context) => const RejectAssetDialog(),
+                                );
+                                if (reason != null) {
+                                  await ref.read(assetDetailsCtrlProvider(asset.id).notifier).reject(reason);
+                                }
+                              },
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: context.colors.surface,
+                                foregroundColor: context.colors.error,
+                                side: BorderSide(color: context.colors.error),
+                              ),
+                              child: const Text('Reject'),
                             ),
-                          );
-                          if (approved == true) {
-                            await ref.read(assetDetailsCtrlProvider(asset.id).notifier).approve();
-                          }
-                        },
-                        style: FilledButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        child: const Text('Approve'),
+                          ),
+                          const Gap(Insets.md),
+                          Expanded(
+                            child: FilledButton(
+                              onPressed: () async {
+                                final approved = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => const ApproveAssetDialog(),
+                                );
+                                if (approved == true) {
+                                  await ref.read(assetDetailsCtrlProvider(asset.id).notifier).approve();
+                                }
+                              },
+                              child: const Text('Approve'),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
