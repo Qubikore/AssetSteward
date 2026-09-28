@@ -35,7 +35,11 @@ class StartMaintenanceSheet extends HookConsumerWidget {
       if (!state.saveAndValidate()) return;
 
       isLoading.value = true;
-      final data = formKey.currentState!.value;
+      final data = QMap.from(state.value);
+
+      if (assetId != null) {
+        data['assetId'] = assetId;
+      }
 
       final notifier = ref.read(maintenanceCtrlProvider.notifier);
       final isOk = await notifier.startMaintenance(data);

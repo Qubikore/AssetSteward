@@ -395,6 +395,42 @@
             }
         },
         "/api/v1/assets/{assetId}": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get asset details",
+                "description": "Retrieves the details of a specific asset by its ID.",
+                "operationId": "getAssetById",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "asset-controller"
@@ -466,6 +502,44 @@
                             "*/*": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiResponseVoid"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/{assetId}/reject": {
+            "put": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Reject an asset",
+                "description": "Rejects a pending asset. Only HR and Super Admin can perform this action.",
+                "operationId": "rejectAsset",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetResponse"
                                 }
                             }
                         }
@@ -1083,6 +1157,43 @@
                 ]
             }
         },
+        "/api/v1/assets/return": {
+            "post": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Return an asset",
+                "description": "Returns an already assigned asset.",
+                "operationId": "returnAsset",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssetReturnRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseString"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
         "/api/v1/assets/assign": {
             "post": {
                 "tags": [
@@ -1265,6 +1376,44 @@
                 ]
             }
         },
+        "/api/v1/assets/{assetId}/label": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get single asset label",
+                "description": "Retrieves the label details (including QR code in base64) for a specific asset by its ID.",
+                "operationId": "getAssetLabelById",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssetLabelResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
         "/api/v1/assets/labels": {
             "get": {
                 "tags": [
@@ -1329,6 +1478,82 @@
                     }
                 ]
             }
+        },
+        "/api/v1/assets/assignments/{assignmentId}": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get assignment details",
+                "description": "Retrieves the full details of a specific assignment by its ID.",
+                "operationId": "getAssignmentById",
+                "parameters": [
+                    {
+                        "name": "assignmentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseAssignmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/assignments/my": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get my assignments",
+                "description": "Retrieves a list of asset assignments for the currently logged-in user. Can be filtered by status.",
+                "operationId": "getMyAssignments",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status. Allowed values: 'active' (currently assigned), 'returned' (past assignments), or leave empty for all.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssignmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1351,6 +1576,126 @@
                     }
                 }
             },
+            "AssetResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "assetCode": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "serialNumber": {
+                        "type": "string"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expireDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "vendor": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryResponse"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/LocationResponse"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentResponse"
+                    },
+                    "createdBy": {
+                        "$ref": "#/components/schemas/CreatorResponse"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "CategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreatorResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DepartmentResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LocationResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                }
+            },
             "MaintenanceResponse": {
                 "type": "object",
                 "properties": {
@@ -1358,12 +1703,8 @@
                         "type": "integer",
                         "format": "int64"
                     },
-                    "assetId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "assetName": {
-                        "type": "string"
+                    "asset": {
+                        "$ref": "#/components/schemas/AssetResponse"
                     },
                     "description": {
                         "type": "string"
@@ -1385,6 +1726,12 @@
                     },
                     "status": {
                         "type": "string"
+                    },
+                    "startedBy": {
+                        "$ref": "#/components/schemas/CreatorResponse"
+                    },
+                    "endedBy": {
+                        "$ref": "#/components/schemas/CreatorResponse"
                     }
                 }
             },
@@ -1417,21 +1764,6 @@
                     }
                 }
             },
-            "LocationResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "address": {
-                        "type": "string"
-                    }
-                }
-            },
             "DepartmentRequest": {
                 "type": "object",
                 "properties": {
@@ -1458,18 +1790,6 @@
                     }
                 }
             },
-            "DepartmentResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                }
-            },
             "CategoryRequest": {
                 "type": "object",
                 "properties": {
@@ -1493,18 +1813,6 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/CategoryResponse"
-                    }
-                }
-            },
-            "CategoryResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
                     }
                 }
             },
@@ -1568,55 +1876,6 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/AssetResponse"
-                    }
-                }
-            },
-            "AssetResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "assetCode": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "serialNumber": {
-                        "type": "string"
-                    },
-                    "purchaseDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "expireDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "purchasePrice": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "vendor": {
-                        "type": "string"
-                    },
-                    "quantity": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "status": {
-                        "type": "string"
-                    },
-                    "category": {
-                        "$ref": "#/components/schemas/CategoryResponse"
-                    },
-                    "location": {
-                        "$ref": "#/components/schemas/LocationResponse"
-                    },
-                    "department": {
-                        "$ref": "#/components/schemas/DepartmentResponse"
                     }
                 }
             },
@@ -1850,6 +2109,18 @@
                         "type": "string"
                     },
                     "data": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AssetReturnRequest": {
+                "type": "object",
+                "properties": {
+                    "assetId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "reason": {
                         "type": "string"
                     }
                 }
@@ -2109,7 +2380,7 @@
                     }
                 }
             },
-            "ApiResponseListAssetLabelResponse": {
+            "ApiResponseAssetLabelResponse": {
                 "type": "object",
                 "properties": {
                     "success": {
@@ -2123,10 +2394,7 @@
                         "type": "string"
                     },
                     "data": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/AssetLabelResponse"
-                        }
+                        "$ref": "#/components/schemas/AssetLabelResponse"
                     }
                 }
             },
@@ -2160,6 +2428,27 @@
                     }
                 }
             },
+            "ApiResponseListAssetLabelResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetLabelResponse"
+                        }
+                    }
+                }
+            },
             "ApiResponseListAssignmentResponse": {
                 "type": "object",
                 "properties": {
@@ -2188,29 +2477,14 @@
                         "type": "integer",
                         "format": "int64"
                     },
-                    "assetId": {
-                        "type": "integer",
-                        "format": "int64"
+                    "asset": {
+                        "$ref": "#/components/schemas/AssetResponse"
                     },
-                    "assetName": {
-                        "type": "string"
+                    "assignedTo": {
+                        "$ref": "#/components/schemas/CreatorResponse"
                     },
-                    "assetCode": {
-                        "type": "string"
-                    },
-                    "assignedToUserId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "assignedToEmail": {
-                        "type": "string"
-                    },
-                    "assignedByUserId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "assignedByEmail": {
-                        "type": "string"
+                    "assignedBy": {
+                        "$ref": "#/components/schemas/CreatorResponse"
                     },
                     "assignedAt": {
                         "type": "string",
@@ -2219,6 +2493,27 @@
                     "returnedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "returnReason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponseAssignmentResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AssignmentResponse"
                     }
                 }
             },
