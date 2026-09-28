@@ -75,26 +75,15 @@ GoRouter appRouter(Ref ref) {
         ],
         builder: (_, s, c) => AppShell(key: s.pageKey, child: c),
       ),
-      GoRoute(
-        path: RPaths.login.path,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: RPaths.register.path,
-        builder: (context, state) => const RegisterPage(),
-      ),
+      AppRoute(RPaths.login, (_) => const LoginPage()),
+      AppRoute(RPaths.register, (_) => const RegisterPage()),
+
       AppRoute(RPaths.manageUsers, (_) => const ManageUsersPage()),
       AppRoute(RPaths.locations, (_) => const LocationsPage()),
       AppRoute(RPaths.departments, (_) => const DepartmentsPage()),
       AppRoute(RPaths.categories, (_) => const CategoriesPage()),
-      AppRoute(
-        RPaths.createAsset,
-        (s) => CreateAssetPage(asset: s.extra as AssetModel?),
-      ),
-      AppRoute(
-        RPaths.assetDetails(':id'),
-        (s) => AssetDetailsPage(id: int.parse(s.pathParameters['id']!)),
-      ),
+      AppRoute(RPaths.createAsset, (s) => CreateAssetPage(asset: s.extra as AssetModel?)),
+      AppRoute(RPaths.assetDetails(':id'), (s) => AssetDetailsPage(id: int.parse(s.pathParameters['id']!))),
     ],
     errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
   );

@@ -33,7 +33,7 @@ final class AssetsCtrlProvider
   AssetsCtrl create() => AssetsCtrl();
 }
 
-String _$assetsCtrlHash() => r'991f5005e8132fff467b4f46b35b68d544a1a5a7';
+String _$assetsCtrlHash() => r'dec0b8d0691044a2d353b9d28a6c2f288717e3a8';
 
 abstract class _$AssetsCtrl extends $AsyncNotifier<List<AssetModel>> {
   FutureOr<List<AssetModel>> build();

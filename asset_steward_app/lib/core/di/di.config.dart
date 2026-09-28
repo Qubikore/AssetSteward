@@ -38,6 +38,10 @@ import 'package:asset_steward_app/features/locations/data/datasources/locations_
     as _i1012;
 import 'package:asset_steward_app/features/locations/data/repositories/locations_repository.dart'
     as _i557;
+import 'package:asset_steward_app/features/maintenance/data/datasources/maintenance_remote_datasource.dart'
+    as _i465;
+import 'package:asset_steward_app/features/maintenance/data/repositories/maintenance_repository.dart'
+    as _i98;
 import 'package:asset_steward_app/features/profile/data/datasources/profile_remote_datasource.dart'
     as _i81;
 import 'package:asset_steward_app/features/profile/data/repositories/profile_repository.dart'
@@ -100,6 +104,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1012.LocationsRemoteDS>(
       () => _i1012.LocationsRemoteDS(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i465.MaintenanceRemoteDS>(
+      () => _i465.MaintenanceRemoteDS(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i81.ProfileRemoteDS>(
       () => _i81.ProfileRemoteDS(gh<_i361.Dio>()),
     );
@@ -114,6 +121,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i876.UsersRepository>(
       () => _i876.UsersRepository(gh<_i1041.UsersRemoteDS>()),
+    );
+    gh.lazySingleton<_i98.MaintenanceRepository>(
+      () => _i98.MaintenanceRepository(gh<_i465.MaintenanceRemoteDS>()),
     );
     gh.lazySingleton<_i207.AuthRepo>(
       () => _i207.AuthRepo(gh<_i565.AuthRemoteDS>(), gh<_i342.TokenStorage>()),

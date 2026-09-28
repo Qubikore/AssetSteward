@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'asset_details_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AssetDetailsCtrl extends _$AssetDetailsCtrl {
   @override
   FutureOr<AssetModel> build(int id) async {

@@ -23,4 +23,8 @@ class Endpoints {
   static String assetQrCode(int id) => 'assets/$id/qrcode';
   static const String assetLabels = 'assets/labels';
   static const String assetAssignments = 'assets/assignments';
+
+  static const String maintenance = 'maintenance';
+  static const String startMaintenance = 'maintenance/start';
+  static String completeMaintenance(int id) => 'maintenance/$id/complete';
 }

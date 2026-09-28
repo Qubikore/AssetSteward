@@ -65,7 +65,6 @@ class AssetListTile extends ConsumerWidget {
                     ],
                   ),
 
-                  // const Gap(4),
                   Row(
                     spacing: 8,
                     children: [
@@ -124,7 +123,7 @@ class AssetListTile extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      AssetContextMenu(id: asset.id),
+                      AssetContextMenu(asset: asset),
                     ],
                   ),
                   if (asset.status == .pendingApproval && isPrivileged) ...[

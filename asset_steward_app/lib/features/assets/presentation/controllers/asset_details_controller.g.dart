@@ -20,7 +20,7 @@ final class AssetDetailsCtrlProvider
   }) : super(
          retry: null,
          name: r'assetDetailsCtrlProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -50,7 +50,7 @@ final class AssetDetailsCtrlProvider
   }
 }
 
-String _$assetDetailsCtrlHash() => r'99bc494632ed56290dec84b5afd93aecf1de50ea';
+String _$assetDetailsCtrlHash() => r'19f8d873248ec7f178029c1404d1fa6623fc730a';
 
 final class AssetDetailsCtrlFamily extends $Family
     with
@@ -67,7 +67,7 @@ final class AssetDetailsCtrlFamily extends $Family
         name: r'assetDetailsCtrlProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   AssetDetailsCtrlProvider call(int id) =>

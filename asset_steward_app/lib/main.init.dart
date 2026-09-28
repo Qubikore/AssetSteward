@@ -13,8 +13,10 @@ import 'features/departments/data/models/department_model.dart' as p5;
 import 'features/home/data/models/asset_utilization.dart' as p6;
 import 'features/home/data/models/dashboard_metrics.dart' as p7;
 import 'features/locations/data/models/location_model.dart' as p8;
-import 'features/profile/data/models/organization_data.dart' as p9;
-import 'features/profile/data/models/profile_data.dart' as p10;
+import 'features/maintenance/data/models/maintenance_request.dart' as p9;
+import 'features/maintenance/data/models/maintenance_response.dart' as p10;
+import 'features/profile/data/models/organization_data.dart' as p11;
+import 'features/profile/data/models/profile_data.dart' as p12;
 
 void initializeMappers() {
   p0.ApiResponseMapper.ensureInitialized();
@@ -27,8 +29,11 @@ void initializeMappers() {
   p6.AssetUtilizationMapper.ensureInitialized();
   p7.DashboardMetricsMapper.ensureInitialized();
   p8.LocationModelMapper.ensureInitialized();
-  p9.OrganizationDataMapper.ensureInitialized();
-  p10.ProfileDataMapper.ensureInitialized();
-  p10.UserRoleMapper.ensureInitialized();
+  p9.MaintenanceRequestMapper.ensureInitialized();
+  p10.MaintenanceResponseMapper.ensureInitialized();
+  p10.MaintenanceStatusMapper.ensureInitialized();
+  p11.OrganizationDataMapper.ensureInitialized();
+  p12.ProfileDataMapper.ensureInitialized();
+  p12.UserRoleMapper.ensureInitialized();
 }
 

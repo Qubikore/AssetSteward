@@ -1,5 +1,4 @@
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:asset_steward_app/features/profile/data/models/profile_data.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -32,10 +31,8 @@ class ProfilePage extends HookConsumerWidget {
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],
         builder: (data) => RefreshIndicator(
-          onRefresh: () => Future.wait([
-            ref.refresh(profileCtrlProvider.future),
-            ref.refresh(organizationCtrlProvider.future),
-          ]),
+          onRefresh: () =>
+              Future.wait([ref.refresh(profileCtrlProvider.future), ref.refresh(organizationCtrlProvider.future)]),
           child: ListView(
             physics: kScrollPhysics,
             padding: const EdgeInsets.symmetric(
@@ -53,109 +50,72 @@ class ProfilePage extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   color: context.colors.surfaceContainerHighest.op(0.3),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: context.colors.outlineVariant.op(0.5),
-                  ),
+                  border: Border.all(color: context.colors.outlineVariant.op(0.5)),
                 ),
                 child: Column(
-                  children: [
-                    SettingsTile(
-                      icon: HIStroke.userEdit01,
-                      title: 'Edit Profile',
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          useSafeArea: true,
-                          useRootNavigator: true,
-                          showDragHandle: true,
-                          builder: (context) => EditProfileSheet(profile: data),
-                        );
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      indent: 56,
-                      endIndent: Insets.md,
-                      color: context.colors.outlineVariant.op(0.5),
-                    ),
+                  children:
+                      [
+                        SettingsTile(
+                          icon: HIStroke.userEdit01,
+                          title: 'Edit Profile',
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              useRootNavigator: true,
+                              showDragHandle: true,
+                              builder: (context) => EditProfileSheet(profile: data),
+                            );
+                          },
+                        ),
 
-                    if (data.role == UserRole.superAdmin ||
-                        data.role == UserRole.hr) ...[
-                      SettingsTile(
-                        icon: HIStroke.userGroup,
-                        title: 'Manage Users',
-                        onTap: () {
-                          context.push(RPaths.manageUsers.path);
-                        },
-                      ),
-                      Divider(
-                        height: 1,
-                        indent: 56,
-                        endIndent: Insets.md,
-                        color: context.colors.outlineVariant.op(0.5),
-                      ),
-                      SettingsTile(
-                        icon: HIStroke.location01,
-                        title: 'Locations',
-                        onTap: () {
-                          context.push(RPaths.locations.path);
-                        },
-                      ),
-                      Divider(
-                        height: 1,
-                        indent: 56,
-                        endIndent: Insets.md,
-                        color: context.colors.outlineVariant.op(0.5),
-                      ),
-                      SettingsTile(
-                        icon: HIStroke.building02,
-                        title: 'Departments',
-                        onTap: () {
-                          context.push(RPaths.departments.path);
-                        },
-                      ),
-                      Divider(
-                        height: 1,
-                        indent: 56,
-                        endIndent: Insets.md,
-                        color: context.colors.outlineVariant.op(0.5),
-                      ),
-                      SettingsTile(
-                        icon: HIStroke.tag01,
-                        title: 'Categories',
-                        onTap: () {
-                          context.push(RPaths.categories.path);
-                        },
-                      ),
-                      Divider(
-                        height: 1,
-                        indent: 56,
-                        endIndent: Insets.md,
-                        color: context.colors.outlineVariant.op(0.5),
-                      ),
-                    ],
+                        if (data.role == .superAdmin || data.role == .hr) ...[
+                          SettingsTile(
+                            icon: HIStroke.userGroup,
+                            title: 'Manage Users',
+                            onTap: () => RPaths.manageUsers.push(context),
+                          ),
 
-                    SettingsTile(
-                      icon: HIStroke.informationCircle,
-                      title: 'About App',
-                      onTap: () {
-                        Toast.showInfo('$kAppName $kAppVersion');
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      indent: 56,
-                      endIndent: Insets.md,
-                      color: context.colors.outlineVariant.op(0.5),
-                    ),
-                    SettingsTile(
-                      icon: HIStroke.logout05,
-                      title: 'Logout',
-                      isDestructive: true,
-                      onTap: () => ref.read(authCtrlProvider.notifier).logout(),
-                    ),
-                  ],
+                          SettingsTile(
+                            icon: HIStroke.location01,
+                            title: 'Locations',
+                            onTap: () => RPaths.locations.push(context),
+                          ),
+
+                          SettingsTile(
+                            icon: HIStroke.building02,
+                            title: 'Departments',
+                            onTap: () => RPaths.departments.push(context),
+                          ),
+
+                          SettingsTile(
+                            icon: HIStroke.tag01,
+                            title: 'Categories',
+                            onTap: () => RPaths.categories.push(context),
+                          ),
+                        ],
+
+                        SettingsTile(
+                          icon: HIStroke.informationCircle,
+                          title: 'About App',
+                          onTap: () => Toast.showInfo('$kAppName $kAppVersion'),
+                        ),
+
+                        SettingsTile(
+                          icon: HIStroke.logout05,
+                          title: 'Logout',
+                          isDestructive: true,
+                          onTap: () => ref.read(authCtrlProvider.notifier).logout(),
+                        ),
+                      ].separatedBy(
+                        Divider(
+                          height: 1,
+                          indent: 56,
+                          endIndent: Insets.md,
+                          color: context.colors.outlineVariant.op(0.5),
+                        ),
+                      ),
                 ),
               ),
             ],
