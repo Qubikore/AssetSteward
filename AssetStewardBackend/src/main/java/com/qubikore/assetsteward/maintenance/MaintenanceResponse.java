@@ -11,6 +11,8 @@ public class MaintenanceResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private String status;
+    private com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse startedBy;
+    private com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse endedBy;
 
     public MaintenanceResponse(Maintenance m) {
         this.id = m.getId();
@@ -21,6 +23,8 @@ public class MaintenanceResponse {
         this.startDate = m.getStartDate();
         this.endDate = m.getEndDate();
         this.status = m.getStatus();
+        this.startedBy = m.getStartedBy() != null ? new com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse(m.getStartedBy()) : null;
+        this.endedBy = m.getEndedBy() != null ? new com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse(m.getEndedBy()) : null;
     }
 
     public Long getId() { return id; }
@@ -31,4 +35,6 @@ public class MaintenanceResponse {
     public LocalDate getStartDate() { return startDate; }
     public LocalDate getEndDate() { return endDate; }
     public String getStatus() { return status; }
+    public com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse getStartedBy() { return startedBy; }
+    public com.qubikore.assetsteward.asset.dto.AssetResponse.CreatorResponse getEndedBy() { return endedBy; }
 }

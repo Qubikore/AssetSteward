@@ -37,6 +37,7 @@ public class MaintenanceService {
         m.setProvider(request.getProvider());
         m.setStartDate(request.getStartDate() != null ? request.getStartDate() : LocalDate.now());
         m.setStatus("IN_PROGRESS");
+        m.setStartedBy(currentUser);
 
         maintenanceRepository.save(m);
 
@@ -58,6 +59,7 @@ public class MaintenanceService {
 
         m.setStatus("COMPLETED");
         m.setEndDate(LocalDate.now());
+        m.setEndedBy(currentUser);
         maintenanceRepository.save(m);
 
         Asset asset = m.getAsset();
