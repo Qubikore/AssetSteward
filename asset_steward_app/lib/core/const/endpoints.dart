@@ -18,11 +18,18 @@ class Endpoints {
   static const String assets = 'assets';
   static String asset(int id) => 'assets/$id';
   static String assetApprove(int id) => 'assets/$id/approve';
+  static String assetReject(int id) => 'assets/$id/reject';
   static const String assetTransfer = 'assets/transfer';
   static const String assetAssign = 'assets/assign';
+  static const String assetReturn = 'assets/return';
   static String assetQrCode(int id) => 'assets/$id/qrcode';
   static const String assetLabels = 'assets/labels';
+  static String assetLabel(int id) => 'assets/$id/label';
+  static String assetHistory(int id) => 'assets/$id/history';
+  static String assetAssignmentsForAsset(int id) => 'assets/$id/assignments';
   static const String assetAssignments = 'assets/assignments';
+  static String assetAssignment(int id) => 'assets/assignments/$id';
+  static const String myAssetAssignments = 'assets/assignments/my';
 
   static const String maintenance = 'maintenance';
   static const String startMaintenance = 'maintenance/start';

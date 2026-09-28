@@ -2,6 +2,7 @@ import 'package:asset_steward_app/features/assets/data/datasources/assets_remote
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,8 +16,8 @@ class AssetsRepository with RepoRunner {
     return runRepoTask(() => _remoteDS.getAsset(id));
   }
 
-  FutureResult<List<AssetModel>> getAssets() {
-    return runRepoTask(() => _remoteDS.getAssets());
+  FutureResult<List<AssetModel>> getAssets([Map<String, dynamic>? queries]) {
+    return runRepoTask(() => _remoteDS.getAssets(queries));
   }
 
   FutureResult<AssetModel> createAsset(QMap data) {
@@ -50,4 +51,33 @@ class AssetsRepository with RepoRunner {
   FutureResult<List<AssignmentModel>> getAssetAssignments([String? status]) {
     return runRepoTask(() => _remoteDS.getAssetAssignments(status));
   }
+
+  FutureResult<void> rejectAsset(int id) {
+    return runRepoTask(() => _remoteDS.rejectAsset(id));
+  }
+
+  FutureResult<void> returnAsset(QMap data) {
+    return runRepoTask(() => _remoteDS.returnAsset(data));
+  }
+
+  FutureResult<List<AssetHistoryModel>> getAssetHistory(int id) {
+    return runRepoTask(() => _remoteDS.getAssetHistory(id));
+  }
+
+  FutureResult<List<AssignmentModel>> getAssignmentsByAssetId(int id) {
+    return runRepoTask(() => _remoteDS.getAssignmentsByAssetId(id));
+  }
+
+  FutureResult<AssetLabelResponse> getAssetLabelById(int id) {
+    return runRepoTask(() => _remoteDS.getAssetLabelById(id));
+  }
+
+  FutureResult<AssignmentModel> getAssignmentById(int id) {
+    return runRepoTask(() => _remoteDS.getAssignmentById(id));
+  }
+
+  FutureResult<List<AssignmentModel>> getMyAssignments([String? status]) {
+    return runRepoTask(() => _remoteDS.getMyAssignments(status));
+  }
 }
+

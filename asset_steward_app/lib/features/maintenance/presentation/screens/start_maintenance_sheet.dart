@@ -28,7 +28,7 @@ class StartMaintenanceSheet extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final isLoading = useState(false);
 
-    final assetsAsync = ref.watch(assetsCtrlProvider);
+    final assetsAsync = ref.watch(assetsCtrlProvider());
 
     void onSubmit() async {
       final state = formKey.currentState!;

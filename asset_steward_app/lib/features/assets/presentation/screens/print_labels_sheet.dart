@@ -127,7 +127,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
     void onPrint() async {
       isLoading.value = true;
       try {
-        final labels = await ref.read(assetsCtrlProvider.notifier).getAssetLabels();
+        final labels = await ref.read(assetsCtrlProvider(null).notifier).getAssetLabels();
         if (labels.isEmpty) {
           if (context.mounted) Toast.showError('No labels found to print');
           return;

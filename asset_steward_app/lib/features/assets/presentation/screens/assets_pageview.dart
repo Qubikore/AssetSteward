@@ -1,27 +1,29 @@
-import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
-import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+
+import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/all_assets_tab_view.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/my_assets_tab_view.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/pending_assets_tab_view.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-
-import 'asset_list_tile.dart';
 
 class AssetsPageview extends HookConsumerWidget {
   const AssetsPageview({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final assetsAsync = ref.watch(assetsCtrlProvider);
+    final state = GoRouterState.of(context);
+    final initialTab = int.tryParse(state.uri.queryParameters['tab'] ?? '0') ?? 0;
 
-    return SafeArea(
+    return DefaultTabController(
+      initialIndex: initialTab,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Assets'),
           actions: [
             ContextMenu(
               alignment: ContextMenuAlignment.end,
-
               items: [
                 ContextMenuAction(
                   title: 'Print Labels',
@@ -37,34 +39,20 @@ class AssetsPageview extends HookConsumerWidget {
             ),
             const Gap(8),
           ],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async => ref.read(assetsCtrlProvider.notifier).refresh(),
-          child: AsyncBuilder<List<AssetModel>>(
-            asyncValue: assetsAsync,
-            providers: [assetsCtrlProvider],
-            allowEmpty: true,
-            builder: (assets) {
-              if (assets.isEmpty) {
-                return const EmptyState(
-                  label: 'No assets',
-                  subLabel: 'Click the + button to add a new asset.',
-                  icon: Icon(HIStroke.laptopProgramming),
-                );
-              }
-
-              return ListView.separated(
-                physics: kScrollPhysics,
-                padding: const EdgeInsets.symmetric(horizontal: Insets.lg).copyWith(bottom: 100),
-                itemCount: assets.length,
-                separatorBuilder: (context, index) => const Gap(Insets.md),
-                itemBuilder: (context, index) {
-                  final asset = assets[index];
-                  return AssetListTile(asset: asset);
-                },
-              );
-            },
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'All'),
+              Tab(text: 'Pending'),
+              Tab(text: 'Mine'),
+            ],
           ),
+        ),
+        body: const TabBarView(
+          children: [
+            AllAssetsTabView(),
+            PendingAssetsTabView(),
+            MyAssetsTabView(),
+          ],
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => context.push(RPaths.createAsset.path),

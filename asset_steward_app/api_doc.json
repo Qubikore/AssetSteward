@@ -1414,6 +1414,82 @@
                 ]
             }
         },
+        "/api/v1/assets/{assetId}/history": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get asset history",
+                "description": "Retrieves the full lifecycle history of a specific asset by its ID.",
+                "operationId": "getAssetHistory",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssetHistoryResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/assets/{assetId}/assignments": {
+            "get": {
+                "tags": [
+                    "asset-controller"
+                ],
+                "summary": "Get asset assignments",
+                "description": "Retrieves a list of all assignments for a specific asset.",
+                "operationId": "getAssignmentsByAssetId",
+                "parameters": [
+                    {
+                        "name": "assetId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListAssignmentResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer Authentication": []
+                    }
+                ]
+            }
+        },
         "/api/v1/assets/labels": {
             "get": {
                 "tags": [
@@ -2428,7 +2504,7 @@
                     }
                 }
             },
-            "ApiResponseListAssetLabelResponse": {
+            "ApiResponseListAssetHistoryResponse": {
                 "type": "object",
                 "properties": {
                     "success": {
@@ -2444,8 +2520,30 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/AssetLabelResponse"
+                            "$ref": "#/components/schemas/AssetHistoryResponse"
                         }
+                    }
+                }
+            },
+            "AssetHistoryResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "actionBy": {
+                        "$ref": "#/components/schemas/CreatorResponse"
                     }
                 }
             },
@@ -2496,6 +2594,27 @@
                     },
                     "returnReason": {
                         "type": "string"
+                    }
+                }
+            },
+            "ApiResponseListAssetLabelResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetLabelResponse"
+                        }
                     }
                 }
             },

@@ -1,5 +1,6 @@
-import 'package:asset_steward_app/features/departments/data/models/department_model.dart';
-import 'package:asset_steward_app/features/departments/presentation/controllers/departments_controller.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/asset_list_tile.dart';
 import 'package:asset_steward_app/features/locations/presentation/controllers/locations_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -20,7 +21,7 @@ class HomePageview extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final metricsAsync = ref.watch(dashboardMetricsCtrlProvider);
     final utilizationAsync = ref.watch(assetUtilizationCtrlProvider);
-    final departmentsAsync = ref.watch(departmentsCtrlProvider);
+    final pendingAssetsAsync = ref.watch(assetsCtrlProvider(AssetStatus.pendingApproval));
     final profileAsync = ref.watch(profileCtrlProvider);
 
     return Scaffold(
@@ -29,7 +30,7 @@ class HomePageview extends HookConsumerWidget {
         onRefresh: () async {
           ref.invalidate(dashboardMetricsCtrlProvider);
           ref.invalidate(assetUtilizationCtrlProvider);
-          ref.invalidate(departmentsCtrlProvider);
+          ref.invalidate(assetsCtrlProvider(AssetStatus.pendingApproval));
           ref.invalidate(locationsCtrlProvider);
         },
         child: ListView(
@@ -102,7 +103,7 @@ class HomePageview extends HookConsumerWidget {
                 }
 
                 return ListView.separated(
-                  padding: .zero,
+                  padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: utilizations.length > 5 ? 5 : utilizations.length,
@@ -116,42 +117,40 @@ class HomePageview extends HookConsumerWidget {
             ),
 
             if (profileAsync.value?.role != .user) ...[
-              const Gap(Insets.xs),
+              const Gap(Insets.lg),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                 spacing: Insets.md,
                 children: [
-                  Text('Departments', style: context.text.titleMedium?.bold),
-
+                  Text('Pending Assets', style: context.text.titleMedium?.bold),
                   TextButton(
-                    onPressed: () => context.push(RPaths.departments.path),
-                    child: Text('View All', style: context.text.labelMedium?.textColor(context.colors.primary)),
+                    onPressed: () => context.go('${RPaths.assets.path}?tab=1'),
+                    child: Text('Show All', style: context.text.labelMedium?.textColor(context.colors.primary)),
                   ),
                 ],
               ),
-              AsyncBuilder<List<DepartmentModel>>(
-                asyncValue: departmentsAsync,
-                providers: [departmentsCtrlProvider],
+              AsyncBuilder<List<AssetModel>>(
+                asyncValue: pendingAssetsAsync,
+                providers: [assetsCtrlProvider(AssetStatus.pendingApproval)],
                 allowEmpty: true,
                 onLoading: () => const MiniListShimmer(),
-                builder: (departments) {
-                  if (departments.isEmpty) {
+                builder: (pendingAssets) {
+                  if (pendingAssets.isEmpty) {
                     return Text(
-                      'No departments configured.',
+                      'No pending assets.',
                       style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
                     );
                   }
-                  final list = departments.take(2).toList();
-                  return Column(
-                    children: list
-                        .map(
-                          (d) => Padding(
-                            padding: const EdgeInsets.only(bottom: Insets.sm),
-                            child: _MiniEntityTile(title: d.name, icon: HIStroke.building02),
-                          ),
-                        )
-                        .toList(),
+                  final list = pendingAssets.take(3).toList();
+                  return ListView.separated(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: list.length,
+                    separatorBuilder: (context, index) => const Gap(Insets.sm),
+                    itemBuilder: (context, index) {
+                      return AssetListTile(asset: list[index]);
+                    },
                   );
                 },
               ),
@@ -163,37 +162,4 @@ class HomePageview extends HookConsumerWidget {
   }
 }
 
-class _MiniEntityTile extends StatelessWidget {
-  final String title;
-  final IconData icon;
 
-  const _MiniEntityTile({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(Insets.md),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceContainerHighest.op(0.2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colors.outlineVariant.op(0.3)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: context.colors.primaryContainer.op1,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: context.colors.primaryContainer, size: 20),
-          ),
-          const Gap(Insets.md),
-          Expanded(
-            child: Text(title, style: context.text.bodyMedium?.bold, maxLines: 1, overflow: TextOverflow.ellipsis),
-          ),
-        ],
-      ),
-    );
-  }
-}

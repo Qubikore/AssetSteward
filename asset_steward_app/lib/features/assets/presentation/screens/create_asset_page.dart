@@ -250,7 +250,7 @@ class CreateAssetPage extends HookConsumerWidget {
                           if (asset != null) {
                             success = await ref.read(assetDetailsCtrlProvider(asset!.id).notifier).updateAsset(payload);
                           } else {
-                            success = await ref.read(assetsCtrlProvider.notifier).createAsset(payload);
+                            success = await ref.read(assetsCtrlProvider(null).notifier).createAsset(payload);
                           }
 
                           isLoading.value = false;

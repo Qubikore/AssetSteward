@@ -1,29 +1,64 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
-import 'package:asset_steward_app/main.export.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:asset_steward_app/main.export.dart';
+import 'package:recase/recase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'assets_controller.g.dart';
 
 @Riverpod(keepAlive: true)
 class AssetsCtrl extends _$AssetsCtrl {
   final _repo = di.get<AssetsRepository>();
+  final _debouncer = Debouncer(delay: const Duration(milliseconds: 500));
+
+  String _searchQuery = '';
+  int? _categoryId;
+  int? _locationId;
+  int? _departmentId;
 
   @override
-  FutureOr<List<AssetModel>> build() async {
+  FutureOr<List<AssetModel>> build([AssetStatus? status]) async {
     return _fetch();
   }
 
   Future<List<AssetModel>> _fetch() async {
-    final result = await _repo.getAssets();
+    final Map<String, dynamic> queries = {};
+    if (status != null) queries['status'] = status!.name.constantCase;
+    if (_searchQuery.isNotEmpty) queries['search'] = _searchQuery;
+    if (_categoryId != null) queries['categoryId'] = _categoryId;
+    if (_locationId != null) queries['locationId'] = _locationId;
+    if (_departmentId != null) queries['departmentId'] = _departmentId;
+
+    final result = await _repo.getAssets(queries);
     return result.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh([bool silent = true]) async {
     if (!silent) state = const AsyncLoading();
-
     state = await AsyncValue.guard(_fetch);
+  }
+
+  void search(String query) {
+    if (_searchQuery == query) return;
+    _searchQuery = query;
+    _debouncer.run(() => refresh(false));
+  }
+
+  void filter({int? categoryId, int? locationId, int? departmentId}) {
+    _categoryId = categoryId;
+    _locationId = locationId;
+    _departmentId = departmentId;
+    refresh(false);
+  }
+
+  void clearFilters() {
+    _categoryId = null;
+    _locationId = null;
+    _departmentId = null;
+    _searchQuery = '';
+    refresh(false);
   }
 
   void addToList(AssetModel asset) {
@@ -76,3 +111,24 @@ class AssetsCtrl extends _$AssetsCtrl {
     }, (r) => r);
   }
 }
+
+@Riverpod(keepAlive: true)
+class MyAssetsCtrl extends _$MyAssetsCtrl {
+  final _repo = di.get<AssetsRepository>();
+
+  @override
+  FutureOr<List<AssignmentModel>> build() async {
+    return _fetch();
+  }
+
+  Future<List<AssignmentModel>> _fetch() async {
+    final result = await _repo.getMyAssignments('active');
+    return result.fold((l) => throw l, (r) => r);
+  }
+
+  Future<void> refresh([bool silent = true]) async {
+    if (!silent) state = const AsyncLoading();
+    state = await AsyncValue.guard(_fetch);
+  }
+}
+
