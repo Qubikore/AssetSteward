@@ -74,15 +74,15 @@ class MaintenanceTile extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text((record.cost ?? 0).currency(), style: context.text.titleMedium),
+                  Text((record.cost).currency(), style: context.text.titleMedium),
                 ],
               ),
-              const Gap(4),
+
               Text(
-                (record.status?.name ?? 'Unknown').sentenceCase,
+                (record.status.name).sentenceCase,
                 style: context.text.bodySmall?.textColor(isCompleted ? Colors.green : Colors.orange),
               ),
-              const Gap(8),
+              const Gap(4),
               Row(
                 children: [
                   Expanded(

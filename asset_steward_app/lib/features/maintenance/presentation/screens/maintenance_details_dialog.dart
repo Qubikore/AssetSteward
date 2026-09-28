@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/maintenance/data/models/maintenance_model.dart';
+import 'package:asset_steward_app/features/maintenance/presentation/controllers/maintenance_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -61,7 +62,20 @@ class MaintenanceDetailsDialog extends HookConsumerWidget {
                     Column(
                       crossAxisAlignment: .start,
                       children: [
-                        Text(record.asset.name, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => RPaths.assetDetails(record.asset.id.toString()).push(context),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              Text(
+                                record.asset.name,
+                                style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.open_in_new, size: 14),
+                            ],
+                          ),
+                        ),
                         const Gap(2),
                         Wrap(
                           spacing: 8,
@@ -123,7 +137,7 @@ class MaintenanceDetailsDialog extends HookConsumerWidget {
                     Container(
                       decoration: BoxDecoration(
                         color: context.colors.surfaceContainerHighest.op(0.3),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: context.colors.outlineVariant.op(0.5)),
                       ),
                       child: Column(
@@ -139,48 +153,67 @@ class MaintenanceDetailsDialog extends HookConsumerWidget {
 
                           _DetailRow(icon: HIStroke.userCircle, title: 'Provider', value: record.provider ?? 'N/A'),
 
-                          if (record.startDate.isNotNullOrBlank)
-                            _DetailRow(icon: HIStroke.calendar01, title: 'Start Date', value: record.startDate),
+                          _DetailRow(
+                            icon: HIStroke.userAdd01,
+                            title: 'Started By',
+                            value: record.startedBy?.fullName ?? 'System',
+                            subValue: record.startDate,
+                          ),
 
-                          if (record.startedBy != null)
-                            _DetailRow(
-                              icon: HIStroke.userAdd01,
-                              title: 'Started By',
-                              value: record.startedBy?.fullName ?? 'System',
-                            ),
-
-                          if (record.endDate.isNotNullOrBlank)
-                            _DetailRow(icon: HIStroke.calendar01, title: 'End Date', value: record.endDate!),
-
-                          if (record.endedBy != null)
-                            _DetailRow(
-                              icon: HIStroke.userCheck01,
-                              title: 'Completed By',
-                              value: record.endedBy?.fullName ?? 'System',
-                            ),
+                          _DetailRow(
+                            icon: HIStroke.userCheck01,
+                            title: 'Completed By',
+                            value: record.endedBy?.fullName ?? 'System',
+                            subValue: record.endDate,
+                          ),
                         ].separatedBy(_buildDivider(context)),
                       ),
                     ),
 
                     const Gap(14),
-
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: context.colors.surfaceContainerHighest.op(0.3),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+                    if (record.description.isNotBlank)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: context.colors.surfaceContainerHighest.op(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+                        ),
+                        child: Text(record.description, style: context.text.bodyMedium?.copyWith(height: 1.5)),
                       ),
-                      child: Text(
-                        record.description.isNotNullOrBlank ? record.description : 'No description provided.',
-                        style: context.text.bodyMedium?.copyWith(height: 1.5),
-                      ),
-                    ),
                     const Gap(32),
                   ],
                 ),
               ),
+              if (!isCompleted) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  height: 60,
+                  width: .infinity,
+                  child: FilledButton(
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Complete Maintenance'),
+                          content: const Text('Are you sure you want to mark this maintenance as complete?'),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                            FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Complete')),
+                          ],
+                        ),
+                      );
+
+                      if (confirm == true) {
+                        final notifier = ref.read(maintenanceCtrlProvider.notifier);
+                        await notifier.completeMaintenance(record.id);
+                      }
+                    },
+                    child: const Text('Complete'),
+                  ),
+                ),
+              ],
             ],
           ),
         );
@@ -189,7 +222,7 @@ class MaintenanceDetailsDialog extends HookConsumerWidget {
   }
 
   Widget _buildDivider(BuildContext context) {
-    return Divider(height: 1, indent: 48, endIndent: 16, color: context.colors.outlineVariant.op(0.5));
+    return Divider(height: 1, indent: 48, endIndent: 16, color: context.colors.outlineVariant.op(0.6));
   }
 }
 
@@ -197,9 +230,10 @@ class _DetailRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
+  final String? subValue;
   final Color? valueColor;
 
-  const _DetailRow({required this.icon, required this.title, required this.value, this.valueColor});
+  const _DetailRow({required this.icon, required this.title, required this.value, this.valueColor, this.subValue});
 
   @override
   Widget build(BuildContext context) {
@@ -212,10 +246,22 @@ class _DetailRow extends StatelessWidget {
           Text(title, style: context.text.bodyMedium?.copyWith(color: context.colors.outline)),
           const Gap(16),
           Expanded(
-            child: Text(
-              value,
-              style: context.text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: valueColor),
-              textAlign: TextAlign.right,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  value,
+                  style: context.text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: valueColor),
+                  textAlign: TextAlign.right,
+                ),
+                if (subValue != null) ...[
+                  Text(
+                    subValue!,
+                    style: context.text.labelMedium?.copyWith(color: context.colors.outline),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
+              ],
             ),
           ),
         ],
