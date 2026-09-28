@@ -1,4 +1,6 @@
+import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -105,4 +107,36 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
       },
     );
   }
+
+  Future<bool> reject(String reason) async {
+    // Note: API currently doesn't accept reason, but we capture it.
+    final result = await _repo.rejectAsset(id);
+    return result.fold(
+      (l) {
+        Toast.showError(l.message);
+        return false;
+      },
+      (r) {
+        ref.invalidate(assetsCtrlProvider);
+        ref.invalidateSelf();
+        Toast.showSuccess('Asset rejected successfully');
+
+        return true;
+      },
+    );
+  }
+}
+
+@riverpod
+Future<List<AssetHistoryModel>> assetHistory(Ref ref, int id) async {
+  final repo = di.get<AssetsRepository>();
+  final result = await repo.getAssetHistory(id);
+  return result.fold((l) => throw Exception(l.message), (r) => r);
+}
+
+@riverpod
+Future<List<AssignmentModel>> assetAssignments(Ref ref, int id) async {
+  final repo = di.get<AssetsRepository>();
+  final result = await repo.getAssignmentsByAssetId(id);
+  return result.fold((l) => throw Exception(l.message), (r) => r);
 }

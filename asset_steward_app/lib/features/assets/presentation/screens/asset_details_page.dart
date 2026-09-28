@@ -1,11 +1,14 @@
+import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:progressive_blur/progressive_blur.dart';
 import 'package:recase/recase.dart';
 
+import '../../../../widgets/collapsible_section.dart';
 import 'asset_context_menu.dart';
 
 class AssetDetailsPage extends HookConsumerWidget {
@@ -19,9 +22,6 @@ class AssetDetailsPage extends HookConsumerWidget {
     final profileAsync = ref.watch(profileCtrlProvider);
     final profile = profileAsync.value;
     final isPrivileged = profile?.isPrivileged ?? false;
-
-    const blurHeight = 85;
-    final startBlurFraction = 1.0 - (blurHeight / context.height).clamp(0.0, 1.0);
 
     return AsyncBuilder(
       asyncValue: assetAsync,
@@ -57,9 +57,14 @@ class AssetDetailsPage extends HookConsumerWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {
-                            //TODO: Reject Logic (If API supported it, we'd call it here)
-                            Toast.showInfo('Reject feature coming soon');
+                          onPressed: () async {
+                            final reason = await showDialog<String>(
+                              context: context,
+                              builder: (context) => const _RejectDialog(),
+                            );
+                            if (reason != null) {
+                              await ref.read(assetDetailsCtrlProvider(id).notifier).reject(reason);
+                            }
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: context.colors.surface,
@@ -89,75 +94,108 @@ class AssetDetailsPage extends HookConsumerWidget {
                 ),
             ],
           ),
-          body: ProgressiveBlurWidget(
-            sigma: 10.0,
-            linearGradientBlur: LinearGradientBlur(
-              start: .topCenter,
-              end: .bottomCenter,
-              stops: [0.0, startBlurFraction, 1.0],
-              values: [0.0, 0.0, 1.0],
-            ),
-            child: RefreshIndicator(
-              onRefresh: () async => ref.read(assetDetailsCtrlProvider(id).notifier).refresh(),
-              child: ListView(
-                physics: kScrollPhysics,
-                padding: const EdgeInsets.all(Insets.lg).withBottomEx(),
-                children: [
-                  // Header Section
-                  Container(
-                    padding: const EdgeInsets.all(Insets.lg),
-                    decoration: BoxDecoration(
-                      color: context.colors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: context.colors.outlineVariant.op3),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(asset.name, style: context.text.headlineSmall?.bold, textAlign: TextAlign.center),
-                        const Gap(Insets.sm),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: asset.status.color.op(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            asset.status.name.sentenceCase,
-                            style: context.text.labelMedium?.bold.textColor(asset.status.color),
-                          ),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(assetAssignmentsProvider);
+              ref.invalidate(assetHistoryProvider);
+              return ref.read(assetDetailsCtrlProvider(id).notifier).refresh();
+            },
+            child: ListView(
+              physics: kScrollPhysics,
+              padding: const EdgeInsets.all(Insets.lg).withBottomEx(),
+              children: [
+                // Header Section
+                Container(
+                  padding: const EdgeInsets.all(Insets.lg),
+                  decoration: BoxDecoration(
+                    color: context.colors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.colors.outlineVariant.op3),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(asset.name, style: context.text.headlineSmall?.bold, textAlign: TextAlign.center),
+                      const Gap(Insets.sm),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: asset.status.color.op(0.1),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      ],
+                        child: Text(
+                          asset.status.name.sentenceCase,
+                          style: context.text.labelMedium?.bold.textColor(asset.status.color),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(Insets.lg),
+
+                // Details Section
+                CollapsibleSection(
+                  title: 'Asset Information',
+                  initiallyExpanded: true,
+                  children: [
+                    _DetailRow(label: 'Asset Code', value: asset.assetCode),
+                    _DetailRow(label: 'Serial Number', value: asset.serialNumber),
+                    _DetailRow(label: 'Category', value: asset.category?.name),
+                    _DetailRow(label: 'Location', value: asset.location?.name),
+                    _DetailRow(label: 'Department', value: asset.department?.name),
+                    _DetailRow(label: 'Created By', value: asset.createdBy?.fullName),
+                    _DetailRow(
+                      label: 'Created Date',
+                      value: asset.createdAt != null
+                          ? DateTime.tryParse(asset.createdAt!)?.toRelativeTime() ?? asset.createdAt
+                          : null,
                     ),
-                  ),
-                  const Gap(Insets.lg),
+                  ],
+                ),
+                const Gap(Insets.lg),
 
-                  // Details Section
-                  Text('Asset Information', style: context.text.titleMedium?.bold),
-                  const Gap(Insets.md),
-                  _DetailCard(
-                    children: [
-                      _DetailRow(label: 'Asset Code', value: asset.assetCode),
-                      _DetailRow(label: 'Serial Number', value: asset.serialNumber),
-                      _DetailRow(label: 'Category', value: asset.category?.name),
-                      _DetailRow(label: 'Location', value: asset.location?.name),
-                      _DetailRow(label: 'Department', value: asset.department?.name),
-                    ],
-                  ),
-                  const Gap(Insets.lg),
+                CollapsibleSection(
+                  title: 'Purchase Information',
+                  initiallyExpanded: true,
+                  children: [
+                    _DetailRow(label: 'Vendor', value: asset.vendor),
+                    _DetailRow(label: 'Quantity', value: asset.quantity.toString()),
+                    _DetailRow(label: 'Purchase Price', value: asset.purchasePrice.currency()),
+                    _DetailRow(label: 'Purchase Date', value: asset.purchaseDate),
+                    _DetailRow(label: 'Expire Date', value: asset.expireDate),
+                  ],
+                ),
+                const Gap(Insets.lg),
 
-                  Text('Purchase Information', style: context.text.titleMedium?.bold),
-                  const Gap(Insets.md),
-                  _DetailCard(
-                    children: [
-                      _DetailRow(label: 'Vendor', value: asset.vendor),
-                      _DetailRow(label: 'Quantity', value: asset.quantity.toString()),
-                      _DetailRow(label: 'Purchase Price', value: asset.purchasePrice.currency()),
-                      _DetailRow(label: 'Purchase Date', value: asset.purchaseDate),
-                      _DetailRow(label: 'Expire Date', value: asset.expireDate),
-                    ],
-                  ),
-                ],
-              ),
+                AsyncBuilder(
+                  asyncValue: ref.watch(assetAssignmentsProvider(id)),
+                  providers: [assetAssignmentsProvider(id)],
+                  builder: (assignments) {
+                    if (assignments.isEmpty) return const SizedBox.shrink();
+                    return Column(
+                      children: [
+                        CollapsibleSection(
+                          title: 'Assignments',
+                          children: assignments.map((a) => _AssignmentCard(assignment: a)).toList(),
+                        ),
+                        const Gap(Insets.lg),
+                      ],
+                    );
+                  },
+                ),
+
+                AsyncBuilder(
+                  asyncValue: ref.watch(assetHistoryProvider(id)),
+                  providers: [assetHistoryProvider(id)],
+                  allowEmpty: true,
+                  builder: (history) {
+                    if (history.isEmpty) return const SizedBox.shrink();
+                    return CollapsibleSection(
+                      title: 'Asset History',
+                      children: history.map((h) => _HistoryCard(history: h)).toList(),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         );
@@ -167,7 +205,7 @@ class AssetDetailsPage extends HookConsumerWidget {
 }
 
 class _ApproveDialog extends StatelessWidget {
-  const new();
+  const _ApproveDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -182,21 +220,31 @@ class _ApproveDialog extends StatelessWidget {
   }
 }
 
-class _DetailCard extends StatelessWidget {
-  final List<Widget> children;
-
-  const _DetailCard({required this.children});
+class _RejectDialog extends HookWidget {
+  const _RejectDialog();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(Insets.md),
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.colors.outlineVariant.op(0.3)),
+    final reasonController = useTextEditingController();
+    return AlertDialog(
+      title: const Text('Reject Asset'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Please provide a reason for rejection:'),
+          const Gap(Insets.md),
+          InputField(controller: reasonController, hintText: 'Reason...', maxLines: 5),
+        ],
       ),
-      child: Column(children: children),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, reasonController.text.trim()),
+          style: FilledButton.styleFrom(backgroundColor: context.colors.error, foregroundColor: context.colors.onError),
+          child: const Text('Reject'),
+        ),
+      ],
     );
   }
 }
@@ -204,31 +252,132 @@ class _DetailCard extends StatelessWidget {
 class _DetailRow extends StatelessWidget {
   final String label;
   final String? value;
-
-  const _DetailRow({required this.label, required this.value});
+  const _DetailRow({required this.label, this.value});
 
   @override
   Widget build(BuildContext context) {
-    final hasValue =
-        value != null && value!.isNotEmpty && value != 'N/A' && value != 'Uncategorized' && value != 'Unassigned';
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: Row(
+        children: [
+          Text(label, style: context.text.bodySmall?.copyWith(color: context.colors.outline)),
+          const Gap(16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [Text(value ?? '--', style: context.text.bodySmall?.semiBold, textAlign: TextAlign.right)],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssignmentCard extends StatelessWidget {
+  final AssignmentModel assignment;
+
+  const _AssignmentCard({required this.assignment});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: Insets.sm),
+      padding: const EdgeInsets.all(Insets.md),
+      decoration: BoxDecoration(
+        color: context.colors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.person_outline, size: 20),
+              const Gap(Insets.sm),
+              Expanded(child: Text(assignment.assignedTo.fullName, style: context.text.bodyMedium?.bold)),
+              if (assignment.returnedAtDate != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: context.colors.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text('Returned', style: context.text.labelSmall),
+                ),
+            ],
+          ),
+          const Gap(Insets.sm),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Assigned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
+              Text(
+                assignment.assignedAtDate?.toRelativeTime() ?? assignment.assignedAt,
+                style: context.text.bodySmall?.bold,
+              ),
+            ],
+          ),
+          if (assignment.returnedAtDate != null) ...[
+            const Gap(4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Returned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
+                Text(assignment.returnedAtDate!.toRelativeTime(), style: context.text.bodySmall?.bold),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _HistoryCard extends StatelessWidget {
+  final AssetHistoryModel history;
+
+  const _HistoryCard({required this.history});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: Insets.sm),
+      padding: const EdgeInsets.all(Insets.md),
+      decoration: BoxDecoration(
+        color: context.colors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.colors.outlineVariant.op(0.5)),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Icon(Icons.history, size: 20, color: context.colors.primary),
+          const Gap(Insets.sm),
           Expanded(
-            flex: 2,
-            child: Text(label, style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant)),
-          ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              hasValue ? value! : '--',
-              style: context.text.bodyMedium?.copyWith(
-                fontWeight: hasValue ? FontWeight.bold : FontWeight.normal,
-                color: hasValue ? context.colors.onSurface : context.colors.outline,
-              ),
-              textAlign: TextAlign.right,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(history.action, style: context.text.bodyMedium?.bold),
+                    Text(
+                      DateTime.tryParse(history.timestamp)?.toRelativeTime() ?? history.timestamp,
+                      style: context.text.labelSmall?.textColor(context.colors.outline),
+                    ),
+                  ],
+                ),
+                if (history.actionBy != null) ...[
+                  const Gap(4),
+                  Text('By: ${history.actionBy!.fullName}', style: context.text.bodySmall),
+                ],
+                if (history.notes != null && history.notes!.isNotEmpty) ...[
+                  const Gap(4),
+                  Text(history.notes!, style: context.text.bodySmall?.textColor(context.colors.outline)),
+                ],
+              ],
             ),
           ),
         ],

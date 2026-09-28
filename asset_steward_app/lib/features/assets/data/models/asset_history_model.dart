@@ -9,16 +9,10 @@ class AssetHistoryModel with AssetHistoryModelMappable {
   static const fromJson = AssetHistoryModelMapper.fromJson;
 
   final int id;
-  final String? action;
-  final String? timestamp;
+  final String action;
+  final String timestamp;
   final String? notes;
   final ProfileModel? actionBy;
 
-  const AssetHistoryModel({
-    required this.id,
-    this.action,
-    this.timestamp,
-    this.notes,
-    this.actionBy,
-  });
+  const AssetHistoryModel({required this.id, required this.action, required this.timestamp, this.notes, this.actionBy});
 }

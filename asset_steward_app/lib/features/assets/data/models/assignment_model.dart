@@ -10,25 +10,28 @@ class AssignmentModel with AssignmentModelMappable {
   static const fromJson = AssignmentModelMapper.fromJson;
 
   final int id;
-  final AssetModel? asset;
-  final ProfileModel? assignedTo;
-  final ProfileModel? assignedBy;
-  final String? assignedAt;
+  final AssetModel asset;
+  final ProfileModel assignedTo;
+  final ProfileModel assignedBy;
+  final String assignedAt;
   final String? returnedAt;
   final String? returnReason;
 
   const AssignmentModel({
     required this.id,
-    this.asset,
-    this.assignedTo,
-    this.assignedBy,
-    this.assignedAt,
+    required this.asset,
+    required this.assignedTo,
+    required this.assignedBy,
+    required this.assignedAt,
     this.returnedAt,
     this.returnReason,
   });
 
   // Helpers for UI backward compatibility
-  int get assetId => asset?.id ?? 0;
-  String get assetName => asset?.name ?? '';
-  String get assetCode => asset?.assetCode ?? '';
+  int get assetId => asset.id;
+  String get assetName => asset.name;
+  String get assetCode => asset.assetCode;
+
+  DateTime? get assignedAtDate => DateTime.tryParse(assignedAt);
+  DateTime? get returnedAtDate => DateTime.tryParse(returnedAt ?? '');
 }

@@ -26,29 +26,25 @@ class AssignmentModelMapper extends ClassMapperBase<AssignmentModel> {
 
   static int _$id(AssignmentModel v) => v.id;
   static const Field<AssignmentModel, int> _f$id = Field('id', _$id);
-  static AssetModel? _$asset(AssignmentModel v) => v.asset;
+  static AssetModel _$asset(AssignmentModel v) => v.asset;
   static const Field<AssignmentModel, AssetModel> _f$asset = Field(
     'asset',
     _$asset,
-    opt: true,
   );
-  static ProfileModel? _$assignedTo(AssignmentModel v) => v.assignedTo;
+  static ProfileModel _$assignedTo(AssignmentModel v) => v.assignedTo;
   static const Field<AssignmentModel, ProfileModel> _f$assignedTo = Field(
     'assignedTo',
     _$assignedTo,
-    opt: true,
   );
-  static ProfileModel? _$assignedBy(AssignmentModel v) => v.assignedBy;
+  static ProfileModel _$assignedBy(AssignmentModel v) => v.assignedBy;
   static const Field<AssignmentModel, ProfileModel> _f$assignedBy = Field(
     'assignedBy',
     _$assignedBy,
-    opt: true,
   );
-  static String? _$assignedAt(AssignmentModel v) => v.assignedAt;
+  static String _$assignedAt(AssignmentModel v) => v.assignedAt;
   static const Field<AssignmentModel, String> _f$assignedAt = Field(
     'assignedAt',
     _$assignedAt,
-    opt: true,
   );
   static String? _$returnedAt(AssignmentModel v) => v.returnedAt;
   static const Field<AssignmentModel, String> _f$returnedAt = Field(
@@ -148,9 +144,9 @@ extension AssignmentModelValueCopy<$R, $Out>
 
 abstract class AssignmentModelCopyWith<$R, $In extends AssignmentModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  AssetModelCopyWith<$R, AssetModel, AssetModel>? get asset;
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedTo;
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedBy;
+  AssetModelCopyWith<$R, AssetModel, AssetModel> get asset;
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedTo;
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedBy;
   $R call({
     int? id,
     AssetModel? asset,
@@ -174,30 +170,30 @@ class _AssignmentModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<AssignmentModel> $mapper =
       AssignmentModelMapper.ensureInitialized();
   @override
-  AssetModelCopyWith<$R, AssetModel, AssetModel>? get asset =>
-      $value.asset?.copyWith.$chain((v) => call(asset: v));
+  AssetModelCopyWith<$R, AssetModel, AssetModel> get asset =>
+      $value.asset.copyWith.$chain((v) => call(asset: v));
   @override
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedTo =>
-      $value.assignedTo?.copyWith.$chain((v) => call(assignedTo: v));
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedTo =>
+      $value.assignedTo.copyWith.$chain((v) => call(assignedTo: v));
   @override
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedBy =>
-      $value.assignedBy?.copyWith.$chain((v) => call(assignedBy: v));
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedBy =>
+      $value.assignedBy.copyWith.$chain((v) => call(assignedBy: v));
   @override
   $R call({
     int? id,
-    Object? asset = $none,
-    Object? assignedTo = $none,
-    Object? assignedBy = $none,
-    Object? assignedAt = $none,
+    AssetModel? asset,
+    ProfileModel? assignedTo,
+    ProfileModel? assignedBy,
+    String? assignedAt,
     Object? returnedAt = $none,
     Object? returnReason = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
-      if (asset != $none) #asset: asset,
-      if (assignedTo != $none) #assignedTo: assignedTo,
-      if (assignedBy != $none) #assignedBy: assignedBy,
-      if (assignedAt != $none) #assignedAt: assignedAt,
+      if (asset != null) #asset: asset,
+      if (assignedTo != null) #assignedTo: assignedTo,
+      if (assignedBy != null) #assignedBy: assignedBy,
+      if (assignedAt != null) #assignedAt: assignedAt,
       if (returnedAt != $none) #returnedAt: returnedAt,
       if (returnReason != $none) #returnReason: returnReason,
     }),

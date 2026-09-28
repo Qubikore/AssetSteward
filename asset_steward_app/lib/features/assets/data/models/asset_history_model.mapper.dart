@@ -25,17 +25,15 @@ class AssetHistoryModelMapper extends ClassMapperBase<AssetHistoryModel> {
 
   static int _$id(AssetHistoryModel v) => v.id;
   static const Field<AssetHistoryModel, int> _f$id = Field('id', _$id);
-  static String? _$action(AssetHistoryModel v) => v.action;
+  static String _$action(AssetHistoryModel v) => v.action;
   static const Field<AssetHistoryModel, String> _f$action = Field(
     'action',
     _$action,
-    opt: true,
   );
-  static String? _$timestamp(AssetHistoryModel v) => v.timestamp;
+  static String _$timestamp(AssetHistoryModel v) => v.timestamp;
   static const Field<AssetHistoryModel, String> _f$timestamp = Field(
     'timestamp',
     _$timestamp,
-    opt: true,
   );
   static String? _$notes(AssetHistoryModel v) => v.notes;
   static const Field<AssetHistoryModel, String> _f$notes = Field(
@@ -167,15 +165,15 @@ class _AssetHistoryModelCopyWithImpl<$R, $Out>
   @override
   $R call({
     int? id,
-    Object? action = $none,
-    Object? timestamp = $none,
+    String? action,
+    String? timestamp,
     Object? notes = $none,
     Object? actionBy = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
-      if (action != $none) #action: action,
-      if (timestamp != $none) #timestamp: timestamp,
+      if (action != null) #action: action,
+      if (timestamp != null) #timestamp: timestamp,
       if (notes != $none) #notes: notes,
       if (actionBy != $none) #actionBy: actionBy,
     }),
