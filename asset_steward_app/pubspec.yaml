@@ -48,6 +48,10 @@ dependencies:
   image_picker: ^1.2.3
   flutter_typeahead: ^6.0.0
   progressive_blur: ^0.0.2
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  file_picker: ^13.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

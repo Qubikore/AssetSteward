@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -15,7 +16,28 @@ class AssetsPageview extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Assets')),
+        appBar: AppBar(
+          title: const Text('Assets'),
+          actions: [
+            ContextMenu(
+              alignment: ContextMenuAlignment.end,
+
+              items: [
+                ContextMenuAction(
+                  title: 'Print Labels',
+                  leading: const Icon(HIStroke.printer),
+                  onTap: () => PrintLabelsSheet.show(context),
+                ),
+                ContextMenuAction(
+                  title: 'Asset Report',
+                  leading: const Icon(HIStroke.documentAttachment),
+                  onTap: () => Toast.showInfo('Asset Report feature coming soon'),
+                ),
+              ],
+            ),
+            const Gap(8),
+          ],
+        ),
         body: RefreshIndicator(
           onRefresh: () async => ref.invalidate(assetsCtrlProvider),
           child: AsyncBuilder<List<AssetModel>>(
