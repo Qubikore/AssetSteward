@@ -4,8 +4,6 @@ import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
-
 class MyAssetsTabView extends HookConsumerWidget {
   const MyAssetsTabView({super.key});
 
@@ -18,7 +16,7 @@ class MyAssetsTabView extends HookConsumerWidget {
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async => ref.read(myAssetsCtrlProvider.notifier).refresh(),
-            child: AsyncBuilder<List<AssignmentModel>>(
+            child: AsyncBuilder(
               asyncValue: assignmentsAsync,
               providers: [myAssetsCtrlProvider],
               allowEmpty: true,
@@ -41,7 +39,9 @@ class MyAssetsTabView extends HookConsumerWidget {
 
                 return ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.lg).withBottomEx(),
+                  padding: const EdgeInsets.symmetric(horizontal: Insets.lg)
+                      .copyWith(bottom: context.viewInsets.bottom)
+                      .withBottomEx(),
                   itemCount: assignments.length,
                   separatorBuilder: (context, index) => const Gap(Insets.md),
                   itemBuilder: (context, index) {

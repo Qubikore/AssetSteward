@@ -4,14 +4,12 @@ import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
-
 class AllAssetsTabView extends HookConsumerWidget {
   const AllAssetsTabView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final assetsAsync = ref.watch(assetsCtrlProvider(null));
+    final assetsAsync = ref.watch(assetsCtrlProvider());
 
     return Column(
       children: [
@@ -20,21 +18,21 @@ class AllAssetsTabView extends HookConsumerWidget {
           child: InputField(
             hintText: 'Search all assets...',
             onChanged: (value) {
-              ref.read(assetsCtrlProvider(null).notifier).search(value ?? '');
+              ref.read(assetsCtrlProvider().notifier).search(value ?? '');
             },
           ),
         ),
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () async => ref.read(assetsCtrlProvider(null).notifier).refresh(),
-            child: AsyncBuilder<List<AssetModel>>(
+            onRefresh: () async => ref.read(assetsCtrlProvider().notifier).refresh(),
+            child: AsyncBuilder(
               asyncValue: assetsAsync,
-              providers: [assetsCtrlProvider(null)],
+              providers: [assetsCtrlProvider],
               allowEmpty: true,
               builder: (assets) {
                 if (assets.isEmpty) {
                   return ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: kScrollPhysics,
                     children: const [
                       Padding(
                         padding: EdgeInsets.only(top: 40),
@@ -49,8 +47,10 @@ class AllAssetsTabView extends HookConsumerWidget {
                 }
 
                 return ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: Insets.lg).withBottomEx(),
+                  physics: kScrollPhysics,
+                  padding: const EdgeInsets.symmetric(horizontal: Insets.lg)
+                      .copyWith(bottom: context.viewInsets.bottom)
+                      .withBottomEx(),
                   itemCount: assets.length,
                   separatorBuilder: (context, index) => const Gap(Insets.md),
                   itemBuilder: (context, index) {

@@ -1,8 +1,7 @@
-
+import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/all_assets_tab_view.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/my_assets_tab_view.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/pending_assets_tab_view.dart';
-import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -19,6 +18,7 @@ class AssetsPageview extends HookConsumerWidget {
       initialIndex: initialTab,
       length: 3,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Assets'),
           actions: [
@@ -47,17 +47,14 @@ class AssetsPageview extends HookConsumerWidget {
             ],
           ),
         ),
-        body: const TabBarView(
-          children: [
-            AllAssetsTabView(),
-            PendingAssetsTabView(),
-            MyAssetsTabView(),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push(RPaths.createAsset.path),
-          icon: const Icon(HIStroke.plusSign),
-          label: const Text('Add Asset'),
+        body: const TabBarView(children: [AllAssetsTabView(), PendingAssetsTabView(), MyAssetsTabView()]),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 60),
+          child: FloatingActionButton.extended(
+            onPressed: () => context.push(RPaths.createAsset.path),
+            icon: const Icon(HIStroke.plusSign),
+            label: const Text('Add Asset'),
+          ),
         ),
       ),
     );

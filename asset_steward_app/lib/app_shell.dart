@@ -49,6 +49,7 @@ class AppShell extends HookConsumerWidget {
     final bottomPadding = mq.padding.bottom + 56 + 10;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBody: true,
       body: LayoutBuilder(
         builder: (context, constraints) {
