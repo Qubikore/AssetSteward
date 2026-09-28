@@ -131,6 +131,22 @@ public class AssetController {
         return ResponseEntity.ok(ApiResponse.success("Assignment retrieved successfully", assetService.getAssignmentById(assignmentId, currentUser)));
     }
 
+    @Operation(summary = "Get asset history", description = "Retrieves the full lifecycle history of a specific asset by its ID.")
+    @GetMapping("/{assetId}/history")
+    public ResponseEntity<ApiResponse<List<com.qubikore.assetsteward.assethistory.AssetHistoryResponse>>> getAssetHistory(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Asset history retrieved successfully", assetService.getAssetHistory(assetId, currentUser)));
+    }
+
+    @Operation(summary = "Get asset assignments", description = "Retrieves a list of all assignments for a specific asset.")
+    @GetMapping("/{assetId}/assignments")
+    public ResponseEntity<ApiResponse<List<com.qubikore.assetsteward.asset.dto.AssignmentResponse>>> getAssignmentsByAssetId(
+            @PathVariable Long assetId,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(ApiResponse.success("Asset assignments retrieved successfully", assetService.getAssignmentsByAssetId(assetId, currentUser)));
+    }
+
     @Operation(summary = "Generate QR Code", description = "Generates a PNG QR code image for a specific asset based on its assetCode.")
     @GetMapping(value = "/{assetId}/qrcode", produces = org.springframework.http.MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQRCode(@PathVariable Long assetId, @AuthenticationPrincipal User currentUser) {

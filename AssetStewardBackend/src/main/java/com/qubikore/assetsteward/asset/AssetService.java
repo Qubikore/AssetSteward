@@ -333,10 +333,33 @@ public class AssetService {
         if (assignment.getAsset() == null || assignment.getAsset().getOrganization() == null || !assignment.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId())) {
             throw new RuntimeException("Assignment does not belong to your organization");
         }
-        
-        com.qubikore.assetsteward.asset.dto.AssignmentResponse response = new com.qubikore.assetsteward.asset.dto.AssignmentResponse(assignment);
-        response.setHistory(assetHistoryService.getHistoryByAssetId(assignment.getAsset().getId()));
-        return response;
+        return new com.qubikore.assetsteward.asset.dto.AssignmentResponse(assignment);
+    }
+
+    public List<com.qubikore.assetsteward.assethistory.AssetHistoryResponse> getAssetHistory(Long assetId, User currentUser) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        return assetHistoryService.getHistoryByAssetId(assetId);
+    }
+
+    public List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> getAssignmentsByAssetId(Long assetId, User currentUser) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getOrganization() == null || !asset.getOrganization().getId().equals(currentUser.getOrganization().getId())) {
+            throw new RuntimeException("Asset does not belong to your organization");
+        }
+
+        return assignmentRepository.findAll().stream()
+                .filter(a -> a.getAsset().getId().equals(assetId))
+                .sorted((a, b) -> b.getId().compareTo(a.getId()))
+                .map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
+                .collect(Collectors.toList());
     }
 
     public AssetResponse updateAsset(Long assetId, AssetRequest request, User currentUser) {
