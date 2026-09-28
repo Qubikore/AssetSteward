@@ -4,8 +4,7 @@ import java.time.LocalDate;
 
 public class MaintenanceResponse {
     private Long id;
-    private Long assetId;
-    private String assetName;
+    private com.qubikore.assetsteward.asset.dto.AssetResponse asset;
     private String description;
     private Double cost;
     private String provider;
@@ -15,8 +14,7 @@ public class MaintenanceResponse {
 
     public MaintenanceResponse(Maintenance m) {
         this.id = m.getId();
-        this.assetId = m.getAsset().getId();
-        this.assetName = m.getAsset().getName();
+        this.asset = new com.qubikore.assetsteward.asset.dto.AssetResponse(m.getAsset());
         this.description = m.getDescription();
         this.cost = m.getCost();
         this.provider = m.getProvider();
@@ -26,8 +24,7 @@ public class MaintenanceResponse {
     }
 
     public Long getId() { return id; }
-    public Long getAssetId() { return assetId; }
-    public String getAssetName() { return assetName; }
+    public com.qubikore.assetsteward.asset.dto.AssetResponse getAsset() { return asset; }
     public String getDescription() { return description; }
     public Double getCost() { return cost; }
     public String getProvider() { return provider; }
