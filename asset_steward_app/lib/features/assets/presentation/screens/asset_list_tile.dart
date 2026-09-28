@@ -18,6 +18,7 @@ class AssetListTile extends ConsumerWidget {
     final AssetModel(:purchasePrice, :serialNumber, :expireDate, :category, :location, :department) = asset;
     final profile = ref.watch(profileCtrlProvider).value;
     final isPrivileged = profile?.isPrivileged ?? false;
+    final isWrapEmpty = serialNumber.isNullOrBlank && category == null && department == null;
 
     return GestureDetector(
       onTap: () => RPaths.assetDetails(asset.id.toString()).push(context),
@@ -46,86 +47,90 @@ class AssetListTile extends ConsumerWidget {
                   const Gap(2),
                   Row(
                     children: [
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: asset.status.name.sentenceCase,
-                              style: context.text.bodySmall?.textColor(asset.status.color),
-                            ),
-                            if (asset.quantity > 1)
-                              TextSpan(
-                                text: '   x${asset.quantity.compact()}',
-                                style: context.text.bodySmall?.textColor(context.colors.outline),
-                              ),
-                          ],
-                        ),
-                        style: context.text.labelSmall,
-                      ),
-                    ],
-                  ),
-
-                  Row(
-                    spacing: 8,
-                    children: [
                       Expanded(
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            if (serialNumber.isNotNullOrBlank)
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: .middle,
-                                      child: Icon(HIStroke.hashtag, size: 12, color: context.colors.outline),
-                                    ),
-                                    TextSpan(text: '  $serialNumber'),
-                                  ],
-                                ),
-                                style: context.text.labelSmall?.textColor(context.colors.outline),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: asset.status.name.sentenceCase,
+                                style: context.text.bodySmall?.textColor(asset.status.color),
                               ),
-                            if (category != null && serialNumber.isNotNullOrBlank)
-                              Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
-
-                            if (category != null)
-                              Text.rich(
+                              if (asset.quantity > 1)
                                 TextSpan(
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: .middle,
-                                      child: Icon(HIStroke.tag01, size: 12, color: context.colors.outline),
-                                    ),
-                                    TextSpan(text: '  ${asset.category!.name}'),
-                                  ],
+                                  text: '   x${asset.quantity.compact()}',
+                                  style: context.text.bodySmall?.textColor(context.colors.outline),
                                 ),
-                                style: context.text.labelSmall?.textColor(context.colors.outline),
-                              ),
-
-                            if (category != null && department != null)
-                              Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
-
-                            if (department != null)
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: .middle,
-                                      child: Icon(HIStroke.building02, size: 12, color: context.colors.outline),
-                                    ),
-                                    TextSpan(text: '  ${asset.department!.name}'),
-                                  ],
-                                ),
-                                style: context.text.labelSmall?.textColor(context.colors.outline),
-                              ),
-                          ],
+                            ],
+                          ),
+                          style: context.text.labelSmall,
                         ),
                       ),
-                      AssetContextMenu(asset: asset),
+                      if (isWrapEmpty) AssetContextMenu(asset: asset),
                     ],
                   ),
+
+                  if (!isWrapEmpty)
+                    Row(
+                      spacing: 8,
+                      children: [
+                        Expanded(
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              if (serialNumber.isNotNullOrBlank)
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      WidgetSpan(
+                                        alignment: .middle,
+                                        child: Icon(HIStroke.hashtag, size: 12, color: context.colors.outline),
+                                      ),
+                                      TextSpan(text: '  $serialNumber'),
+                                    ],
+                                  ),
+                                  style: context.text.labelSmall?.textColor(context.colors.outline),
+                                ),
+                              if (category != null && serialNumber.isNotNullOrBlank)
+                                Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+
+                              if (category != null)
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      WidgetSpan(
+                                        alignment: .middle,
+                                        child: Icon(HIStroke.tag01, size: 12, color: context.colors.outline),
+                                      ),
+                                      TextSpan(text: '  ${asset.category!.name}'),
+                                    ],
+                                  ),
+                                  style: context.text.labelSmall?.textColor(context.colors.outline),
+                                ),
+
+                              if (category != null && department != null)
+                                Icon(Icons.circle, size: 6, color: context.colors.outlineVariant),
+
+                              if (department != null)
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      WidgetSpan(
+                                        alignment: .middle,
+                                        child: Icon(HIStroke.building02, size: 12, color: context.colors.outline),
+                                      ),
+                                      TextSpan(text: '  ${asset.department!.name}'),
+                                    ],
+                                  ),
+                                  style: context.text.labelSmall?.textColor(context.colors.outline),
+                                ),
+                            ],
+                          ),
+                        ),
+                        AssetContextMenu(asset: asset),
+                      ],
+                    ),
                   if (asset.status == .pendingApproval && isPrivileged) ...[
                     const Gap(8),
                     SizedBox(
