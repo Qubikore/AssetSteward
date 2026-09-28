@@ -64,6 +64,23 @@ public class Asset {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @Column(name = "created_at", updatable = false)
+    private java.time.LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private java.time.LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = java.time.LocalDateTime.now();
+        updatedAt = java.time.LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = java.time.LocalDateTime.now();
+    }
+
     public Asset() {}
 
     // Getters and setters
@@ -97,5 +114,9 @@ public class Asset {
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
     public com.qubikore.assetsteward.user.Organization getOrganization() { return organization; }
     public void setOrganization(com.qubikore.assetsteward.user.Organization organization) { this.organization = organization; }
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
 }

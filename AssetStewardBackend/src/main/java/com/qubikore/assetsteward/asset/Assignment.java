@@ -31,6 +31,9 @@ public class Assignment {
     @Column
     private LocalDateTime returnedAt;
 
+    @Column(columnDefinition = "TEXT")
+    private String returnReason;
+
     public Assignment() {}
 
     public Long getId() { return id; }
@@ -45,4 +48,6 @@ public class Assignment {
     public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
     public LocalDateTime getReturnedAt() { return returnedAt; }
     public void setReturnedAt(LocalDateTime returnedAt) { this.returnedAt = returnedAt; }
+    public String getReturnReason() { return returnReason; }
+    public void setReturnReason(String returnReason) { this.returnReason = returnReason; }
 }
