@@ -23,11 +23,7 @@ class ScanPageview extends HookWidget {
       return null;
     }, const []);
 
-    final isNavigating = useState(false);
 
-    useOnAppLifecycleStateChange((_, current) {
-      if (current == AppLifecycleState.resumed) isNavigating.value = false;
-    });
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -52,16 +48,14 @@ class ScanPageview extends HookWidget {
             controller: controller,
             onDetect: (capture) {
               Chirp.info('QR', data: {'codes': capture.barcodes.map((x) => x.rawValue).toList()});
-              if (isNavigating.value) return;
+              final isCurrent = ModalRoute.of(context)?.isCurrent == true;
+              if (!isCurrent) return;
 
               final List<Barcode> barcodes = capture.barcodes;
               for (final barcode in barcodes) {
                 final scannedValue = barcode.rawValue?.trim();
                 if (scannedValue != null) {
-                  isNavigating.value = true;
-                  RPaths.qrScanResult
-                      .push(context, query: {'res': scannedValue})
-                      .then((_) => isNavigating.value = false);
+                  RPaths.qrScanResult.push(context, query: {'res': scannedValue});
                   break;
                 }
               }

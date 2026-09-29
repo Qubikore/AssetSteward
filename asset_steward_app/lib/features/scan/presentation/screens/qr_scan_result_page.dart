@@ -28,11 +28,31 @@ class QRScanResultPage extends HookConsumerWidget {
 
     final assetAsync = info != null ? ref.watch(assetDetailsCtrlProvider(info.id)) : null;
 
-    ref.listen(assetDetailsCtrlProvider(info?.id ?? -1), (prev, next) {
-      if (next case AsyncData(:final AssetModel value)) {
-        context.pushReplacement(RPaths.assetDetails(value.id.toString()).path);
+    final isNavigating = useState(false);
+
+    if (info != null) {
+      ref.listen(
+        assetDetailsCtrlProvider(info.id),
+        (prev, next) {
+          if (next case AsyncData(:final AssetModel value) when !isNavigating.value) {
+            isNavigating.value = true;
+            context.pushReplacement(RPaths.assetDetails(value.id.toString()).path);
+          }
+        },
+      );
+    }
+
+    useEffect(() {
+      if (assetAsync case AsyncData(:final AssetModel value) when !isNavigating.value) {
+        isNavigating.value = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            context.pushReplacement(RPaths.assetDetails(value.id.toString()).path);
+          }
+        });
       }
-    });
+      return null;
+    }, const []);
 
     final errorView = Padding(
       padding: const EdgeInsets.all(Insets.xl),
