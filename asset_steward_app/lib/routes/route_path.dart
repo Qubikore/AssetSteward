@@ -28,4 +28,5 @@ class RPaths {
   static const categories = RPath('/categories');
   static const createAsset = RPath('/assets/create');
   static RPath assetDetails(String id) => RPath('/assets/detail/$id');
+  static RPath qrScanResult(String id) => RPath('/scan/result/$id');
 }

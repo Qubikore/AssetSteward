@@ -12,6 +12,7 @@ import 'package:asset_steward_app/features/home/presentation/screens/home_pagevi
 import 'package:asset_steward_app/features/locations/presentation/screens/locations_page.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/maintenance_pageview.dart';
 import 'package:asset_steward_app/features/profile/presentation/screens/profile_page.dart';
+import 'package:asset_steward_app/features/scan/presentation/screens/qr_scan_result_page.dart';
 import 'package:asset_steward_app/features/scan/presentation/screens/scan_pageview.dart';
 import 'package:asset_steward_app/features/users/presentation/screens/manage_users_page.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -84,6 +85,7 @@ GoRouter appRouter(Ref ref) {
       AppRoute(RPaths.categories, (_) => const CategoriesPage()),
       AppRoute(RPaths.createAsset, (s) => CreateAssetPage(asset: s.extra as AssetModel?)),
       AppRoute(RPaths.assetDetails(':id'), (s) => AssetDetailsPage(id: int.parse(s.pathParameters['id']!))),
+      AppRoute(RPaths.qrScanResult(':id'), (s) => QRScanResultPage(assetId: int.parse(s.pathParameters['id']!))),
     ],
     errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
   );
