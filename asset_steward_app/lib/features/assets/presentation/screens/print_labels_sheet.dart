@@ -30,7 +30,6 @@ class PrintLabelsSheet extends HookConsumerWidget {
   Future<void> _generatePdf(List<AssetLabelResponse> labels, String orgName, String fileName, double pdfWidth) async {
     final doc = pw.Document();
 
-    // We try to load a font, if it fails fallback to default
     pw.Font? font;
     pw.Font? fontBold;
     try {
