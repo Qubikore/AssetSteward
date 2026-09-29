@@ -12,7 +12,7 @@ class AssignmentModel with AssignmentModelMappable {
   final int id;
   final AssetModel asset;
   final ProfileModel assignedTo;
-  final ProfileModel assignedBy;
+  final ProfileModel? assignedBy;
   final String assignedAt;
   final String? returnedAt;
   final String? returnReason;
@@ -21,7 +21,7 @@ class AssignmentModel with AssignmentModelMappable {
     required this.id,
     required this.asset,
     required this.assignedTo,
-    required this.assignedBy,
+    this.assignedBy,
     required this.assignedAt,
     this.returnedAt,
     this.returnReason,

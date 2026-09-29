@@ -51,7 +51,7 @@ class _AssetMenu extends ConsumerWidget {
       alignment: ContextMenuAlignment.end,
       items: [
         if (isPrivileged) ...[
-          if (asset.assetType != AssetType.asset)
+          if (asset.assetType != .asset && asset.status != .pendingApproval)
             ContextMenuAction(
               title: 'Update Quantity',
               leading: const Icon(HIStroke.add01),
@@ -84,7 +84,7 @@ class _AssetMenu extends ConsumerWidget {
             ),
         ],
 
-        if (asset.status != .maintenance)
+        if (asset.status != .maintenance && asset.status != .pendingApproval)
           ContextMenuAction(
             title: 'Start Maintenance',
             leading: const Icon(HIStroke.repair),

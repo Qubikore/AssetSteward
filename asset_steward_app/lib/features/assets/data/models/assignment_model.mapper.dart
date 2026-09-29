@@ -36,10 +36,11 @@ class AssignmentModelMapper extends ClassMapperBase<AssignmentModel> {
     'assignedTo',
     _$assignedTo,
   );
-  static ProfileModel _$assignedBy(AssignmentModel v) => v.assignedBy;
+  static ProfileModel? _$assignedBy(AssignmentModel v) => v.assignedBy;
   static const Field<AssignmentModel, ProfileModel> _f$assignedBy = Field(
     'assignedBy',
     _$assignedBy,
+    opt: true,
   );
   static String _$assignedAt(AssignmentModel v) => v.assignedAt;
   static const Field<AssignmentModel, String> _f$assignedAt = Field(
@@ -146,7 +147,7 @@ abstract class AssignmentModelCopyWith<$R, $In extends AssignmentModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   AssetModelCopyWith<$R, AssetModel, AssetModel> get asset;
   ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedTo;
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedBy;
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedBy;
   $R call({
     int? id,
     AssetModel? asset,
@@ -176,14 +177,14 @@ class _AssignmentModelCopyWithImpl<$R, $Out>
   ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedTo =>
       $value.assignedTo.copyWith.$chain((v) => call(assignedTo: v));
   @override
-  ProfileModelCopyWith<$R, ProfileModel, ProfileModel> get assignedBy =>
-      $value.assignedBy.copyWith.$chain((v) => call(assignedBy: v));
+  ProfileModelCopyWith<$R, ProfileModel, ProfileModel>? get assignedBy =>
+      $value.assignedBy?.copyWith.$chain((v) => call(assignedBy: v));
   @override
   $R call({
     int? id,
     AssetModel? asset,
     ProfileModel? assignedTo,
-    ProfileModel? assignedBy,
+    Object? assignedBy = $none,
     String? assignedAt,
     Object? returnedAt = $none,
     Object? returnReason = $none,
@@ -192,7 +193,7 @@ class _AssignmentModelCopyWithImpl<$R, $Out>
       if (id != null) #id: id,
       if (asset != null) #asset: asset,
       if (assignedTo != null) #assignedTo: assignedTo,
-      if (assignedBy != null) #assignedBy: assignedBy,
+      if (assignedBy != $none) #assignedBy: assignedBy,
       if (assignedAt != null) #assignedAt: assignedAt,
       if (returnedAt != $none) #returnedAt: returnedAt,
       if (returnReason != $none) #returnReason: returnReason,

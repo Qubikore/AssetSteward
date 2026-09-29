@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
@@ -19,6 +20,8 @@ class AssetDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final exAsset = context.tryGetExtra<AssetModel>();
+
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
     final assignmentsAsync = ref.watch(assetAssignmentsProvider(id));
     final profileAsync = ref.watch(profileCtrlProvider);
@@ -355,18 +358,20 @@ class _AssignmentCard extends StatelessWidget {
               ],
             ),
           ],
-          const Gap(4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Assigned by:', style: context.text.bodySmall?.textColor(context.colors.outline)),
-              Tooltip(
-                triggerMode: .longPress,
-                message: assignment.assignedBy.email,
-                child: Text(assignment.assignedBy.fullName, style: context.text.labelSmall),
-              ),
-            ],
-          ),
+          if (assignment.assignedBy != null) ...[
+            const Gap(4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Assigned by:', style: context.text.bodySmall?.textColor(context.colors.outline)),
+                Tooltip(
+                  triggerMode: .longPress,
+                  message: assignment.assignedBy!.email,
+                  child: Text(assignment.assignedBy!.fullName, style: context.text.labelSmall),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
