@@ -85,7 +85,7 @@ GoRouter appRouter(Ref ref) {
       AppRoute(RPaths.categories, (_) => const CategoriesPage()),
       AppRoute(RPaths.createAsset, (s) => CreateAssetPage(asset: s.extra as AssetModel?)),
       AppRoute(RPaths.assetDetails(':id'), (s) => AssetDetailsPage(id: int.parse(s.pathParameters['id']!))),
-      AppRoute(RPaths.qrScanResult(':id'), (s) => QRScanResultPage(assetId: int.parse(s.pathParameters['id']!))),
+      AppRoute(RPaths.qrScanResult, (s) => const QRScanResultPage()),
     ],
     errorBuilder: (_, state) => ErrorRoutePage(error: state.error?.message),
   );

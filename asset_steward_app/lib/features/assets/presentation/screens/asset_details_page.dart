@@ -1,5 +1,4 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
-import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
@@ -20,8 +19,6 @@ class AssetDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exAsset = context.tryGetExtra<AssetModel>();
-
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
     final assignmentsAsync = ref.watch(assetAssignmentsProvider(id));
     final profileAsync = ref.watch(profileCtrlProvider);

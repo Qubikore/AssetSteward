@@ -5,13 +5,7 @@ export 'package:go_router/go_router.dart';
 class RPaths {
   const RPaths._();
 
-  static const List<RPath> navRoutes = [
-    home,
-    assets,
-    scan,
-    maintenance,
-    profile,
-  ];
+  static const List<RPath> navRoutes = [home, assets, scan, maintenance, profile];
 
   static const login = RPath('/login');
   static const register = RPath('/register');
@@ -28,5 +22,5 @@ class RPaths {
   static const categories = RPath('/categories');
   static const createAsset = RPath('/assets/create');
   static RPath assetDetails(String id) => RPath('/assets/detail/$id');
-  static RPath qrScanResult(String id) => RPath('/scan/result/$id');
+  static const qrScanResult = RPath('/scan/result');
 }
