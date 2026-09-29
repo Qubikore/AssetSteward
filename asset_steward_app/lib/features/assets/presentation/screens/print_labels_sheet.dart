@@ -114,7 +114,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = useState(false);
-    final pdfWidth = useState<double>(595.0); // Standard A4 width
+    final pdfWidth = useState<double>(21.0); // Standard A4 width in cm
 
     final org = ref.watch(organizationCtrlProvider).value;
     final orgName = org?.name ?? 'Asset Steward';
@@ -134,7 +134,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
           labels,
           orgName,
           assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId',
-          pdfWidth.value,
+          pdfWidth.value * 28.346,
         );
         if (context.mounted) context.pop();
       } catch (e, s) {
@@ -180,26 +180,71 @@ class PrintLabelsSheet extends HookConsumerWidget {
                 ),
               ),
               const Gap(24),
-              Text('Page Width: ${pdfWidth.value.toInt()} px', style: context.text.titleMedium),
+              Text('Page Width: ${pdfWidth.value.toStringAsFixed(1)} cm', style: context.text.titleMedium),
               const Gap(8),
               Row(
                 children: [
-                  const Text('220', style: TextStyle(fontSize: 12)),
+                  const Text('5.0', style: TextStyle(fontSize: 12)),
                   Expanded(
                     child: Slider(
                       value: pdfWidth.value,
-                      min: 220,
-                      max: 1200,
-                      divisions: 98,
-                      label: '${pdfWidth.value.toInt()}',
+                      min: 5.0,
+                      max: 30.0,
+                      divisions: 250,
+                      label: '${pdfWidth.value.toStringAsFixed(1)} cm',
                       onChanged: (val) => pdfWidth.value = val,
                     ),
                   ),
-                  const Text('1200', style: TextStyle(fontSize: 12)),
+                  const Text('30.0', style: TextStyle(fontSize: 12)),
                 ],
               ),
+              const Gap(8),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _PresetChip(
+                      label: '2" Roll',
+                      width: 5.0,
+                      current: pdfWidth.value,
+                      onSelect: (w) => pdfWidth.value = w,
+                    ),
+                    const Gap(8),
+                    _PresetChip(
+                      label: '62mm',
+                      width: 6.2,
+                      current: pdfWidth.value,
+                      onSelect: (w) => pdfWidth.value = w,
+                    ),
+                    const Gap(8),
+                    _PresetChip(
+                      label: '3" Roll',
+                      width: 7.6,
+                      current: pdfWidth.value,
+                      onSelect: (w) => pdfWidth.value = w,
+                    ),
+                    const Gap(8),
+                    _PresetChip(
+                      label: '4" Roll',
+                      width: 10.1,
+                      current: pdfWidth.value,
+                      onSelect: (w) => pdfWidth.value = w,
+                    ),
+                    const Gap(8),
+                    _PresetChip(label: 'A4', width: 21.0, current: pdfWidth.value, onSelect: (w) => pdfWidth.value = w),
+                    const Gap(8),
+                    _PresetChip(
+                      label: 'Letter',
+                      width: 21.6,
+                      current: pdfWidth.value,
+                      onSelect: (w) => pdfWidth.value = w,
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(16),
               Text(
-                'Each label has a fixed width of 200px. The PDF will wrap labels horizontally to fit the page width.',
+                'Each label has a fixed width of ~7cm (200pt). The PDF will wrap labels horizontally to fit the page width.',
                 style: context.text.bodySmall?.copyWith(color: context.colors.outline),
                 textAlign: TextAlign.center,
               ),
@@ -228,6 +273,29 @@ class PrintLabelsSheet extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PresetChip extends StatelessWidget {
+  final String label;
+  final double width;
+  final double current;
+  final ValueChanged<double> onSelect;
+
+  const _PresetChip({required this.label, required this.width, required this.current, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = (current - width).abs() < 0.05;
+    return ChoiceChip(
+      label: Text(label, style: const TextStyle(fontSize: 12)),
+      selected: isSelected,
+      onSelected: (_) => onSelect(width),
+      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      showCheckmark: false,
+      selectedColor: context.colors.primaryContainer,
     );
   }
 }
