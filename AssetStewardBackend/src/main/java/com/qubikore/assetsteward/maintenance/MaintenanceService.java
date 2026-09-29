@@ -86,9 +86,13 @@ public class MaintenanceService {
     }
 
     public List<MaintenanceResponse> getAllMaintenance(User currentUser) {
-        return maintenanceRepository.findAll().stream()
-                .filter(m -> m.getAsset() != null && m.getAsset().getOrganization() != null && m.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId()))
-                .map(MaintenanceResponse::new)
-                .collect(Collectors.toList());
+        java.util.stream.Stream<Maintenance> stream = maintenanceRepository.findAll().stream()
+                .filter(m -> m.getAsset() != null && m.getAsset().getOrganization() != null && m.getAsset().getOrganization().getId().equals(currentUser.getOrganization().getId()));
+                
+        if (currentUser.getRole() != com.qubikore.assetsteward.user.Role.SUPER_ADMIN && currentUser.getRole() != com.qubikore.assetsteward.user.Role.HR) {
+            stream = stream.filter(m -> m.getStartedBy() != null && m.getStartedBy().getId().equals(currentUser.getId()));
+        }
+
+        return stream.map(MaintenanceResponse::new).collect(Collectors.toList());
     }
 }

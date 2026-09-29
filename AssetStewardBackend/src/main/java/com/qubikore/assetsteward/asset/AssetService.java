@@ -339,9 +339,28 @@ public class AssetService {
             stream = stream.filter(a -> a.getReturnedAt() != null);
         }
 
-        return stream
-                .sorted((a, b) -> b.getId().compareTo(a.getId()))
+        List<com.qubikore.assetsteward.asset.dto.AssignmentResponse> assignments = stream
                 .map(com.qubikore.assetsteward.asset.dto.AssignmentResponse::new)
+                .collect(Collectors.toList());
+
+        // Include assets requested by the user that are still pending approval as pseudo-assignments
+        if (status == null || "active".equalsIgnoreCase(status)) {
+            List<Asset> pendingAssets = assetRepository.findByOrganization(currentUser.getOrganization()).stream()
+                    .filter(a -> a.getCreatedBy() != null && a.getCreatedBy().getId().equals(currentUser.getId()) && a.getStatus() == AssetStatus.PENDING_APPROVAL)
+                    .collect(Collectors.toList());
+            
+            for (Asset pa : pendingAssets) {
+                com.qubikore.assetsteward.asset.dto.AssignmentResponse mock = new com.qubikore.assetsteward.asset.dto.AssignmentResponse();
+                mock.setId(-pa.getId()); // Use negative ID for mock assignments
+                mock.setAsset(new AssetResponse(pa));
+                mock.setAssignedTo(new AssetResponse.CreatorResponse(currentUser));
+                mock.setAssignedAt(pa.getCreatedAt() != null ? pa.getCreatedAt() : LocalDateTime.now());
+                assignments.add(mock);
+            }
+        }
+
+        return assignments.stream()
+                .sorted((a, b) -> b.getId().compareTo(a.getId()))
                 .collect(Collectors.toList());
     }
 

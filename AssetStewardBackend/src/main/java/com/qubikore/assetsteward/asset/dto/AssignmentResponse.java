@@ -12,6 +12,8 @@ public class AssignmentResponse {
     private LocalDateTime returnedAt;
     private String returnReason;
 
+    public AssignmentResponse() {}
+
     public AssignmentResponse(Assignment assignment) {
         this.id = assignment.getId();
         this.asset = new AssetResponse(assignment.getAsset());
@@ -22,12 +24,19 @@ public class AssignmentResponse {
         this.returnReason = assignment.getReturnReason();
     }
 
-    // Getters
+    // Getters and Setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public AssetResponse getAsset() { return asset; }
+    public void setAsset(AssetResponse asset) { this.asset = asset; }
     public AssetResponse.CreatorResponse getAssignedTo() { return assignedTo; }
+    public void setAssignedTo(AssetResponse.CreatorResponse assignedTo) { this.assignedTo = assignedTo; }
     public AssetResponse.CreatorResponse getAssignedBy() { return assignedBy; }
+    public void setAssignedBy(AssetResponse.CreatorResponse assignedBy) { this.assignedBy = assignedBy; }
     public LocalDateTime getAssignedAt() { return assignedAt; }
+    public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
     public LocalDateTime getReturnedAt() { return returnedAt; }
+    public void setReturnedAt(LocalDateTime returnedAt) { this.returnedAt = returnedAt; }
     public String getReturnReason() { return returnReason; }
+    public void setReturnReason(String returnReason) { this.returnReason = returnReason; }
 }
