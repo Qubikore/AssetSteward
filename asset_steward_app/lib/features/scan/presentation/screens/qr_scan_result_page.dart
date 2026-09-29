@@ -12,15 +12,19 @@ class QRScanResultPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final res = context.queryParams['res'];
+
     final info = useMemoized(() {
+      Chirp.info('QR', data: {'res': res});
+      if (res == null) return null;
       try {
-        final map = jsonDecode(context.queryParams['res'] ?? '');
+        final map = jsonDecode(res);
         if (map case {'id': final int id, 'name': final String name, 'assetCode': final String assetCode}) {
           return (id: id, name: name, code: assetCode);
         }
       } catch (_) {}
       return null;
-    }, [context.queryParams['res']]);
+    }, [res]);
 
     final assetAsync = info != null ? ref.watch(assetDetailsCtrlProvider(info.id)) : null;
 

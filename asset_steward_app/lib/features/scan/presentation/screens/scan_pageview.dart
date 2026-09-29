@@ -51,6 +51,7 @@ class ScanPageview extends HookWidget {
           MobileScanner(
             controller: controller,
             onDetect: (capture) {
+              Chirp.info('QR', data: {'codes': capture.barcodes.map((x) => x.rawValue).toList()});
               if (isNavigating.value) return;
 
               final List<Barcode> barcodes = capture.barcodes;

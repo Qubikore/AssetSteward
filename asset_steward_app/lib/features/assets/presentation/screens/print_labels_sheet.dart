@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
@@ -22,11 +23,12 @@ class PrintLabelsSheet extends HookConsumerWidget {
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
+
       builder: (context) => PrintLabelsSheet(assetId: assetId),
     );
   }
 
-  Future<void> _generatePdf(List<AssetLabelResponse> labels, String orgName, String fileName, double pdfWidth) async {
+  Future<Uint8List> _generatePdf(List<AssetLabelResponse> labels, String orgName, double pdfWidth) async {
     final doc = pw.Document();
 
     pw.Font? font;
@@ -100,15 +102,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
       ),
     );
 
-    final bytes = await doc.save();
-
-    await FilePicker.saveFile(
-      bytes: bytes,
-      dialogTitle: 'Save Asset Labels PDF',
-      fileName: '$fileName.pdf',
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
+    return await doc.save();
   }
 
   @override
@@ -119,7 +113,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
     final org = ref.watch(organizationCtrlProvider).value;
     final orgName = org?.name ?? 'Asset Steward';
 
-    void onPrint() async {
+    Future<Uint8List?> generateBytes() async {
       isLoading.value = true;
       try {
         final labels = assetId == null
@@ -127,22 +121,45 @@ class PrintLabelsSheet extends HookConsumerWidget {
             : [await ref.read(assetDetailsCtrlProvider(assetId!).notifier).getAssetLabel()];
         if (labels.isEmpty) {
           if (context.mounted) Toast.showError('No labels found to print');
-          return;
+          return null;
         }
-
-        await _generatePdf(
-          labels,
-          orgName,
-          assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId',
-          pdfWidth.value * 28.346,
-        );
-        if (context.mounted) context.pop();
+        return await _generatePdf(labels, orgName, pdfWidth.value * 28.346);
       } catch (e, s) {
         if (context.mounted) Toast.showError('Failed to generate PDF: $e');
         Chirp.error('message', error: e, stackTrace: s);
+        return null;
       } finally {
         isLoading.value = false;
       }
+    }
+
+    void onDownload() async {
+      final bytes = await generateBytes();
+      if (bytes == null) return;
+      final fileName = assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId';
+      await FilePicker.saveFile(
+        bytes: bytes,
+        dialogTitle: 'Save Asset Labels PDF',
+        fileName: '$fileName.pdf',
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+      if (context.mounted) context.pop();
+    }
+
+    void onPrint() async {
+      final bytes = await generateBytes();
+      if (bytes == null) return;
+      await Printing.layoutPdf(onLayout: (_) async => bytes, name: 'Asset Labels');
+      if (context.mounted) context.pop();
+    }
+
+    void onShare() async {
+      final bytes = await generateBytes();
+      if (bytes == null) return;
+      final fileName = assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId';
+      await Printing.sharePdf(bytes: bytes, filename: '$fileName.pdf');
+      if (context.mounted) context.pop();
     }
 
     return Padding(
@@ -159,26 +176,27 @@ class PrintLabelsSheet extends HookConsumerWidget {
                 children: [
                   const Icon(HIStroke.printer, size: 28),
                   const Gap(12),
-                  Text('Print Asset Labels', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                  Expanded(
+                    child: Text(
+                      'Print Asset Labels',
+                      style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  if (isLoading.value)
+                    const Loader(size: 18, strokeWidth: 2)
+                  else
+                    IconButton.filled(
+                      style: IconButton.styleFrom(
+                        backgroundColor: context.colors.primary.op2,
+                        foregroundColor: context.colors.primary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                      onPressed: isLoading.value ? null : () => context.nPop(),
+                      icon: const Icon(HIStroke.cancel01, size: 20),
+                    ),
                 ],
               ),
-              const Gap(16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(HIStroke.informationCircle, color: context.colors.primary, size: 15),
-                    const Gap(12),
-                    Expanded(
-                      child: Text(
-                        'This will fetch the asset label(s) and generate a printable PDF. You can adjust the PDF page width to fit your printer',
-                        style: context.text.labelSmall?.copyWith(color: context.colors.outline),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               const Gap(24),
               Text('Page Width: ${pdfWidth.value.toStringAsFixed(1)} cm', style: context.text.titleMedium),
               const Gap(8),
@@ -251,20 +269,33 @@ class PrintLabelsSheet extends HookConsumerWidget {
               const Gap(32),
               Row(
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: isLoading.value ? null : () => context.pop(),
-                      child: const Text('Cancel'),
+                  IconButton.filled(
+                    style: IconButton.styleFrom(
+                      backgroundColor: context.colors.primary.op2,
+                      foregroundColor: context.colors.primary,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
+                    onPressed: isLoading.value ? null : onShare,
+                    icon: const Icon(HIStroke.share03, size: 20),
                   ),
-                  const Gap(16),
+                  const Gap(6),
                   Expanded(
                     child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: context.colors.primary.op2,
+                        foregroundColor: context.colors.primary,
+                      ),
                       onPressed: isLoading.value ? null : onPrint,
-                      icon: isLoading.value
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                          : const Icon(HIStroke.printer),
-                      label: Text(isLoading.value ? 'Generating...' : 'Print PDF'),
+                      icon: const Icon(HIStroke.printer),
+                      label: const Text('Print'),
+                    ),
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: isLoading.value ? null : onDownload,
+                      icon: const Icon(HIStroke.download01),
+                      label: const Text('Download'),
                     ),
                   ),
                 ],
