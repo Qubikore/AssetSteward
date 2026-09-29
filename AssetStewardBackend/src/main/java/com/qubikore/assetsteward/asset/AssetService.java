@@ -26,8 +26,9 @@ public class AssetService {
     private final AssignmentRepository assignmentRepository;
     private final UserRepository userRepository;
     private final com.qubikore.assetsteward.assethistory.AssetHistoryService assetHistoryService;
+    private final com.qubikore.assetsteward.maintenance.MaintenanceRepository maintenanceRepository;
 
-    public AssetService(AssetRepository assetRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, com.qubikore.assetsteward.department.DepartmentRepository departmentRepository, AssignmentRepository assignmentRepository, UserRepository userRepository, com.qubikore.assetsteward.assethistory.AssetHistoryService assetHistoryService) {
+    public AssetService(AssetRepository assetRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, com.qubikore.assetsteward.department.DepartmentRepository departmentRepository, AssignmentRepository assignmentRepository, UserRepository userRepository, com.qubikore.assetsteward.assethistory.AssetHistoryService assetHistoryService, com.qubikore.assetsteward.maintenance.MaintenanceRepository maintenanceRepository) {
         this.assetRepository = assetRepository;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
@@ -35,6 +36,7 @@ public class AssetService {
         this.assignmentRepository = assignmentRepository;
         this.userRepository = userRepository;
         this.assetHistoryService = assetHistoryService;
+        this.maintenanceRepository = maintenanceRepository;
     }
 
     public AssetResponse createAsset(AssetRequest request, User currentUser) {
@@ -50,9 +52,14 @@ public class AssetService {
         asset.setExpireDate(request.getExpireDate());
         asset.setPurchasePrice(request.getPurchasePrice());
         asset.setVendor(request.getVendor());
-        if (request.getQuantity() != null) {
-            asset.setQuantity(request.getQuantity());
+        if (request.getAssetType() != null && "OFFICE_APPLIANCE".equalsIgnoreCase(request.getAssetType())) {
+            asset.setAssetType(AssetType.OFFICE_APPLIANCE);
+            asset.setQuantity(request.getQuantity() != null ? request.getQuantity() : 0);
+        } else {
+            asset.setAssetType(AssetType.ASSET);
+            asset.setQuantity(1); // Standard assets represent a single unique item
         }
+        
         asset.setCreatedBy(currentUser);
         asset.setOrganization(currentUser.getOrganization());
 
@@ -127,6 +134,10 @@ public class AssetService {
         Asset asset = assetRepository.findById(request.getAssetId())
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
 
+        if (asset.getAssetType() == AssetType.OFFICE_APPLIANCE) {
+            throw new RuntimeException("Office appliances cannot be assigned.");
+        }
+
         if (asset.getStatus() != AssetStatus.AVAILABLE && asset.getStatus() != AssetStatus.RETURNED) {
             throw new RuntimeException("Asset is not available for assignment.");
         }
@@ -164,6 +175,10 @@ public class AssetService {
         Asset asset = assetRepository.findById(request.getAssetId())
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
 
+        if (asset.getAssetType() == AssetType.OFFICE_APPLIANCE) {
+            throw new RuntimeException("Office appliances cannot be transferred.");
+        }
+
         if (asset.getStatus() != AssetStatus.ASSIGNED) {
             throw new RuntimeException("Asset is not currently assigned, cannot transfer.");
         }
@@ -200,6 +215,10 @@ public class AssetService {
 
         Asset asset = assetRepository.findById(request.getAssetId())
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
+
+        if (asset.getAssetType() == AssetType.OFFICE_APPLIANCE) {
+            throw new RuntimeException("Office appliances cannot be returned.");
+        }
 
         if (asset.getStatus() != AssetStatus.ASSIGNED) {
             throw new RuntimeException("Asset is not currently assigned, cannot return.");
@@ -408,6 +427,7 @@ public class AssetService {
         }
 
         // Delete dependencies first to avoid foreign key constraint violations
+        maintenanceRepository.deleteByAssetId(assetId);
         assignmentRepository.deleteByAssetId(assetId);
         assetHistoryService.deleteByAssetId(assetId);
 

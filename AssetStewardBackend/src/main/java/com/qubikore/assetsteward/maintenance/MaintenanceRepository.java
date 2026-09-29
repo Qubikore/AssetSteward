@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> {
     List<Maintenance> findByAssetId(Long assetId);
+    void deleteByAssetId(Long assetId);
 }
