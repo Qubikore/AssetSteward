@@ -83,11 +83,12 @@ class _AssetMenu extends ConsumerWidget {
             ),
         ],
 
-        ContextMenuAction(
-          title: 'Start Maintenance',
-          leading: const Icon(HIStroke.repair),
-          onTap: () => StartMaintenanceSheet.show(context, assetId: asset.id),
-        ),
+        if (asset.status != .maintenance)
+          ContextMenuAction(
+            title: 'Start Maintenance',
+            leading: const Icon(HIStroke.repair),
+            onTap: () => StartMaintenanceSheet.show(context, assetId: asset.id),
+          ),
 
         ContextMenuAction(
           title: 'Print Label',
@@ -95,19 +96,19 @@ class _AssetMenu extends ConsumerWidget {
           onTap: () => PrintLabelsSheet.show(context, assetId: asset.id),
         ),
 
+        if (asset.status == .assigned)
+          ContextMenuAction(
+            title: 'Return',
+            isDestructive: true,
+            leading: const Icon(HIStroke.arrowLeft01),
+            onTap: () async {
+              await showDialog(
+                context: context,
+                builder: (context) => _AssetReturnDialog(id: id),
+              );
+            },
+          ),
         if (isPrivileged) ...[
-          if (asset.status == .assigned)
-            ContextMenuAction(
-              title: 'Return',
-              leading: const Icon(HIStroke.arrowLeft01),
-              onTap: () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) => _AssetReturnDialog(id: id),
-                );
-              },
-            ),
-
           const ContextMenuDivider(),
           ContextMenuAction(
             title: 'Edit Asset',

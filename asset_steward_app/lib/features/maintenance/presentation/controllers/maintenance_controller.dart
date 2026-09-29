@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/maintenance/data/models/maintenance_model.dart';
 import 'package:asset_steward_app/features/maintenance/data/repositories/maintenance_repository.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -36,6 +37,8 @@ class MaintenanceCtrl extends _$MaintenanceCtrl {
         return false;
       },
       (r) {
+        ref.invalidate(assetsCtrlProvider);
+        ref.invalidate(myAssetsCtrlProvider);
         Toast.showSuccess('Maintenance started');
         ref.invalidateSelf();
         return true;
@@ -54,6 +57,8 @@ class MaintenanceCtrl extends _$MaintenanceCtrl {
       (r) {
         Toast.showSuccess('Maintenance completed');
         ref.invalidateSelf();
+        ref.invalidate(assetsCtrlProvider);
+        ref.invalidate(myAssetsCtrlProvider);
         return true;
       },
     );
