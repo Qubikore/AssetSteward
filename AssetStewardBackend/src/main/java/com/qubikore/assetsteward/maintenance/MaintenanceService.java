@@ -30,6 +30,10 @@ public class MaintenanceService {
         Asset asset = assetRepository.findById(request.getAssetId())
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
 
+        if (asset.getAssetType() == com.qubikore.assetsteward.asset.AssetType.OFFICE_APPLIANCE) {
+            throw new RuntimeException("Office appliances cannot be sent to maintenance.");
+        }
+
         Maintenance m = new Maintenance();
         m.setAsset(asset);
         m.setDescription(request.getDescription());

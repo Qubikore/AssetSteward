@@ -42,6 +42,10 @@ public class Asset {
     @Column(nullable = false)
     private AssetStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'ASSET'")
+    private AssetType assetType = AssetType.ASSET;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -104,6 +108,8 @@ public class Asset {
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
     public AssetStatus getStatus() { return status; }
     public void setStatus(AssetStatus status) { this.status = status; }
+    public AssetType getAssetType() { return assetType; }
+    public void setAssetType(AssetType assetType) { this.assetType = assetType; }
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
     public Location getLocation() { return location; }

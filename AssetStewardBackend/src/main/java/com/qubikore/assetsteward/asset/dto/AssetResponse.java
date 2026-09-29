@@ -14,6 +14,7 @@ public class AssetResponse {
     private String vendor;
     private Integer quantity;
     private String status;
+    private String assetType;
     private com.qubikore.assetsteward.category.CategoryResponse category;
     private com.qubikore.assetsteward.location.LocationResponse location;
     private com.qubikore.assetsteward.department.DepartmentResponse department;
@@ -32,6 +33,7 @@ public class AssetResponse {
         this.vendor = asset.getVendor();
         this.quantity = asset.getQuantity();
         this.status = asset.getStatus().name();
+        this.assetType = asset.getAssetType() != null ? asset.getAssetType().name() : null;
         this.category = asset.getCategory() != null ? new com.qubikore.assetsteward.category.CategoryResponse(asset.getCategory()) : null;
         this.location = asset.getLocation() != null ? new com.qubikore.assetsteward.location.LocationResponse(asset.getLocation()) : null;
         this.department = asset.getDepartment() != null ? new com.qubikore.assetsteward.department.DepartmentResponse(asset.getDepartment()) : null;
@@ -72,6 +74,7 @@ public class AssetResponse {
     public String getVendor() { return vendor; }
     public Integer getQuantity() { return quantity; }
     public String getStatus() { return status; }
+    public String getAssetType() { return assetType; }
     public com.qubikore.assetsteward.category.CategoryResponse getCategory() { return category; }
     public com.qubikore.assetsteward.location.LocationResponse getLocation() { return location; }
     public com.qubikore.assetsteward.department.DepartmentResponse getDepartment() { return department; }

@@ -11,6 +11,7 @@ public class AssetRequest {
     private Double purchasePrice;
     private String vendor;
     private Integer quantity;
+    private String assetType;
     private Long categoryId;
     private Long locationId;
     private Long departmentId;
@@ -31,6 +32,8 @@ public class AssetRequest {
     public void setVendor(String vendor) { this.vendor = vendor; }
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public String getAssetType() { return assetType; }
+    public void setAssetType(String assetType) { this.assetType = assetType; }
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
     public Long getLocationId() { return locationId; }
