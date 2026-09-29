@@ -4,10 +4,17 @@ import 'package:material_ui/material_ui.dart';
 
 class CollapsibleSection extends HookWidget {
   final String title;
+  final IconData? icon;
   final List<Widget> children;
   final bool initiallyExpanded;
 
-  const CollapsibleSection({super.key, required this.title, required this.children, this.initiallyExpanded = false});
+  const CollapsibleSection({
+    super.key,
+    required this.title,
+    required this.children,
+    this.icon,
+    this.initiallyExpanded = false,
+  });
 
   @override
   Widget build(BuildContext context) {

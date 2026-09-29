@@ -125,7 +125,7 @@ class _ProfileInfo extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: context.colors.primary.op(0.2), width: 2),
@@ -133,14 +133,13 @@ class _ProfileInfo extends StatelessWidget {
           child: CircleAvatar(
             radius: 30,
             backgroundColor: context.colors.primaryContainer,
-            // backgroundImage: data.avatar != null ? NetworkImage(data.avatar!) : null,
-            child:
-                //  data.avatar != null
-                //     ? null :
-                Text(
-                  '${data.firstname[0]}${data.lastname[0]}',
-                  style: context.text.headlineMedium?.copyWith(color: context.colors.onPrimaryContainer),
-                ),
+            backgroundImage: data.profilePicture != null ? NetworkImage(data.profilePicture!) : null,
+            child: data.profilePicture != null
+                ? null
+                : Text(
+                    '${data.firstname[0]}${data.lastname[0]}',
+                    style: context.text.headlineMedium?.copyWith(color: context.colors.onPrimaryContainer),
+                  ),
           ),
         ),
         const Gap(Insets.lg),

@@ -54,6 +54,7 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
       },
       (r) {
         ref.invalidateSelf();
+        ref.invalidate(myAssetsCtrlProvider);
         Toast.showSuccess('Asset transferred successfully');
         return true;
       },

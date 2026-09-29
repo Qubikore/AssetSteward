@@ -50,7 +50,7 @@ final class AssetDetailsCtrlProvider
   }
 }
 
-String _$assetDetailsCtrlHash() => r'31edc6db7d3c3b6c118470de547d9538f4e2f44b';
+String _$assetDetailsCtrlHash() => r'ff3b94b10ef0d08c6fa8320117fbd4e4079f46e4';
 
 final class AssetDetailsCtrlFamily extends $Family
     with

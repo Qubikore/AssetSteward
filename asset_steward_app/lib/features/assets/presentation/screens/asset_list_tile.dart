@@ -56,7 +56,7 @@ class AssetListTile extends ConsumerWidget {
                                 text: asset.status.name.sentenceCase,
                                 style: context.text.bodySmall?.textColor(asset.status.color),
                               ),
-                              if (asset.quantity > 1)
+                              if (asset.assetType == .officeAppliance)
                                 TextSpan(
                                   text: '   x${asset.quantity.compact()}',
                                   style: context.text.bodySmall?.textColor(context.colors.outline),

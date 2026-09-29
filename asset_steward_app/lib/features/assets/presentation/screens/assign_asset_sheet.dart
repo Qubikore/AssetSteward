@@ -87,7 +87,7 @@ class AssignAssetSheet extends HookConsumerWidget {
                   ),
                   style: context.text.bodyMedium,
                 ),
-                // TODO: should show curent user's name
+
                 const Gap(24),
                 AsyncBuilder(
                   asyncValue: usersAsync,

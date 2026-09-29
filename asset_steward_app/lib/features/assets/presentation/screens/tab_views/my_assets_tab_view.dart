@@ -23,7 +23,7 @@ class MyAssetsTabView extends HookConsumerWidget {
               builder: (assignments) {
                 if (assignments.isEmpty) {
                   return ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: kScrollPhysics,
                     children: const [
                       Padding(
                         padding: EdgeInsets.only(top: 40),
@@ -38,9 +38,9 @@ class MyAssetsTabView extends HookConsumerWidget {
                 }
 
                 return ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: kScrollPhysics,
                   padding: const EdgeInsets.symmetric(horizontal: Insets.lg)
-                      .copyWith(bottom: context.viewInsets.bottom + 16)
+                      .copyWith(bottom: context.viewInsets.bottom + 16, top: Insets.lg)
                       .withBottomEx(),
                   itemCount: assignments.length,
                   separatorBuilder: (context, index) => const Gap(Insets.md),

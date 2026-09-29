@@ -35,6 +35,10 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
         return AssetStatus.maintenance;
       case r'PENDING_APPROVAL':
         return AssetStatus.pendingApproval;
+      case r'REJECTED':
+        return AssetStatus.rejected;
+      case r'RETURNED':
+        return AssetStatus.returned;
       case r'RETIRED':
         return AssetStatus.retired;
       default:
@@ -53,6 +57,10 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
         return r'MAINTENANCE';
       case AssetStatus.pendingApproval:
         return r'PENDING_APPROVAL';
+      case AssetStatus.rejected:
+        return r'REJECTED';
+      case AssetStatus.returned:
+        return r'RETURNED';
       case AssetStatus.retired:
         return r'RETIRED';
     }
@@ -66,6 +74,52 @@ extension AssetStatusMapperExtension on AssetStatus {
   }
 }
 
+class AssetTypeMapper extends EnumMapper<AssetType> {
+  AssetTypeMapper._();
+
+  static AssetTypeMapper? _instance;
+  static AssetTypeMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = AssetTypeMapper._());
+    }
+    return _instance!;
+  }
+
+  static AssetType fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  AssetType decode(dynamic value) {
+    switch (value) {
+      case r'OFFICE_APPLIANCE':
+        return AssetType.officeAppliance;
+      case r'ASSET':
+        return AssetType.asset;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(AssetType self) {
+    switch (self) {
+      case AssetType.officeAppliance:
+        return r'OFFICE_APPLIANCE';
+      case AssetType.asset:
+        return r'ASSET';
+    }
+  }
+}
+
+extension AssetTypeMapperExtension on AssetType {
+  String toValue() {
+    AssetTypeMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<AssetType>(this) as String;
+  }
+}
+
 class AssetModelMapper extends ClassMapperBase<AssetModel> {
   AssetModelMapper._();
 
@@ -74,6 +128,7 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AssetModelMapper._());
       AssetStatusMapper.ensureInitialized();
+      AssetTypeMapper.ensureInitialized();
       CategoryModelMapper.ensureInitialized();
       LocationModelMapper.ensureInitialized();
       DepartmentModelMapper.ensureInitialized();
@@ -108,6 +163,13 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
   static const Field<AssetModel, AssetStatus> _f$status = Field(
     'status',
     _$status,
+  );
+  static AssetType _$assetType(AssetModel v) => v.assetType;
+  static const Field<AssetModel, AssetType> _f$assetType = Field(
+    'assetType',
+    _$assetType,
+    opt: true,
+    def: AssetType.asset,
   );
   static String? _$serialNumber(AssetModel v) => v.serialNumber;
   static const Field<AssetModel, String> _f$serialNumber = Field(
@@ -179,6 +241,7 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
     #purchasePrice: _f$purchasePrice,
     #purchaseDate: _f$purchaseDate,
     #status: _f$status,
+    #assetType: _f$assetType,
     #serialNumber: _f$serialNumber,
     #expireDate: _f$expireDate,
     #vendor: _f$vendor,
@@ -199,6 +262,7 @@ class AssetModelMapper extends ClassMapperBase<AssetModel> {
       purchasePrice: data.dec(_f$purchasePrice),
       purchaseDate: data.dec(_f$purchaseDate),
       status: data.dec(_f$status),
+      assetType: data.dec(_f$assetType),
       serialNumber: data.dec(_f$serialNumber),
       expireDate: data.dec(_f$expireDate),
       vendor: data.dec(_f$vendor),
@@ -283,6 +347,7 @@ abstract class AssetModelCopyWith<$R, $In extends AssetModel, $Out>
     double? purchasePrice,
     String? purchaseDate,
     AssetStatus? status,
+    AssetType? assetType,
     String? serialNumber,
     String? expireDate,
     String? vendor,
@@ -326,6 +391,7 @@ class _AssetModelCopyWithImpl<$R, $Out>
     double? purchasePrice,
     String? purchaseDate,
     AssetStatus? status,
+    AssetType? assetType,
     Object? serialNumber = $none,
     Object? expireDate = $none,
     Object? vendor = $none,
@@ -344,6 +410,7 @@ class _AssetModelCopyWithImpl<$R, $Out>
       if (purchasePrice != null) #purchasePrice: purchasePrice,
       if (purchaseDate != null) #purchaseDate: purchaseDate,
       if (status != null) #status: status,
+      if (assetType != null) #assetType: assetType,
       if (serialNumber != $none) #serialNumber: serialNumber,
       if (expireDate != $none) #expireDate: expireDate,
       if (vendor != $none) #vendor: vendor,
@@ -364,6 +431,7 @@ class _AssetModelCopyWithImpl<$R, $Out>
     purchasePrice: data.get(#purchasePrice, or: $value.purchasePrice),
     purchaseDate: data.get(#purchaseDate, or: $value.purchaseDate),
     status: data.get(#status, or: $value.status),
+    assetType: data.get(#assetType, or: $value.assetType),
     serialNumber: data.get(#serialNumber, or: $value.serialNumber),
     expireDate: data.get(#expireDate, or: $value.expireDate),
     vendor: data.get(#vendor, or: $value.vendor),

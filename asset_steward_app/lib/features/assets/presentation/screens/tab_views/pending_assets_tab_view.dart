@@ -26,7 +26,7 @@ class PendingAssetsTabView extends HookConsumerWidget {
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async => ref.read(assetsCtrlProvider(AssetStatus.pendingApproval).notifier).refresh(),
-            child: AsyncBuilder<List<AssetModel>>(
+            child: AsyncBuilder(
               asyncValue: assetsAsync,
               providers: [assetsCtrlProvider(AssetStatus.pendingApproval)],
               allowEmpty: true,

@@ -13,6 +13,8 @@ enum AssetStatus {
   assigned,
   maintenance,
   pendingApproval,
+  rejected,
+  returned,
   retired;
 
   Color get color {
@@ -25,11 +27,18 @@ enum AssetStatus {
         return Colors.orange;
       case AssetStatus.pendingApproval:
         return Colors.orange.shade700;
+      case AssetStatus.rejected:
+        return Colors.red;
+      case AssetStatus.returned:
+        return Colors.redAccent.shade700;
       case AssetStatus.retired:
         return Colors.grey;
     }
   }
 }
+
+@MappableEnum(caseStyle: CaseStyle.upperSnakeCase)
+enum AssetType { officeAppliance, asset }
 
 @MappableClass()
 class AssetModel with AssetModelMappable {
@@ -46,6 +55,7 @@ class AssetModel with AssetModelMappable {
   final String? vendor;
   final int quantity;
   final AssetStatus status;
+  final AssetType assetType;
   final CategoryModel? category;
   final LocationModel? location;
   final DepartmentModel? department;
@@ -60,6 +70,7 @@ class AssetModel with AssetModelMappable {
     required this.purchasePrice,
     required this.purchaseDate,
     required this.status,
+    this.assetType = AssetType.asset,
     this.serialNumber,
     this.expireDate,
     this.vendor,

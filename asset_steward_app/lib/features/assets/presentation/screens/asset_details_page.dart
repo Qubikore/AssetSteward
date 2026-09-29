@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
+import 'package:screwdriver/screwdriver.dart';
 
 import '../../../../widgets/collapsible_section.dart';
 import 'asset_context_menu.dart';
@@ -19,6 +20,7 @@ class AssetDetailsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final assetAsync = ref.watch(assetDetailsCtrlProvider(id));
+    final assignmentsAsync = ref.watch(assetAssignmentsProvider(id));
     final profileAsync = ref.watch(profileCtrlProvider);
     final profile = profileAsync.value;
     final isPrivileged = profile?.isPrivileged ?? false;
@@ -31,6 +33,7 @@ class AssetDetailsPage extends HookConsumerWidget {
       builder: (asset) {
         final isPending = asset.status == .pendingApproval;
         final canApprove = isPrivileged;
+        final activeAssignment = assignmentsAsync.value?.firstWhereOrNull((a) => a.returnedAtDate == null);
         return Scaffold(
           extendBody: true,
           appBar: AppBar(
@@ -96,8 +99,10 @@ class AssetDetailsPage extends HookConsumerWidget {
           ),
           body: RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(assetAssignmentsProvider);
-              ref.invalidate(assetHistoryProvider);
+              if (isPrivileged) {
+                ref.invalidate(assetAssignmentsProvider);
+                ref.invalidate(assetHistoryProvider);
+              }
               return ref.read(assetDetailsCtrlProvider(id).notifier).refresh();
             },
             child: ListView(
@@ -130,13 +135,15 @@ class AssetDetailsPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                const Gap(Insets.lg),
+                if (activeAssignment != null) ...[const Gap(Insets.lg), _AssignmentCard(assignment: activeAssignment)],
 
+                const Gap(Insets.lg),
                 // Details Section
                 CollapsibleSection(
                   title: 'Asset Information',
                   initiallyExpanded: true,
                   children: [
+                    _DetailRow(label: 'Asset Type', value: asset.assetType.name.sentenceCase),
                     _DetailRow(label: 'Asset Code', value: asset.assetCode),
                     _DetailRow(label: 'Serial Number', value: asset.serialNumber),
                     _DetailRow(label: 'Category', value: asset.category?.name),
@@ -165,37 +172,38 @@ class AssetDetailsPage extends HookConsumerWidget {
                   ],
                 ),
                 const Gap(Insets.lg),
+                if (isPrivileged) ...[
+                  AsyncBuilder(
+                    asyncValue: assignmentsAsync,
+                    providers: [assetAssignmentsProvider(id)],
+                    allowEmpty: true,
+                    builder: (assignments) {
+                      if (assignments.isEmpty) return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          CollapsibleSection(
+                            title: 'Assignments',
+                            children: assignments.map((a) => _AssignmentCard(assignment: a)).toList().gapBy(8),
+                          ),
+                          const Gap(Insets.lg),
+                        ],
+                      );
+                    },
+                  ),
 
-                AsyncBuilder(
-                  asyncValue: ref.watch(assetAssignmentsProvider(id)),
-                  providers: [assetAssignmentsProvider(id)],
-                  allowEmpty: true,
-                  builder: (assignments) {
-                    if (assignments.isEmpty) return const SizedBox.shrink();
-                    return Column(
-                      children: [
-                        CollapsibleSection(
-                          title: 'Assignments',
-                          children: assignments.map((a) => _AssignmentCard(assignment: a)).toList(),
-                        ),
-                        const Gap(Insets.lg),
-                      ],
-                    );
-                  },
-                ),
-
-                AsyncBuilder(
-                  asyncValue: ref.watch(assetHistoryProvider(id)),
-                  providers: [assetHistoryProvider(id)],
-                  allowEmpty: true,
-                  builder: (history) {
-                    if (history.isEmpty) return const SizedBox.shrink();
-                    return CollapsibleSection(
-                      title: 'Asset History',
-                      children: history.map((h) => _HistoryCard(history: h)).toList(),
-                    );
-                  },
-                ),
+                  AsyncBuilder(
+                    asyncValue: ref.watch(assetHistoryProvider(id)),
+                    providers: [assetHistoryProvider(id)],
+                    allowEmpty: true,
+                    builder: (history) {
+                      if (history.isEmpty) return const SizedBox.shrink();
+                      return CollapsibleSection(
+                        title: 'Asset History',
+                        children: history.map((h) => _HistoryCard(history: h)).toList(),
+                      );
+                    },
+                  ),
+                ],
               ],
             ),
           ),
@@ -266,7 +274,9 @@ class _DetailRow extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [Text(value ?? '--', style: context.text.bodySmall?.semiBold, textAlign: TextAlign.right)],
+              children: [
+                SelectableText(value ?? '--', style: context.text.bodySmall?.semiBold, textAlign: TextAlign.right),
+              ],
             ),
           ),
         ],
@@ -283,7 +293,6 @@ class _AssignmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: Insets.sm),
       padding: const EdgeInsets.all(Insets.md),
       decoration: BoxDecoration(
         color: context.colors.surfaceContainerLowest,
@@ -295,18 +304,34 @@ class _AssignmentCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.person_outline, size: 20),
+              const Icon(HIStroke.userCircle, size: 18),
               const Gap(Insets.sm),
-              Expanded(child: Text(assignment.assignedTo.fullName, style: context.text.bodyMedium?.bold)),
-              if (assignment.returnedAtDate != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: context.colors.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text('Returned', style: context.text.labelSmall),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(assignment.assignedTo.fullName, style: context.text.bodySmall?.bold),
+                    Text(
+                      assignment.assignedTo.email,
+                      style: context.text.labelSmall?.textColor(context.colors.outline).textHeight(1).light.scale(.9),
+                    ),
+                  ],
                 ),
+              ),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: assignment.returnedAtDate != null ? context.colors.error.op1 : context.colors.primary.op1,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  assignment.returnedAtDate != null ? 'Returned' : 'Assigned',
+                  style: context.text.labelSmall?.textColor(
+                    assignment.returnedAtDate != null ? context.colors.error : context.colors.primary,
+                  ),
+                ),
+              ),
             ],
           ),
           const Gap(Insets.sm),
@@ -316,7 +341,7 @@ class _AssignmentCard extends StatelessWidget {
               Text('Assigned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
               Text(
                 assignment.assignedAtDate?.toRelativeTime() ?? assignment.assignedAt,
-                style: context.text.bodySmall?.bold,
+                style: context.text.labelSmall,
               ),
             ],
           ),
@@ -326,10 +351,22 @@ class _AssignmentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Returned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
-                Text(assignment.returnedAtDate!.toRelativeTime(), style: context.text.bodySmall?.bold),
+                Text(assignment.returnedAtDate!.toRelativeTime(), style: context.text.labelSmall),
               ],
             ),
           ],
+          const Gap(4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Assigned by:', style: context.text.bodySmall?.textColor(context.colors.outline)),
+              Tooltip(
+                triggerMode: .longPress,
+                message: assignment.assignedBy.email,
+                child: Text(assignment.assignedBy.fullName, style: context.text.labelSmall),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -354,16 +391,16 @@ class _HistoryCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.history, size: 20, color: context.colors.primary),
+          Icon(HIStroke.transactionHistory, size: 18, color: context.colors.primary),
           const Gap(Insets.sm),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: .spaceBetween,
                   children: [
-                    Text(history.action, style: context.text.bodyMedium?.bold),
+                    Text(history.action.sentenceCase, style: context.text.bodySmall?.bold),
                     Text(
                       DateTime.tryParse(history.timestamp)?.toRelativeTime() ?? history.timestamp,
                       style: context.text.labelSmall?.textColor(context.colors.outline),
@@ -371,8 +408,11 @@ class _HistoryCard extends StatelessWidget {
                   ],
                 ),
                 if (history.actionBy != null) ...[
-                  const Gap(4),
-                  Text('By: ${history.actionBy!.fullName}', style: context.text.bodySmall),
+                  Tooltip(
+                    triggerMode: .longPress,
+                    message: history.actionBy!.email,
+                    child: Text('By: ${history.actionBy!.fullName}', style: context.text.labelSmall),
+                  ),
                 ],
                 if (history.notes != null && history.notes!.isNotEmpty) ...[
                   const Gap(4),

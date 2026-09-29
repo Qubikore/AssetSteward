@@ -33,7 +33,7 @@ final class MaintenanceCtrlProvider
   MaintenanceCtrl create() => MaintenanceCtrl();
 }
 
-String _$maintenanceCtrlHash() => r'40257a69b905d7c14594b6aefdbab6a292974d15';
+String _$maintenanceCtrlHash() => r'80082b282c47c06df498de8fbc5a413afa3444bb';
 
 abstract class _$MaintenanceCtrl
     extends $AsyncNotifier<List<MaintenanceModel>> {

@@ -28,6 +28,7 @@ class AuthCtrl extends _$AuthCtrl {
       ref.invalidate(dashboardMetricsCtrlProvider, asReload: true);
       ref.invalidate(assetsCtrlProvider, asReload: true);
       ref.invalidate(departmentsCtrlProvider, asReload: true);
+      ref.invalidate(myAssetsCtrlProvider, asReload: true);
 
       ref.invalidateSelf();
     }

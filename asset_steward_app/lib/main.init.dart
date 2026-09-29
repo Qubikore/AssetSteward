@@ -25,6 +25,7 @@ void initializeMappers() {
   p2.AssetLabelResponseMapper.ensureInitialized();
   p3.AssetModelMapper.ensureInitialized();
   p3.AssetStatusMapper.ensureInitialized();
+  p3.AssetTypeMapper.ensureInitialized();
   p4.AssignmentModelMapper.ensureInitialized();
   p5.CategoryModelMapper.ensureInitialized();
   p6.DepartmentModelMapper.ensureInitialized();
