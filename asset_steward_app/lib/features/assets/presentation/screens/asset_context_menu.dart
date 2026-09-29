@@ -69,14 +69,14 @@ class _AssetMenu extends ConsumerWidget {
               },
             ),
 
-          if (asset.status != .assigned)
+          if (asset.status != .assigned && asset.assetType == .asset)
             ContextMenuAction(
               title: 'Assign',
               leading: const Icon(HIStroke.userAdd01),
               onTap: () => AssignAssetSheet.show(context, asset),
             ),
 
-          if (asset.status == .assigned)
+          if (asset.status == .assigned && asset.assetType == .asset)
             ContextMenuAction(
               title: 'Transfer',
               leading: const Icon(HIStroke.arrowDataTransferHorizontal),

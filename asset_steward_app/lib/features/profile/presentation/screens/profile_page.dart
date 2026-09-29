@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -95,6 +96,25 @@ class ProfilePage extends HookConsumerWidget {
                             onTap: () => RPaths.categories.push(context),
                           ),
                         ],
+
+                        SettingsTile(
+                          icon: HIStroke.moon02,
+                          title: 'Dark Mode',
+                          trailing: ScaleTransition(
+                            scale: const AlwaysStoppedAnimation(.9),
+                            child: Switch.adaptive(
+                              thumbColor: WidgetStateProperty.resolveWith((s) {
+                                if (s.isSelected) return context.colors.primary.lighten(50);
+                                return null;
+                              }),
+                              padding: .zero,
+                              value: ref.watch(themeModeControllerProvider) == .dark,
+                              onChanged: (value) =>
+                                  ref.read(themeModeControllerProvider.notifier).setThemeMode(value ? .dark : .light),
+                            ),
+                          ),
+                          onTap: () => ref.read(themeModeControllerProvider.notifier).toggleTheme(),
+                        ),
 
                         SettingsTile(
                           icon: HIStroke.informationCircle,

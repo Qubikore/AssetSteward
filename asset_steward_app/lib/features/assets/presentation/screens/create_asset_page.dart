@@ -48,19 +48,21 @@ class CreateAssetPage extends HookConsumerWidget {
       child: Scaffold(
         appBar: AppBar(title: Text(asset == null ? 'Add New Asset' : 'Edit Asset'), centerTitle: true),
         body: SingleChildScrollView(
+          physics: kScrollPhysics,
           padding: const EdgeInsets.symmetric(
             horizontal: Insets.lg,
             vertical: Insets.lg,
           ).copyWith(bottom: context.viewInsets.bottom + Insets.xxl),
           child: FormBuilder(
             key: formKey,
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _Section(
+                CollapsibleSection(
                   title: 'General Information',
                   icon: HIStroke.laptopProgramming,
+                  titleGap: Insets.md,
+                  initiallyExpanded: true,
                   children: [
                     InputField(
                       name: 'name',
@@ -116,14 +118,17 @@ class CreateAssetPage extends HookConsumerWidget {
                       onChanged: (val) {
                         if (val != null) selectedAssetType.value = val;
                       },
+                      valueTransformer: (x) => x?.name.constantCase,
                     ),
                   ],
                 ),
                 const Gap(Insets.xl),
 
-                _Section(
+                CollapsibleSection(
                   title: 'Purchase Details',
                   icon: HIStroke.money01,
+                  initiallyExpanded: true,
+                  titleGap: Insets.md,
                   children: [
                     Row(
                       children: [
@@ -201,7 +206,7 @@ class CreateAssetPage extends HookConsumerWidget {
                 ),
                 const Gap(Insets.xl),
 
-                _Section(
+                CollapsibleSection(
                   title: 'Categorization & Location',
                   icon: HIStroke.tag01,
                   children: [
@@ -291,15 +296,7 @@ class CreateAssetPage extends HookConsumerWidget {
                           if (!state.saveAndValidate()) return;
 
                           isLoading.value = true;
-                          final payload = Map<String, dynamic>.from(state.value);
-                          if (payload['assetType'] is AssetType) {
-                            payload['assetType'] = (payload['assetType'] as AssetType).name.constantCase;
-                          }
-
-                          // Default quantity to 1 for asset type if it was omitted
-                          if (payload['assetType'] == 'ASSET') {
-                            payload['quantity'] = '1';
-                          }
+                          final payload = QMap.from(state.value);
 
                           final bool success;
                           if (asset != null) {
@@ -332,40 +329,6 @@ class CreateAssetPage extends HookConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final List<Widget> children;
-
-  const _Section({required this.title, required this.icon, required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(Insets.lg),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceContainerHighest.op(0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.colors.outlineVariant.op(0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: context.colors.primary, size: 18),
-              const Gap(Insets.md),
-              Text(title, style: context.text.titleMedium?.bold),
-            ],
-          ),
-          const Gap(Insets.lg),
-          ...children,
-        ],
       ),
     );
   }

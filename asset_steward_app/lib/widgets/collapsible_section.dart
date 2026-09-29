@@ -7,6 +7,9 @@ class CollapsibleSection extends HookWidget {
   final IconData? icon;
   final List<Widget> children;
   final bool initiallyExpanded;
+  final double? paddings;
+  final double? spacing;
+  final double? titleGap;
 
   const CollapsibleSection({
     super.key,
@@ -14,16 +17,20 @@ class CollapsibleSection extends HookWidget {
     required this.children,
     this.icon,
     this.initiallyExpanded = false,
+    this.paddings,
+    this.spacing,
+    this.titleGap,
   });
 
   @override
   Widget build(BuildContext context) {
     final expanded = useState(initiallyExpanded);
+    final effectivePaddings = paddings ?? Insets.lg;
     return Container(
       decoration: BoxDecoration(
-        color: context.colors.surface,
+        color: context.colors.surfaceContainerHighest.op2,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.colors.outlineVariant.op(0.3)),
+        border: Border.all(color: context.colors.outlineVariant.op(0.4)),
       ),
       child: Column(
         children: [
@@ -31,9 +38,10 @@ class CollapsibleSection extends HookWidget {
             onTap: () => expanded.value = !expanded.value,
             borderRadius: BorderRadius.circular(16),
             child: Padding(
-              padding: const EdgeInsets.all(Insets.md),
+              padding: EdgeInsets.all(effectivePaddings).copyWith(bottom: titleGap ?? effectivePaddings),
               child: Row(
                 children: [
+                  if (icon != null) ...[Icon(icon, color: context.colors.primary, size: 18), const Gap(Insets.md)],
                   Expanded(child: Text(title, style: context.text.titleMedium?.bold)),
                   AnimatedRotation(
                     turns: expanded.value ? 0.5 : 0.0,
@@ -47,10 +55,10 @@ class CollapsibleSection extends HookWidget {
           AnimatedCrossFade(
             firstChild: const SizedBox(width: double.infinity),
             secondChild: Padding(
-              padding: const EdgeInsets.only(left: Insets.md, right: Insets.md, bottom: Insets.md),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+              padding: EdgeInsets.only(left: effectivePaddings, right: effectivePaddings, bottom: effectivePaddings),
+              child: Column(spacing: spacing ?? 0, crossAxisAlignment: .stretch, children: children),
             ),
-            crossFadeState: expanded.value ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: expanded.value ? .showSecond : .showFirst,
             duration: const Duration(milliseconds: 200),
           ),
         ],

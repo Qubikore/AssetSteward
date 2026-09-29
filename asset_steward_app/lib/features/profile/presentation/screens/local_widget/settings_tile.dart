@@ -4,15 +4,17 @@ import 'package:material_ui/material_ui.dart';
 class SettingsTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool isDestructive;
+  final Widget? trailing;
 
   const SettingsTile({
     super.key,
     required this.icon,
     required this.title,
-    required this.onTap,
+    this.onTap,
     this.isDestructive = false,
+    this.trailing,
   });
 
   @override
@@ -46,13 +48,14 @@ class SettingsTile extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        trailing: isDestructive
-            ? null
-            : Icon(
-                HIStroke.arrowRight01,
-                size: 20,
-                color: context.colors.onSurfaceVariant,
-              ),
+        trailing: trailing ??
+            (isDestructive
+                ? null
+                : Icon(
+                    HIStroke.arrowRight01,
+                    size: 20,
+                    color: context.colors.onSurfaceVariant,
+                  )),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),

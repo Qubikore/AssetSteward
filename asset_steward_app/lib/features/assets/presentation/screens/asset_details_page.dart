@@ -135,7 +135,10 @@ class AssetDetailsPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                if (activeAssignment != null) ...[const Gap(Insets.lg), _AssignmentCard(assignment: activeAssignment)],
+                if (activeAssignment != null) ...[
+                  const Gap(Insets.lg),
+                  _AssignmentCard(assignment: activeAssignment, color: context.colors.surface),
+                ],
 
                 const Gap(Insets.lg),
                 // Details Section
@@ -177,6 +180,8 @@ class AssetDetailsPage extends HookConsumerWidget {
                     asyncValue: assignmentsAsync,
                     providers: [assetAssignmentsProvider(id)],
                     allowEmpty: true,
+                    onLoading: () => const SizedBox.shrink(),
+                    onError: (e, s) => const SizedBox.shrink(),
                     builder: (assignments) {
                       if (assignments.isEmpty) return const SizedBox.shrink();
                       return Column(
@@ -195,6 +200,8 @@ class AssetDetailsPage extends HookConsumerWidget {
                     asyncValue: ref.watch(assetHistoryProvider(id)),
                     providers: [assetHistoryProvider(id)],
                     allowEmpty: true,
+                    onLoading: () => const SizedBox.shrink(),
+                    onError: (e, s) => const SizedBox.shrink(),
                     builder: (history) {
                       if (history.isEmpty) return const SizedBox.shrink();
                       return CollapsibleSection(
@@ -287,15 +294,16 @@ class _DetailRow extends StatelessWidget {
 
 class _AssignmentCard extends StatelessWidget {
   final AssignmentModel assignment;
+  final Color? color;
 
-  const _AssignmentCard({required this.assignment});
+  const _AssignmentCard({required this.assignment, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(Insets.md),
       decoration: BoxDecoration(
-        color: context.colors.surfaceContainerLowest,
+        color: color ?? context.colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.colors.outlineVariant.op(0.5)),
       ),
