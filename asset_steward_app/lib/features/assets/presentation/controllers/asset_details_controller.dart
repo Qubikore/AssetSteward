@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_history_model.dart';
+import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
@@ -103,6 +104,27 @@ class AssetDetailsCtrl extends _$AssetDetailsCtrl {
         ref.invalidateSelf();
         Toast.showSuccess('Asset approved successfully');
 
+        return true;
+      },
+    );
+  }
+
+  Future<AssetLabelResponse> getAssetLabel() async {
+    final result = await _repo.getAssetLabelById(id);
+    return result.fold((l) => throw Exception(l.message), (r) => r);
+  }
+
+  Future<bool> returnAsset(String reason) async {
+    final result = await _repo.returnAsset({'assetId': id, 'reason': reason});
+    return result.fold(
+      (l) {
+        Toast.showError(l.message);
+        return false;
+      },
+      (r) {
+        ref.invalidate(assetsCtrlProvider);
+        ref.invalidateSelf();
+        Toast.showSuccess('Asset returned successfully');
         return true;
       },
     );

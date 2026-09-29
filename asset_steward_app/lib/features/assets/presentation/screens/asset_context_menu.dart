@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assign_asset_sheet.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/start_maintenance_sheet.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
@@ -86,8 +87,50 @@ class _AssetMenu extends ConsumerWidget {
         ContextMenuAction(
           title: 'Print Label',
           leading: const Icon(HIStroke.printer),
-          onTap: () => Toast.showInfo('Print Label feature coming soon'),
+          onTap: () => PrintLabelsSheet.show(context, assetId: asset.id),
         ),
+        if (isPrivileged && asset.status == AssetStatus.assigned)
+          ContextMenuAction(
+            title: 'Return',
+            leading: const Icon(HIStroke.arrowLeft01),
+            onTap: () async {
+              final reason = await showDialog<String>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Return Asset'),
+                  content: HookBuilder(
+                    builder: (context) {
+                      final ctrl = useTextEditingController();
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text('Please provide a reason for return:'),
+                          const Gap(Insets.md),
+                          InputField(controller: ctrl, hintText: 'Reason...', maxLines: 5),
+                          const Gap(Insets.md),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                              const Gap(Insets.sm),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(context, ctrl.text.trim()),
+                                child: const Text('Return'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              );
+              if (reason != null && context.mounted) {
+                await ref.read(assetDetailsCtrlProvider(id).notifier).returnAsset(reason);
+              }
+            },
+          ),
         if (isPrivileged) ...[
           const ContextMenuDivider(),
           ContextMenuAction(

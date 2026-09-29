@@ -12,16 +12,18 @@ import 'package:material_ui/material_ui.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 
 class PrintLabelsSheet extends HookConsumerWidget {
-  const PrintLabelsSheet({super.key});
+  final int? assetId;
+  const PrintLabelsSheet({super.key, this.assetId});
 
-  static Future<void> show(BuildContext context) {
+  static Future<void> show(BuildContext context, {int? assetId}) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
-      builder: (context) => const PrintLabelsSheet(),
+      builder: (context) => PrintLabelsSheet(assetId: assetId),
     );
   }
 
@@ -127,7 +129,9 @@ class PrintLabelsSheet extends HookConsumerWidget {
     void onPrint() async {
       isLoading.value = true;
       try {
-        final labels = await ref.read(assetsCtrlProvider(null).notifier).getAssetLabels();
+        final labels = assetId == null
+            ? await ref.read(assetsCtrlProvider().notifier).getAssetLabels()
+            : [await ref.read(assetDetailsCtrlProvider(assetId!).notifier).getAssetLabel()];
         if (labels.isEmpty) {
           if (context.mounted) Toast.showError('No labels found to print');
           return;
@@ -170,7 +174,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
                     const Gap(12),
                     Expanded(
                       child: Text(
-                        'This will fetch all stock asset labels and generate a printable PDF. You can adjust the PDF page width to fit your printer',
+                        'This will fetch the asset label(s) and generate a printable PDF. You can adjust the PDF page width to fit your printer',
                         style: context.text.labelSmall?.copyWith(color: context.colors.outline),
                       ),
                     ),
