@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
@@ -81,12 +83,20 @@ class CreateAssetPage extends HookConsumerWidget {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         onPressed: () {
-                          // TODO: add serial generator
+                          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
+                          final rnd = Random();
+                          final generated = String.fromCharCodes(
+                            Iterable.generate(10, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
+                          );
+                          formKey.currentState?.fields['serialNumber']?.didChange('SN-$generated');
                         },
                         icon: const Icon(HIStroke.shuffle, size: 20),
                       ),
                     ),
                     const Gap(Insets.md),
+
+                    Text('Asset Type', style: context.text.titleSmall?.medium),
+                    const Gap(Insets.xs),
                     FormBuilderChoiceChips<AssetType>(
                       name: 'assetType',
                       initialValue: selectedAssetType.value,

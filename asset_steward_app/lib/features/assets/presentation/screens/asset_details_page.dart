@@ -143,6 +143,7 @@ class AssetDetailsPage extends HookConsumerWidget {
                   title: 'Asset Information',
                   initiallyExpanded: true,
                   children: [
+                    _DetailRow(label: 'Asset Type', value: asset.assetType.name.sentenceCase),
                     _DetailRow(label: 'Asset Code', value: asset.assetCode),
                     _DetailRow(label: 'Serial Number', value: asset.serialNumber),
                     _DetailRow(label: 'Category', value: asset.category?.name),
@@ -273,7 +274,9 @@ class _DetailRow extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [Text(value ?? '--', style: context.text.bodySmall?.semiBold, textAlign: TextAlign.right)],
+              children: [
+                SelectableText(value ?? '--', style: context.text.bodySmall?.semiBold, textAlign: TextAlign.right),
+              ],
             ),
           ),
         ],
