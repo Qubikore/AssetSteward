@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
@@ -51,12 +50,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
               spacing: 8,
               runSpacing: 8,
               children: labels.map((label) {
-                // Decode base64 if it's formatted like data:image/png;base64,...
-                String b64 = label.qrCodeBase64;
-                if (b64.contains(',')) {
-                  b64 = b64.split(',').last;
-                }
-                final Uint8List imageBytes = base64Decode(b64);
+                final qrData = jsonEncode({'id': label.id, 'name': label.name, 'assetCode': label.assetCode});
 
                 return pw.Container(
                   width: 200,
@@ -81,7 +75,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
                         maxLines: 2,
                       ),
                       pw.SizedBox(height: 8),
-                      pw.Image(pw.MemoryImage(imageBytes), width: 100, height: 100),
+                      pw.BarcodeWidget(barcode: pw.Barcode.qrCode(), data: qrData, width: 100, height: 100),
                       pw.SizedBox(height: 8),
                       pw.Text(
                         label.assetCode,

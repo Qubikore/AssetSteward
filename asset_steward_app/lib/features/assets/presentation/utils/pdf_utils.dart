@@ -30,11 +30,11 @@ Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, d
             spacing: 8,
             runSpacing: 8,
             children: labels.map((label) {
-              String b64 = label.qrCodeBase64;
-              if (b64.contains(',')) {
-                b64 = b64.split(',').last;
-              }
-              final Uint8List imageBytes = base64Decode(b64);
+              final qrData = jsonEncode({
+                'id': label.id,
+                'name': label.name,
+                'assetCode': label.assetCode,
+              });
 
               return pw.Container(
                 width: 200,
@@ -59,7 +59,12 @@ Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, d
                       maxLines: 2,
                     ),
                     pw.SizedBox(height: 8),
-                    pw.Image(pw.MemoryImage(imageBytes), width: 100, height: 100),
+                    pw.BarcodeWidget(
+                      barcode: pw.Barcode.qrCode(),
+                      data: qrData,
+                      width: 100,
+                      height: 100,
+                    ),
                     pw.SizedBox(height: 8),
                     pw.Text(
                       label.assetCode,
