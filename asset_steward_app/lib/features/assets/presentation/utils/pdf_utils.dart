@@ -1,10 +1,9 @@
-
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+
+import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
 
 Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, double pdfWidth) async {
   final doc = pw.Document();
@@ -30,11 +29,7 @@ Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, d
             spacing: 8,
             runSpacing: 8,
             children: labels.map((label) {
-              final qrData = jsonEncode({
-                'id': label.id,
-                'name': label.name,
-                'assetCode': label.assetCode,
-              });
+              final qrData = jsonEncode({'id': label.id, 'name': label.name, 'assetCode': label.assetCode});
 
               return pw.Container(
                 width: 200,
@@ -59,12 +54,7 @@ Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, d
                       maxLines: 2,
                     ),
                     pw.SizedBox(height: 8),
-                    pw.BarcodeWidget(
-                      barcode: pw.Barcode.qrCode(),
-                      data: qrData,
-                      width: 100,
-                      height: 100,
-                    ),
+                    pw.BarcodeWidget(barcode: pw.Barcode.qrCode(), data: qrData, width: 100, height: 100),
                     pw.SizedBox(height: 8),
                     pw.Text(
                       label.assetCode,
@@ -93,4 +83,3 @@ Future<void> generateLabelPdf(List<AssetLabelResponse> labels, String orgName, d
 
   await Printing.sharePdf(bytes: bytes, filename: 'asset_labels.pdf');
 }
-
