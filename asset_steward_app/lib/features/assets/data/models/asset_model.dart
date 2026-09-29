@@ -37,6 +37,9 @@ enum AssetStatus {
   }
 }
 
+@MappableEnum(caseStyle: CaseStyle.upperSnakeCase)
+enum AssetType { officeAppliance, asset }
+
 @MappableClass()
 class AssetModel with AssetModelMappable {
   static const fromMap = AssetModelMapper.fromMap;
@@ -52,6 +55,7 @@ class AssetModel with AssetModelMappable {
   final String? vendor;
   final int quantity;
   final AssetStatus status;
+  final AssetType assetType;
   final CategoryModel? category;
   final LocationModel? location;
   final DepartmentModel? department;
@@ -66,6 +70,7 @@ class AssetModel with AssetModelMappable {
     required this.purchasePrice,
     required this.purchaseDate,
     required this.status,
+    this.assetType = AssetType.asset,
     this.serialNumber,
     this.expireDate,
     this.vendor,

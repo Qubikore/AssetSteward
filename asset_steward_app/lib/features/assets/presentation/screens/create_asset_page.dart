@@ -19,6 +19,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:recase/recase.dart';
 import 'package:screwdriver/screwdriver.dart';
 
 class CreateAssetPage extends HookConsumerWidget {
@@ -37,6 +38,8 @@ class CreateAssetPage extends HookConsumerWidget {
 
     final profile = ref.watch(profileCtrlProvider).value;
     final isPrivileged = profile?.isPrivileged ?? false;
+
+    final selectedAssetType = useState<AssetType>(asset?.assetType ?? AssetType.asset);
 
     return GestureDetector(
       onTap: () => InputUtils.unFocus(),
@@ -70,6 +73,39 @@ class CreateAssetPage extends HookConsumerWidget {
                       title: 'Serial Number',
                       hintText: 'e.g. C02X...',
                       initialValue: asset?.serialNumber,
+                      suffixGap: 2,
+                      outsideSuffix: IconButton.filled(
+                        style: IconButton.styleFrom(
+                          foregroundColor: context.colors.primaryContainer,
+                          backgroundColor: context.colors.surfaceContainerHighest,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                        onPressed: () {
+                          // TODO: add serial generator
+                        },
+                        icon: const Icon(HIStroke.shuffle, size: 20),
+                      ),
+                    ),
+                    const Gap(Insets.md),
+                    FormBuilderChoiceChips<AssetType>(
+                      name: 'assetType',
+                      initialValue: selectedAssetType.value,
+                      enabled: asset == null,
+                      decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
+                      spacing: Insets.md,
+                      color: WidgetStateProperty.resolveWith((s) {
+                        if (s.isSelected) return context.colors.primary;
+                        return null;
+                      }),
+                      materialTapTargetSize: .shrinkWrap,
+                      visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                      options: [
+                        for (final t in AssetType.values)
+                          FormBuilderChipOption(value: t, child: Text(t.name.sentenceCase)),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) selectedAssetType.value = val;
+                      },
                     ),
                   ],
                 ),
@@ -92,18 +128,19 @@ class CreateAssetPage extends HookConsumerWidget {
                             validators: [FormBuilderValidators.numeric()],
                           ),
                         ),
-                        const Gap(Insets.md),
-                        Expanded(
-                          child: InputField(
-                            name: 'quantity',
-                            title: 'Quantity',
-                            hintText: 'e.g. 10',
-                            // initialValue: (asset?.quantity ?? 1).toString(),
-                            keyboardType: TextInputType.number,
-                            // isRequired: true,
-                            validators: [FormBuilderValidators.numeric(checkNullOrEmpty: false)],
+                        if (selectedAssetType.value != AssetType.asset) ...[
+                          const Gap(Insets.md),
+                          Expanded(
+                            child: InputField(
+                              name: 'quantity',
+                              title: 'Quantity',
+                              hintText: 'e.g. 10',
+                              initialValue: asset?.quantity.toString() ?? '1',
+                              keyboardType: TextInputType.number,
+                              validators: [FormBuilderValidators.numeric(checkNullOrEmpty: false)],
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                     const Gap(Insets.md),
@@ -244,7 +281,15 @@ class CreateAssetPage extends HookConsumerWidget {
                           if (!state.saveAndValidate()) return;
 
                           isLoading.value = true;
-                          final payload = state.value;
+                          final payload = Map<String, dynamic>.from(state.value);
+                          if (payload['assetType'] is AssetType) {
+                            payload['assetType'] = (payload['assetType'] as AssetType).name.constantCase;
+                          }
+
+                          // Default quantity to 1 for asset type if it was omitted
+                          if (payload['assetType'] == 'ASSET') {
+                            payload['quantity'] = '1';
+                          }
 
                           final bool success;
                           if (asset != null) {

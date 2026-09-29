@@ -51,22 +51,23 @@ class _AssetMenu extends ConsumerWidget {
       alignment: ContextMenuAlignment.end,
       items: [
         if (isPrivileged) ...[
-          ContextMenuAction(
-            title: 'Update Quantity',
-            leading: const Icon(HIStroke.add01),
-            onTap: () async {
-              final qty = await showDialog<int>(
-                context: context,
-                builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
-              );
-              if (qty != null && context.mounted) {
-                final success = await ref.read(assetDetailsCtrlProvider(id).notifier).updateAsset({'quantity': qty});
-                if (success) {
-                  ref.invalidate(assetDetailsCtrlProvider(id));
+          if (asset.assetType != AssetType.asset)
+            ContextMenuAction(
+              title: 'Update Quantity',
+              leading: const Icon(HIStroke.add01),
+              onTap: () async {
+                final qty = await showDialog<int>(
+                  context: context,
+                  builder: (_) => _UpdateQuantityDialog(initialQuantity: asset.quantity),
+                );
+                if (qty != null && context.mounted) {
+                  final success = await ref.read(assetDetailsCtrlProvider(id).notifier).updateAsset({'quantity': qty});
+                  if (success) {
+                    ref.invalidate(assetDetailsCtrlProvider(id));
+                  }
                 }
-              }
-            },
-          ),
+              },
+            ),
 
           if (asset.status != .assigned)
             ContextMenuAction(
@@ -96,19 +97,19 @@ class _AssetMenu extends ConsumerWidget {
           onTap: () => PrintLabelsSheet.show(context, assetId: asset.id),
         ),
 
-        if (asset.status == .assigned)
-          ContextMenuAction(
-            title: 'Return',
-            isDestructive: true,
-            leading: const Icon(HIStroke.arrowLeft01),
-            onTap: () async {
-              await showDialog(
-                context: context,
-                builder: (context) => _AssetReturnDialog(id: id),
-              );
-            },
-          ),
         if (isPrivileged) ...[
+          if (asset.status == .assigned)
+            ContextMenuAction(
+              title: 'Return',
+              isDestructive: true,
+              leading: const Icon(HIStroke.arrowLeft01),
+              onTap: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) => _AssetReturnDialog(id: id),
+                );
+              },
+            ),
           const ContextMenuDivider(),
           ContextMenuAction(
             title: 'Edit Asset',
