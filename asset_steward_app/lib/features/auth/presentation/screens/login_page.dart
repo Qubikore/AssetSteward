@@ -48,6 +48,7 @@ class LoginPage extends HookConsumerWidget {
                     hintText: 'Enter your email',
                     isRequired: true,
                     keyboardType: TextInputType.emailAddress,
+                    autofillHints: [AutofillHints.email],
                   ),
                   const Gap(Insets.md),
                   const InputField(
@@ -56,6 +57,7 @@ class LoginPage extends HookConsumerWidget {
                     hintText: 'Enter your password',
                     isRequired: true,
                     isPassword: true,
+                    autofillHints: [AutofillHints.password],
                   ),
                   const Gap(Insets.xs),
                   FormBuilderCheckbox(

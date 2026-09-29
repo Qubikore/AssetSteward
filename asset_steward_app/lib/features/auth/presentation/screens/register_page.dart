@@ -144,6 +144,7 @@ class RegisterPage extends HookConsumerWidget {
                                   hintText: 'e.g. Acme Corp',
                                   isRequired: true,
                                   keyboardType: TextInputType.name,
+                                  autofillHints: const [AutofillHints.organizationName],
                                 ),
 
                                 const InputField(
@@ -152,6 +153,7 @@ class RegisterPage extends HookConsumerWidget {
                                   hintText: 'Enter phone number',
                                   isRequired: true,
                                   keyboardType: TextInputType.phone,
+                                  autofillHints: [AutofillHints.telephoneNumber],
                                 ),
 
                                 InputField(
@@ -161,12 +163,14 @@ class RegisterPage extends HookConsumerWidget {
                                   isRequired: true,
                                   keyboardType: TextInputType.emailAddress,
                                   validators: [FormBuilderValidators.email()],
+                                  autofillHints: const [AutofillHints.email],
                                 ),
 
                                 const InputField(
                                   name: 'organizationLocation',
                                   title: 'Location / Address (Optional)',
                                   hintText: 'City, Country',
+                                  autofillHints: [AutofillHints.fullStreetAddress],
                                 ),
                               ],
                             ),
@@ -194,6 +198,7 @@ class RegisterPage extends HookConsumerWidget {
                                         hintText: 'John',
                                         isRequired: true,
                                         keyboardType: TextInputType.name,
+                                        autofillHints: const [AutofillHints.givenName],
                                       ),
                                     ),
                                     Gap(Insets.md),
@@ -204,6 +209,7 @@ class RegisterPage extends HookConsumerWidget {
                                         hintText: 'Doe',
                                         isRequired: true,
                                         keyboardType: TextInputType.name,
+                                        autofillHints: const [AutofillHints.familyName],
                                       ),
                                     ),
                                   ],
@@ -216,6 +222,7 @@ class RegisterPage extends HookConsumerWidget {
                                   isRequired: true,
                                   keyboardType: TextInputType.emailAddress,
                                   validators: [FormBuilderValidators.email()],
+                                  autofillHints: const [AutofillHints.email],
                                 ),
 
                                 InputField(
@@ -225,6 +232,7 @@ class RegisterPage extends HookConsumerWidget {
                                   isRequired: true,
                                   isPassword: true,
                                   validators: [FormBuilderValidators.minLength(6)],
+                                  autofillHints: const [AutofillHints.newPassword],
                                 ),
                               ],
                             ),

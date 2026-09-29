@@ -34,11 +34,21 @@ class CreateUserSheet extends HookConsumerWidget {
             const Row(
               children: [
                 Expanded(
-                  child: InputField(name: 'firstname', title: 'First Name', isRequired: true),
+                  child: InputField(
+                    name: 'firstname',
+                    title: 'First Name',
+                    isRequired: true,
+                    autofillHints: const [AutofillHints.givenName],
+                  ),
                 ),
                 Gap(Insets.md),
                 Expanded(
-                  child: InputField(name: 'lastname', title: 'Last Name', isRequired: true),
+                  child: InputField(
+                    name: 'lastname',
+                    title: 'Last Name',
+                    isRequired: true,
+                    autofillHints: const [AutofillHints.familyName],
+                  ),
                 ),
               ],
             ),
@@ -49,6 +59,7 @@ class CreateUserSheet extends HookConsumerWidget {
               isRequired: true,
               keyboardType: TextInputType.emailAddress,
               validators: [FormBuilderValidators.email()],
+              autofillHints: const [AutofillHints.email],
             ),
             const Gap(Insets.md),
             InputField(
@@ -57,6 +68,7 @@ class CreateUserSheet extends HookConsumerWidget {
               isRequired: true,
               isPassword: true,
               validators: [FormBuilderValidators.minLength(6)],
+              autofillHints: const [AutofillHints.newPassword],
             ),
             const Gap(Insets.md),
 

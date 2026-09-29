@@ -26,6 +26,7 @@ class InputField extends HookWidget {
     this.readOnly = false,
     this.onChanged,
     this.suffixGap,
+    this.autofillHints,
   });
 
   final String? title;
@@ -46,6 +47,7 @@ class InputField extends HookWidget {
   final bool readOnly;
   final ValueChanged<String?>? onChanged;
   final double? suffixGap;
+  final Iterable<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +86,7 @@ class InputField extends HookWidget {
         maxLines: maxLines,
         readOnly: readOnly,
         onChanged: onChanged,
+        autofillHints: autofillHints,
         validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
         decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
       );
@@ -98,6 +101,7 @@ class InputField extends HookWidget {
         maxLines: maxLines,
         readOnly: readOnly,
         onChanged: onChanged,
+        autofillHints: autofillHints,
         validator: effectiveValidators.isEmpty ? null : FormBuilderValidators.compose(effectiveValidators),
         decoration: InputDecoration(hintText: hintText, suffixIcon: suffixIcon, isDense: true),
       );
