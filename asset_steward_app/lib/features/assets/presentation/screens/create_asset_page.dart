@@ -98,10 +98,10 @@ class CreateAssetPage extends HookConsumerWidget {
                             name: 'quantity',
                             title: 'Quantity',
                             hintText: 'e.g. 10',
-                            initialValue: (asset?.quantity ?? 1).toString(),
+                            // initialValue: (asset?.quantity ?? 1).toString(),
                             keyboardType: TextInputType.number,
-                            isRequired: true,
-                            validators: [FormBuilderValidators.numeric()],
+                            // isRequired: true,
+                            validators: [FormBuilderValidators.numeric(checkNullOrEmpty: false)],
                           ),
                         ),
                       ],
@@ -250,7 +250,7 @@ class CreateAssetPage extends HookConsumerWidget {
                           if (asset != null) {
                             success = await ref.read(assetDetailsCtrlProvider(asset!.id).notifier).updateAsset(payload);
                           } else {
-                            success = await ref.read(assetsCtrlProvider(null).notifier).createAsset(payload);
+                            success = await ref.read(assetsCtrlProvider().notifier).createAsset(payload);
                           }
 
                           isLoading.value = false;

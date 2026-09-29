@@ -13,6 +13,8 @@ enum AssetStatus {
   assigned,
   maintenance,
   pendingApproval,
+  rejected,
+  returned,
   retired;
 
   Color get color {
@@ -25,6 +27,10 @@ enum AssetStatus {
         return Colors.orange;
       case AssetStatus.pendingApproval:
         return Colors.orange.shade700;
+      case AssetStatus.rejected:
+        return Colors.red;
+      case AssetStatus.returned:
+        return Colors.redAccent.shade700;
       case AssetStatus.retired:
         return Colors.grey;
     }

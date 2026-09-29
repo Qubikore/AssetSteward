@@ -24,12 +24,7 @@ class RegisterPage extends HookConsumerWidget {
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              top: Insets.xl,
-              bottom: Insets.xl,
-              left: Insets.xl,
-              right: Insets.xl,
-            ),
+            padding: const EdgeInsets.only(top: Insets.xl, bottom: Insets.xl, left: Insets.xl, right: Insets.xl),
             child: Container(
               constraints: const BoxConstraints(maxWidth: 450),
               child: FormBuilder(
@@ -42,8 +37,8 @@ class RegisterPage extends HookConsumerWidget {
                       'organizationLocation': 'NY',
                       'firstname': 'Ahnaf',
                       'lastname': 'Sakil',
-                      'email': 'ahnafsakil9@gmail.com',
-                      'password': 'password123',
+                      'email': 'ahnaf@gmail.com',
+                      'password': '123123',
                     }) ??
                     {},
                 child: Column(
@@ -79,11 +74,7 @@ class RegisterPage extends HookConsumerWidget {
                       ],
                     ),
                     const Gap(Insets.xxl),
-                    Icon(
-                      HIStroke.building06,
-                      size: 64,
-                      color: context.colors.primary,
-                    ),
+                    Icon(HIStroke.building06, size: 64, color: context.colors.primary),
                     const Gap(Insets.xl),
 
                     Stack(
@@ -96,17 +87,11 @@ class RegisterPage extends HookConsumerWidget {
                           child: Column(
                             mainAxisSize: .min,
                             children: [
-                              Text(
-                                'Organization Setup',
-                                style: context.text.headlineMedium?.bold,
-                                textAlign: .center,
-                              ),
+                              Text('Organization Setup', style: context.text.headlineMedium?.bold, textAlign: .center),
                               const Gap(Insets.sm),
                               Text(
                                 'Step 1 of 2: Create your organization',
-                                style: context.text.bodyMedium?.textColor(
-                                  context.colors.onSurfaceVariant,
-                                ),
+                                style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
                                 textAlign: .center,
                               ),
                             ],
@@ -127,9 +112,7 @@ class RegisterPage extends HookConsumerWidget {
                               const Gap(Insets.sm),
                               Text(
                                 'Step 2 of 2: Set up your primary admin account.',
-                                style: context.text.bodyMedium?.textColor(
-                                  context.colors.onSurfaceVariant,
-                                ),
+                                style: context.text.bodyMedium?.textColor(context.colors.onSurfaceVariant),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -241,9 +224,7 @@ class RegisterPage extends HookConsumerWidget {
                                   hintText: 'Create a strong password',
                                   isRequired: true,
                                   isPassword: true,
-                                  validators: [
-                                    FormBuilderValidators.minLength(6),
-                                  ],
+                                  validators: [FormBuilderValidators.minLength(6)],
                                 ),
                               ],
                             ),
@@ -257,9 +238,7 @@ class RegisterPage extends HookConsumerWidget {
                       children: [
                         if (currentStep.value == 1) ...[
                           FilledButton(
-                            onPressed: isLoading.value
-                                ? null
-                                : () => currentStep.value = 0,
+                            onPressed: isLoading.value ? null : () => currentStep.value = 0,
                             child: const Icon(HIStroke.arrowLeft01),
                           ),
                           const Gap(Insets.md),
@@ -274,66 +253,36 @@ class RegisterPage extends HookConsumerWidget {
 
                                     if (currentStep.value == 0) {
                                       // Validate Step 1 fields only
-                                      final orgNameValid =
-                                          form.fields['organizationName']
-                                              ?.validate() ??
-                                          false;
-                                      final orgPhoneValid =
-                                          form.fields['organizationPhone']
-                                              ?.validate() ??
-                                          false;
-                                      final orgEmailValid =
-                                          form.fields['organizationEmail']
-                                              ?.validate() ??
-                                          false;
+                                      final orgNameValid = form.fields['organizationName']?.validate() ?? false;
+                                      final orgPhoneValid = form.fields['organizationPhone']?.validate() ?? false;
+                                      final orgEmailValid = form.fields['organizationEmail']?.validate() ?? false;
 
-                                      if (orgNameValid &&
-                                          orgPhoneValid &&
-                                          orgEmailValid) {
+                                      if (orgNameValid && orgPhoneValid && orgEmailValid) {
                                         currentStep.value = 1;
                                       }
                                     } else {
                                       // Validate Step 2 fields only
-                                      final fNameValid =
-                                          form.fields['firstname']
-                                              ?.validate() ??
-                                          false;
-                                      final lNameValid =
-                                          form.fields['lastname']?.validate() ??
-                                          false;
-                                      final emailValid =
-                                          form.fields['email']?.validate() ??
-                                          false;
-                                      final passValid =
-                                          form.fields['password']?.validate() ??
-                                          false;
+                                      final fNameValid = form.fields['firstname']?.validate() ?? false;
+                                      final lNameValid = form.fields['lastname']?.validate() ?? false;
+                                      final emailValid = form.fields['email']?.validate() ?? false;
+                                      final passValid = form.fields['password']?.validate() ?? false;
 
-                                      if (fNameValid &&
-                                          lNameValid &&
-                                          emailValid &&
-                                          passValid) {
+                                      if (fNameValid && lNameValid && emailValid && passValid) {
                                         isLoading.value = true;
                                         final data = QMap.from(form.value);
-                                        final result = await authCtrl
-                                            .registerOrganization(data);
+                                        final result = await authCtrl.registerOrganization(data);
                                         isLoading.value = false;
 
                                         result.fold(
                                           (f) => Toast.showError(f.message),
-                                          (r) => Toast.showSuccess(
-                                            'Organization created successfully!',
-                                          ),
+                                          (r) => Toast.showSuccess('Organization created successfully!'),
                                         );
                                       }
                                     }
                                   },
                             child: isLoading.value
                                 ? const Loader(size: 20, color: Colors.white)
-                                : Text(
-                                    currentStep.value == 0
-                                        ? 'Continue'
-                                        : 'Create Organization',
-                                  ),
+                                : Text(currentStep.value == 0 ? 'Continue' : 'Create Organization'),
                           ),
                         ),
                       ],
@@ -344,14 +293,8 @@ class RegisterPage extends HookConsumerWidget {
                       Row(
                         mainAxisAlignment: .center,
                         children: [
-                          Text(
-                            'Already have an organization?',
-                            style: context.text.bodyMedium,
-                          ),
-                          TextButton(
-                            onPressed: () => context.go(RPaths.login.path),
-                            child: const Text('Sign in'),
-                          ),
+                          Text('Already have an organization?', style: context.text.bodyMedium),
+                          TextButton(onPressed: () => context.go(RPaths.login.path), child: const Text('Sign in')),
                         ],
                       ),
                   ],

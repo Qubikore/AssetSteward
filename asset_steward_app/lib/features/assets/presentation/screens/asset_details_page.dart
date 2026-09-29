@@ -295,18 +295,34 @@ class _AssignmentCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.person_outline, size: 20),
+              const Icon(HIStroke.userCircle, size: 18),
               const Gap(Insets.sm),
-              Expanded(child: Text(assignment.assignedTo.fullName, style: context.text.bodyMedium?.bold)),
-              if (assignment.returnedAtDate != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: context.colors.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text('Returned', style: context.text.labelSmall),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(assignment.assignedTo.fullName, style: context.text.bodySmall?.bold),
+                    Text(
+                      assignment.assignedTo.email,
+                      style: context.text.labelSmall?.textColor(context.colors.outline).textHeight(1).light.scale(.9),
+                    ),
+                  ],
                 ),
+              ),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: assignment.returnedAtDate != null ? context.colors.error.op1 : context.colors.primary.op1,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  assignment.returnedAtDate != null ? 'Returned' : 'Assigned',
+                  style: context.text.labelSmall?.textColor(
+                    assignment.returnedAtDate != null ? context.colors.error : context.colors.primary,
+                  ),
+                ),
+              ),
             ],
           ),
           const Gap(Insets.sm),
@@ -316,7 +332,7 @@ class _AssignmentCard extends StatelessWidget {
               Text('Assigned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
               Text(
                 assignment.assignedAtDate?.toRelativeTime() ?? assignment.assignedAt,
-                style: context.text.bodySmall?.bold,
+                style: context.text.labelSmall,
               ),
             ],
           ),
@@ -326,10 +342,22 @@ class _AssignmentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Returned:', style: context.text.bodySmall?.textColor(context.colors.outline)),
-                Text(assignment.returnedAtDate!.toRelativeTime(), style: context.text.bodySmall?.bold),
+                Text(assignment.returnedAtDate!.toRelativeTime(), style: context.text.labelSmall),
               ],
             ),
           ],
+          const Gap(4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Assigned by:', style: context.text.bodySmall?.textColor(context.colors.outline)),
+              Tooltip(
+                triggerMode: .longPress,
+                message: assignment.assignedBy.email,
+                child: Text(assignment.assignedBy.fullName, style: context.text.labelSmall),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -354,16 +382,16 @@ class _HistoryCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.history, size: 20, color: context.colors.primary),
+          Icon(HIStroke.transactionHistory, size: 18, color: context.colors.primary),
           const Gap(Insets.sm),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: .spaceBetween,
                   children: [
-                    Text(history.action, style: context.text.bodyMedium?.bold),
+                    Text(history.action.sentenceCase, style: context.text.bodySmall?.bold),
                     Text(
                       DateTime.tryParse(history.timestamp)?.toRelativeTime() ?? history.timestamp,
                       style: context.text.labelSmall?.textColor(context.colors.outline),
@@ -371,8 +399,11 @@ class _HistoryCard extends StatelessWidget {
                   ],
                 ),
                 if (history.actionBy != null) ...[
-                  const Gap(4),
-                  Text('By: ${history.actionBy!.fullName}', style: context.text.bodySmall),
+                  Tooltip(
+                    triggerMode: .longPress,
+                    message: history.actionBy!.email,
+                    child: Text('By: ${history.actionBy!.fullName}', style: context.text.labelSmall),
+                  ),
                 ],
                 if (history.notes != null && history.notes!.isNotEmpty) ...[
                   const Gap(4),

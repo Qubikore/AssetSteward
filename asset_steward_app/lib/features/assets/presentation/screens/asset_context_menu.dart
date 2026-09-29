@@ -1,7 +1,7 @@
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
-import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/assign_asset_sheet.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
 import 'package:asset_steward_app/features/maintenance/presentation/screens/start_maintenance_sheet.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -50,7 +50,7 @@ class _AssetMenu extends ConsumerWidget {
     return ContextMenu(
       alignment: ContextMenuAlignment.end,
       items: [
-        if (isPrivileged)
+        if (isPrivileged) ...[
           ContextMenuAction(
             title: 'Update Quantity',
             leading: const Icon(HIStroke.add01),
@@ -67,71 +67,47 @@ class _AssetMenu extends ConsumerWidget {
               }
             },
           ),
-        if (isPrivileged && asset.status != AssetStatus.assigned)
-          ContextMenuAction(
-            title: 'Assign',
-            leading: const Icon(HIStroke.userAdd01),
-            onTap: () => AssignAssetSheet.show(context, asset),
-          ),
-        if (isPrivileged && asset.status == AssetStatus.assigned)
-          ContextMenuAction(
-            title: 'Transfer',
-            leading: const Icon(HIStroke.arrowDataTransferHorizontal),
-            onTap: () => AssignAssetSheet.show(context, asset, isTransfer: true),
-          ),
+
+          if (asset.status != .assigned)
+            ContextMenuAction(
+              title: 'Assign',
+              leading: const Icon(HIStroke.userAdd01),
+              onTap: () => AssignAssetSheet.show(context, asset),
+            ),
+
+          if (asset.status == .assigned)
+            ContextMenuAction(
+              title: 'Transfer',
+              leading: const Icon(HIStroke.arrowDataTransferHorizontal),
+              onTap: () => AssignAssetSheet.show(context, asset, isTransfer: true),
+            ),
+        ],
+
         ContextMenuAction(
           title: 'Start Maintenance',
           leading: const Icon(HIStroke.repair),
           onTap: () => StartMaintenanceSheet.show(context, assetId: asset.id),
         ),
+
         ContextMenuAction(
           title: 'Print Label',
           leading: const Icon(HIStroke.printer),
           onTap: () => PrintLabelsSheet.show(context, assetId: asset.id),
         ),
-        if (isPrivileged && asset.status == AssetStatus.assigned)
-          ContextMenuAction(
-            title: 'Return',
-            leading: const Icon(HIStroke.arrowLeft01),
-            onTap: () async {
-              final reason = await showDialog<String>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Return Asset'),
-                  content: HookBuilder(
-                    builder: (context) {
-                      final ctrl = useTextEditingController();
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text('Please provide a reason for return:'),
-                          const Gap(Insets.md),
-                          InputField(controller: ctrl, hintText: 'Reason...', maxLines: 5),
-                          const Gap(Insets.md),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-                              const Gap(Insets.sm),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(context, ctrl.text.trim()),
-                                child: const Text('Return'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              );
-              if (reason != null && context.mounted) {
-                await ref.read(assetDetailsCtrlProvider(id).notifier).returnAsset(reason);
-              }
-            },
-          ),
+
         if (isPrivileged) ...[
+          if (asset.status == .assigned)
+            ContextMenuAction(
+              title: 'Return',
+              leading: const Icon(HIStroke.arrowLeft01),
+              onTap: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) => _AssetReturnDialog(id: id),
+                );
+              },
+            ),
+
           const ContextMenuDivider(),
           ContextMenuAction(
             title: 'Edit Asset',
@@ -143,15 +119,18 @@ class _AssetMenu extends ConsumerWidget {
             leading: const Icon(HIStroke.delete02),
             isDestructive: true,
             onTap: () async {
-              final confirm = await showDialog<bool>(
+              await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text('Delete Asset'),
-                  content: const Text('Are you sure you want to delete this asset?'),
+                  content: Text('Are you sure you want to delete ${asset.name}'),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                    TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                     FilledButton(
-                      onPressed: () => Navigator.pop(context, true),
+                      onPressed: () async {
+                        final success = await ref.read(assetDetailsCtrlProvider(id).notifier).deleteAsset();
+                        if (success && context.mounted) Navigator.pop(context);
+                      },
                       style: FilledButton.styleFrom(
                         backgroundColor: context.colors.error,
                         foregroundColor: context.colors.onError,
@@ -161,14 +140,41 @@ class _AssetMenu extends ConsumerWidget {
                   ],
                 ),
               );
-              if (confirm == true) {
-                final success = await ref.read(assetDetailsCtrlProvider(id).notifier).deleteAsset();
-                if (success && context.mounted) context.pop();
-              }
             },
           ),
         ],
       ],
+    );
+  }
+}
+
+class _AssetReturnDialog extends HookConsumerWidget {
+  const new({required this.id});
+  final int id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ctrl = useTextEditingController();
+    return AlertDialog(
+      title: const Text('Return Asset'),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+
+        FilledButton(
+          onPressed: () async {
+            final reason = ctrl.text.trim();
+            if (reason.isEmpty) {
+              Toast.showError('Please provide a reason for return');
+              return;
+            }
+            await ref.read(assetDetailsCtrlProvider(id).notifier).returnAsset(reason);
+
+            if (context.mounted) Navigator.pop(context);
+          },
+          child: const Text('Return'),
+        ),
+      ],
+      content: InputField(title: 'Return reason', controller: ctrl, hintText: 'Write a reason', maxLines: 2),
     );
   }
 }

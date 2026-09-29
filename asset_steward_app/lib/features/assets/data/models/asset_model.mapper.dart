@@ -35,6 +35,10 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
         return AssetStatus.maintenance;
       case r'PENDING_APPROVAL':
         return AssetStatus.pendingApproval;
+      case r'REJECTED':
+        return AssetStatus.rejected;
+      case r'RETURNED':
+        return AssetStatus.returned;
       case r'RETIRED':
         return AssetStatus.retired;
       default:
@@ -53,6 +57,10 @@ class AssetStatusMapper extends EnumMapper<AssetStatus> {
         return r'MAINTENANCE';
       case AssetStatus.pendingApproval:
         return r'PENDING_APPROVAL';
+      case AssetStatus.rejected:
+        return r'REJECTED';
+      case AssetStatus.returned:
+        return r'RETURNED';
       case AssetStatus.retired:
         return r'RETIRED';
     }

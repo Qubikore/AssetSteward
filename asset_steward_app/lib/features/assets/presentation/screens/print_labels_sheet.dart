@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:asset_steward_app/features/assets/data/models/asset_label_response.dart';
+import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:asset_steward_app/main.export.dart';
@@ -12,7 +13,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 
 class PrintLabelsSheet extends HookConsumerWidget {
   final int? assetId;
@@ -27,7 +27,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
     );
   }
 
-  Future<void> _generatePdf(List<AssetLabelResponse> labels, String orgName, double pdfWidth) async {
+  Future<void> _generatePdf(List<AssetLabelResponse> labels, String orgName, String fileName, double pdfWidth) async {
     final doc = pw.Document();
 
     // We try to load a font, if it fails fallback to default
@@ -112,7 +112,7 @@ class PrintLabelsSheet extends HookConsumerWidget {
     await FilePicker.saveFile(
       bytes: bytes,
       dialogTitle: 'Save Asset Labels PDF',
-      fileName: 'asset_labels.pdf',
+      fileName: '$fileName.pdf',
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
@@ -137,7 +137,12 @@ class PrintLabelsSheet extends HookConsumerWidget {
           return;
         }
 
-        await _generatePdf(labels, orgName, pdfWidth.value);
+        await _generatePdf(
+          labels,
+          orgName,
+          assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId',
+          pdfWidth.value,
+        );
         if (context.mounted) context.pop();
       } catch (e, s) {
         if (context.mounted) Toast.showError('Failed to generate PDF: $e');

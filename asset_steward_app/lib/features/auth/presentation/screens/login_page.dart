@@ -23,35 +23,22 @@ class LoginPage extends HookConsumerWidget {
             constraints: const BoxConstraints(maxWidth: 400),
             child: FormBuilder(
               key: formKey,
-              initialValue:
-                  onlyOnDebug({
-                    'email': 'ahnafsakil9@gmail.com',
-                    'password': '123123',
-                  }) ??
-                  {},
+              initialValue: onlyOnDebug({'email': 'ahnaf@gmail.com', 'password': '123123'}) ?? {},
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    HIStroke.briefcase02,
-                    size: 64,
-                    color: context.colors.primary,
-                  ),
+                  Icon(HIStroke.briefcase02, size: 64, color: context.colors.primary),
                   const Gap(Insets.xl),
                   Text(
                     'Welcome back',
-                    style: context.text.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: context.text.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.sm),
                   Text(
                     'Please enter your details to sign in.',
-                    style: context.text.bodyMedium?.copyWith(
-                      color: context.colors.onSurfaceVariant,
-                    ),
+                    style: context.text.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(Insets.xl),
@@ -74,14 +61,8 @@ class LoginPage extends HookConsumerWidget {
                   FormBuilderCheckbox(
                     name: 'remember_me',
                     title: Text('Remember', style: context.text.bodyMedium),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      filled: false,
-                    ),
-                    visualDensity: const VisualDensity(
-                      horizontal: -4,
-                      vertical: -4,
-                    ),
+                    decoration: const InputDecoration(border: InputBorder.none, filled: false),
+                    visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                   ),
                   const Gap(Insets.lg),
                   FilledButton(
@@ -99,13 +80,10 @@ class LoginPage extends HookConsumerWidget {
 
                             result.fold(
                               (f) => Toast.showError(f.message),
-                              (r) =>
-                                  Toast.showSuccess('Logged in successfully'),
+                              (r) => Toast.showSuccess('Logged in successfully'),
                             );
                           },
-                    child: isLoading.value
-                        ? const Loader(size: 20, color: Colors.white)
-                        : const Text('Sign in'),
+                    child: isLoading.value ? const Loader(size: 20, color: Colors.white) : const Text('Sign in'),
                   ),
                   const Gap(Insets.xl),
                   Row(
