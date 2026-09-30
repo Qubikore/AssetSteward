@@ -144,7 +144,7 @@ class RegisterPage extends HookConsumerWidget {
                                   hintText: 'e.g. Acme Corp',
                                   isRequired: true,
                                   keyboardType: TextInputType.name,
-                                  autofillHints: const [AutofillHints.organizationName],
+                                  autofillHints: [AutofillHints.organizationName],
                                 ),
 
                                 const InputField(
@@ -198,7 +198,7 @@ class RegisterPage extends HookConsumerWidget {
                                         hintText: 'John',
                                         isRequired: true,
                                         keyboardType: TextInputType.name,
-                                        autofillHints: const [AutofillHints.givenName],
+                                        autofillHints: [AutofillHints.givenName],
                                       ),
                                     ),
                                     Gap(Insets.md),
@@ -209,7 +209,7 @@ class RegisterPage extends HookConsumerWidget {
                                         hintText: 'Doe',
                                         isRequired: true,
                                         keyboardType: TextInputType.name,
-                                        autofillHints: const [AutofillHints.familyName],
+                                        autofillHints: [AutofillHints.familyName],
                                       ),
                                     ),
                                   ],

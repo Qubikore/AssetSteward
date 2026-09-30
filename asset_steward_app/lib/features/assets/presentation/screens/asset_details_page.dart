@@ -9,7 +9,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:recase/recase.dart';
 import 'package:screwdriver/screwdriver.dart';
 
-import '../../../../widgets/collapsible_section.dart';
 import 'asset_context_menu.dart';
 
 class AssetDetailsPage extends HookConsumerWidget {

@@ -2,16 +2,16 @@ import 'package:asset_steward_app/features/assets/data/models/asset_label_respon
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/data/models/assignment_model.dart';
 import 'package:asset_steward_app/features/assets/data/repositories/assets_repository.dart';
-
 import 'package:asset_steward_app/main.export.dart';
 import 'package:recase/recase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 part 'assets_controller.g.dart';
 
 @Riverpod(keepAlive: true)
 class AssetsCtrl extends _$AssetsCtrl {
   final _repo = di.get<AssetsRepository>();
-  final _debouncer = Debouncer(delay: const Duration(milliseconds: 500));
+  final _debouncer = Debouncer();
 
   String _searchQuery = '';
   int? _categoryId;
@@ -24,12 +24,13 @@ class AssetsCtrl extends _$AssetsCtrl {
   }
 
   Future<List<AssetModel>> _fetch() async {
-    final Map<String, dynamic> queries = {};
-    if (status != null) queries['status'] = status!.name.constantCase;
-    if (_searchQuery.isNotEmpty) queries['search'] = _searchQuery;
-    if (_categoryId != null) queries['categoryId'] = _categoryId;
-    if (_locationId != null) queries['locationId'] = _locationId;
-    if (_departmentId != null) queries['departmentId'] = _departmentId;
+    final queries = {
+      'status': ?status?.name.constantCase,
+      if (_searchQuery.isNotEmpty) 'search': _searchQuery,
+      'categoryId': ?_categoryId,
+      'locationId': ?_locationId,
+      'departmentId': ?_departmentId,
+    };
 
     final result = await _repo.getAssets(queries);
     return result.fold((l) => throw l, (r) => r);
@@ -131,4 +132,3 @@ class MyAssetsCtrl extends _$MyAssetsCtrl {
     state = await AsyncValue.guard(_fetch);
   }
 }
-

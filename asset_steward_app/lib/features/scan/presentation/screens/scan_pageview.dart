@@ -1,5 +1,6 @@
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -32,6 +33,29 @@ class ScanPageview extends HookWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(HIStroke.image01, color: Colors.white),
+            onPressed: () async {
+              final picker = ImagePicker();
+              final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+              if (image != null) {
+                final BarcodeCapture? capture = await controller.analyzeImage(image.path);
+                if (capture != null && capture.barcodes.isNotEmpty) {
+                  final scannedValue = capture.barcodes.first.rawValue?.trim();
+                  if (scannedValue != null && context.mounted) {
+                    await RPaths.qrScanResult.push(context, query: {'res': scannedValue});
+                  }
+                } else {
+                  if (context.mounted) {
+                    Chirp.error('No QR code found in the image');
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(content: Text('No QR code found in the image')),
+                    // );
+                  }
+                }
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(HIStroke.flash, color: Colors.white),
             onPressed: () => controller.toggleTorch(),
