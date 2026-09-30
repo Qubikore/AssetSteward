@@ -44,12 +44,15 @@ class StockReportSheet extends HookConsumerWidget {
     final doc = pw.Document();
     pw.Font? font;
     pw.Font? fontBold;
+    pw.Font? fallbackFont;
     try {
       font = await PdfGoogleFonts.outfitRegular();
       fontBold = await PdfGoogleFonts.outfitBold();
+      fallbackFont = await PdfGoogleFonts.notoSansBengaliRegular();
     } catch (e) {
       font = pw.Font.helvetica();
       fontBold = pw.Font.helveticaBold();
+      fallbackFont = font;
     }
 
     final Map<String, List<AssetModel>> groupedAssets = {};
@@ -108,6 +111,7 @@ class StockReportSheet extends HookConsumerWidget {
 
     doc.addPage(
       pw.MultiPage(
+        theme: pw.ThemeData.withFont(base: font, bold: fontBold, fontFallback: [fallbackFont]),
         pageFormat: PdfPageFormat.a4.landscape,
         margin: const pw.EdgeInsets.all(32),
         header: (context) {
@@ -187,7 +191,7 @@ class StockReportSheet extends HookConsumerWidget {
             double groupValue = 0;
             int groupQty = 0;
 
-            final List<List<String>> data = [];
+            final List<List<dynamic>> data = [];
             for (final asset in group) {
               final qty = asset.quantity;
               final price = asset.purchasePrice;
@@ -211,10 +215,34 @@ class StockReportSheet extends HookConsumerWidget {
               ]);
             }
 
+            if (groupBy != ReportGroup.none && (showQty || showPrice)) {
+              final subtotalRow = List<dynamic>.filled(headers.length, '');
+              subtotalRow[0] = pw.Text('SUBTOTAL', style: pw.TextStyle(font: fontBold, fontSize: 9));
+              if (showQty) {
+                subtotalRow[headers.indexOf('Qty')] = pw.Text(
+                  groupQty.toString(),
+                  style: pw.TextStyle(font: fontBold, fontSize: 9),
+                );
+              }
+              if (showQty && showPrice) {
+                subtotalRow[headers.indexOf('Total Value')] = pw.Text(
+                  groupValue.currency(),
+                  style: pw.TextStyle(font: fontBold, fontSize: 9),
+                );
+              }
+              data.add(subtotalRow);
+            }
+
+            final Map<int, pw.TableColumnWidth> tableColumnWidths = {
+              0: const pw.FlexColumnWidth(2.5),
+              for (int i = 1; i < headers.length; i++) i: const pw.FlexColumnWidth(),
+            };
+
             elements.add(
               pw.TableHelper.fromTextArray(
                 headers: headers,
                 data: data,
+                columnWidths: tableColumnWidths,
                 headerStyle: pw.TextStyle(font: fontBold, fontSize: 10, color: PdfColors.white),
                 headerDecoration: const pw.BoxDecoration(color: PdfColors.blue800),
                 cellStyle: pw.TextStyle(font: font, fontSize: 9),
@@ -228,59 +256,56 @@ class StockReportSheet extends HookConsumerWidget {
                 },
               ),
             );
-
-            if (groupBy != ReportGroup.none && (showQty || showPrice)) {
-              elements.add(
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(6),
-                  color: PdfColors.grey100,
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.end,
-                    children: [
-                      pw.Text('Subtotal: ', style: pw.TextStyle(font: fontBold, fontSize: 10)),
-                      if (showQty) ...[
-                        pw.SizedBox(width: 16),
-                        pw.Text('Qty: $groupQty', style: pw.TextStyle(font: fontBold, fontSize: 10)),
-                      ],
-                      if (showQty && showPrice) ...[
-                        pw.SizedBox(width: 16),
-                        pw.Text('Value: ${groupValue.currency()}', style: pw.TextStyle(font: fontBold, fontSize: 10)),
-                      ],
-                    ],
-                  ),
-                ),
-              );
-            }
           }
 
           if (showQty || showPrice) {
             elements.add(pw.SizedBox(height: 24));
+
+            final grandTotalRow = List<dynamic>.filled(headers.length, '');
+            grandTotalRow[0] = pw.Text(
+              'GRAND TOTAL',
+              style: pw.TextStyle(font: fontBold, fontSize: 11, color: PdfColors.blue900),
+            );
+            if (showQty) {
+              grandTotalRow[headers.indexOf('Qty')] = pw.Text(
+                overallTotalQty.toString(),
+                style: pw.TextStyle(font: fontBold, fontSize: 11),
+              );
+            }
+            if (showQty && showPrice) {
+              grandTotalRow[headers.indexOf('Total Value')] = pw.Text(
+                overallTotalValue.currency(),
+                style: pw.TextStyle(font: fontBold, fontSize: 11),
+              );
+            }
+
+            final Map<int, pw.TableColumnWidth> tableColumnWidths = {
+              0: const pw.FlexColumnWidth(2.5),
+              for (int i = 1; i < headers.length; i++) i: const pw.FlexColumnWidth(),
+            };
+
             elements.add(
               pw.Container(
-                padding: const pw.EdgeInsets.all(12),
-                decoration: pw.BoxDecoration(
-                  color: PdfColors.blue50,
-                  border: pw.Border.all(color: PdfColors.blue200),
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
-                ),
-                child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                color: PdfColors.blue50,
+                child: pw.Table(
+                  columnWidths: tableColumnWidths,
                   children: [
-                    pw.Text(
-                      'GRAND TOTAL',
-                      style: pw.TextStyle(font: fontBold, fontSize: 12, color: PdfColors.blue900),
+                    pw.TableRow(
+                      children: List.generate(grandTotalRow.length, (i) {
+                        final cell = grandTotalRow[i];
+                        pw.Alignment align = pw.Alignment.center;
+                        if (i == 0) align = pw.Alignment.centerLeft;
+                        if (showPrice && i == headers.indexOf('Unit Price')) align = pw.Alignment.centerRight;
+                        if (showQty && showPrice && i == headers.indexOf('Total Value')) {
+                          align = pw.Alignment.centerRight;
+                        }
+                        return pw.Container(
+                          alignment: align,
+                          padding: const pw.EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                          child: cell is pw.Widget ? cell : pw.Text(cell.toString()),
+                        );
+                      }),
                     ),
-                    if (showQty) ...[
-                      pw.SizedBox(width: 24),
-                      pw.Text('Assets: $overallTotalQty', style: pw.TextStyle(font: fontBold, fontSize: 12)),
-                    ],
-                    if (showQty && showPrice) ...[
-                      pw.SizedBox(width: 24),
-                      pw.Text(
-                        'Value: ${overallTotalValue.currency()}',
-                        style: pw.TextStyle(font: fontBold, fontSize: 12),
-                      ),
-                    ],
                   ],
                 ),
               ),
