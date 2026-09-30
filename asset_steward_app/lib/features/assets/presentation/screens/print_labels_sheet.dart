@@ -10,6 +10,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -136,8 +137,10 @@ class PrintLabelsSheet extends HookConsumerWidget {
     void onDownload() async {
       final bytes = await generateBytes();
       if (bytes == null) return;
-      final fileName = assetId == null ? 'asset_labels_${DateTime.now().toIso8601String()}' : 'asset_label_$assetId';
-      await FilePicker.saveFile(
+      final fileName = assetId == null
+          ? 'asset_labels_${DateTime.now().toIso8601String().replaceAll(':', '-')}'
+          : 'asset_label_$assetId';
+      final savedPath = await FilePicker.saveFile(
         bytes: bytes,
         dialogTitle: 'Save Asset Labels PDF',
         fileName: '$fileName.pdf',
@@ -145,6 +148,27 @@ class PrintLabelsSheet extends HookConsumerWidget {
         allowedExtensions: ['pdf'],
       );
       if (context.mounted) context.pop();
+
+      if (savedPath != null) {
+        Toast.showSuccess(
+          'PDF saved successfully',
+          actionLabel: 'Open',
+          action: () async {
+            String cleanPath = savedPath.toString();
+            if (cleanPath.startsWith('/document/raw:')) {
+              cleanPath = cleanPath.replaceFirst('/document/raw:', '');
+            } else if (cleanPath.startsWith('/document/primary:')) {
+              cleanPath = cleanPath.replaceFirst('/document/primary:', '/storage/emulated/0/');
+            }
+            cleanPath = Uri.decodeFull(cleanPath);
+
+            final a = await OpenFilex.open(cleanPath);
+            if (a.type != ResultType.done) {
+              Chirp.error('Failed to open file: ${a.message}');
+            }
+          },
+        );
+      }
     }
 
     void onPrint() async {

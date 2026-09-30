@@ -1,6 +1,9 @@
 import 'package:asset_steward_app/main.export.dart';
 import 'package:material_ui/material_ui.dart';
 
+const int _toastDurationSec = 3;
+const int _toastDurationToAddOnAction = 40;
+
 enum ToastPosition { top, bottom }
 
 enum ToastShape { pill, squared }
@@ -50,7 +53,7 @@ class Toast {
     String title, {
     BuildContext? context,
     String? subtitle,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: _toastDurationSec),
     Duration? transitionDuration = const Duration(milliseconds: 700),
     Curve curve = Curves.easeOutExpo,
     Curve? reverseCurve,
@@ -64,11 +67,16 @@ class Toast {
     Color? iconColor,
     int titleMaxLines = 1,
     int subtitleMaxLines = 2,
+    VoidCallback? action,
+    String? actionLabel,
   }) {
+    final adjustedDuration = action != null
+        ? Duration(seconds: duration.inSeconds + _toastDurationToAddOnAction)
+        : duration;
     _enqueue(
       _ToastData(
         title: title,
-        duration: duration,
+        duration: adjustedDuration,
         transitionDuration: transitionDuration,
         curve: curve,
         reverseCurve: reverseCurve,
@@ -83,6 +91,8 @@ class Toast {
         iconColor: iconColor,
         titleMaxLines: titleMaxLines,
         subtitleMaxLines: subtitleMaxLines,
+        action: action,
+        actionLabel: actionLabel,
       ),
       context,
     );
@@ -93,6 +103,8 @@ class Toast {
     BuildContext? context,
     String? title,
     IconData? icon,
+    VoidCallback? action,
+    String? actionLabel,
   }) {
     show(
       title ?? 'Success',
@@ -100,6 +112,8 @@ class Toast {
       context: context,
       icon: icon ?? Icons.check_circle_outline,
       iconColor: const Color(0xFF4CAF50),
+      action: action,
+      actionLabel: actionLabel,
     );
   }
 
@@ -108,6 +122,8 @@ class Toast {
     BuildContext? context,
     String? title,
     IconData? icon,
+    VoidCallback? action,
+    String? actionLabel,
   }) {
     show(
       title ?? 'Error',
@@ -116,6 +132,8 @@ class Toast {
       icon: icon ?? Icons.error_outline,
       isDestructive: true,
       iconColor: const Color(0xFFF44336),
+      action: action,
+      actionLabel: actionLabel,
     );
   }
 
@@ -124,6 +142,8 @@ class Toast {
     BuildContext? context,
     String? title,
     IconData? icon,
+    VoidCallback? action,
+    String? actionLabel,
   }) {
     show(
       title ?? 'Warning',
@@ -131,6 +151,8 @@ class Toast {
       context: context,
       icon: icon ?? Icons.warning_amber_outlined,
       iconColor: const Color(0xFFFF9800),
+      action: action,
+      actionLabel: actionLabel,
     );
   }
 
@@ -139,6 +161,8 @@ class Toast {
     BuildContext? context,
     String? title,
     IconData? icon,
+    VoidCallback? action,
+    String? actionLabel,
   }) {
     show(
       title ?? 'Info',
@@ -146,6 +170,8 @@ class Toast {
       context: context,
       icon: icon ?? Icons.info_outline,
       iconColor: const Color(0xFF2196F3),
+      action: action,
+      actionLabel: actionLabel,
     );
   }
 
@@ -157,9 +183,7 @@ class Toast {
 
     final effectiveContext = context ?? _globalContext;
     if (effectiveContext == null) {
-      Chirp.warning(
-        'Toast: No context available to show toast. Ensure ToastWrapper is added.',
-      );
+      Chirp.warning('Toast: No context available to show toast. Ensure ToastWrapper is added.');
       _toastsQueue.clear();
       return;
     }
@@ -200,6 +224,8 @@ class _ToastData {
   final Color? iconColor;
   final int titleMaxLines;
   final int subtitleMaxLines;
+  final VoidCallback? action;
+  final String? actionLabel;
 
   _ToastData({
     required this.title,
@@ -218,6 +244,8 @@ class _ToastData {
     this.iconColor,
     required this.titleMaxLines,
     required this.subtitleMaxLines,
+    this.action,
+    this.actionLabel,
   });
 }
 
@@ -231,8 +259,7 @@ class _ToastWidget extends StatefulWidget {
   State<_ToastWidget> createState() => _ToastWidgetState();
 }
 
-class _ToastWidgetState extends State<_ToastWidget>
-    with TickerProviderStateMixin {
+class _ToastWidgetState extends State<_ToastWidget> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   final ScrollController _scrollController = ScrollController();
@@ -240,16 +267,10 @@ class _ToastWidgetState extends State<_ToastWidget>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: widget.data.transitionDuration,
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: widget.data.transitionDuration, vsync: this);
 
     _offsetAnimation =
-        Tween<Offset>(
-          begin: Offset(0, widget.data.position == ToastPosition.top ? -1 : 1),
-          end: Offset.zero,
-        ).animate(
+        Tween<Offset>(begin: Offset(0, widget.data.position == ToastPosition.top ? -1 : 1), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: widget.data.curve,
@@ -264,13 +285,11 @@ class _ToastWidgetState extends State<_ToastWidget>
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.offset > 30 &&
-          widget.data.position == ToastPosition.top) {
+      if (_scrollController.offset > 30 && widget.data.position == ToastPosition.top) {
         _dismissAlert();
       }
 
-      if (_scrollController.offset < -30 &&
-          widget.data.position == ToastPosition.bottom) {
+      if (_scrollController.offset < -30 && widget.data.position == ToastPosition.bottom) {
         _dismissAlert();
       }
     });
@@ -290,32 +309,20 @@ class _ToastWidgetState extends State<_ToastWidget>
   }
 
   EdgeInsets getPadding() {
-    const double baseHorizontalPadding = 20;
-    final double baseVerticalPadding = widget.data.subtitle != null ? 9 : 15;
+    const double baseHorizontalPadding = 12;
+    final double baseVerticalPadding = widget.data.subtitle != null ? 6 : 12;
 
     if (widget.data.subtitle == null && widget.data.icon == null) {
-      return EdgeInsets.symmetric(
-        vertical: baseVerticalPadding + 3,
-        horizontal: baseHorizontalPadding + 20,
-      );
+      return EdgeInsets.symmetric(vertical: baseVerticalPadding + 3, horizontal: baseHorizontalPadding + 20);
     }
     if (widget.data.icon == null && widget.data.subtitle != null) {
-      return EdgeInsets.symmetric(
-        horizontal: baseHorizontalPadding + 20,
-        vertical: baseVerticalPadding,
-      );
+      return EdgeInsets.symmetric(horizontal: baseHorizontalPadding + 20, vertical: baseVerticalPadding);
     }
     if (widget.data.icon != null && widget.data.subtitle != null) {
-      return EdgeInsets.symmetric(
-        horizontal: baseHorizontalPadding,
-        vertical: baseVerticalPadding,
-      );
+      return EdgeInsets.symmetric(horizontal: baseHorizontalPadding, vertical: baseVerticalPadding);
     }
     if (widget.data.icon != null && widget.data.subtitle == null) {
-      return EdgeInsets.symmetric(
-        horizontal: baseVerticalPadding,
-        vertical: baseVerticalPadding,
-      );
+      return EdgeInsets.symmetric(horizontal: baseVerticalPadding, vertical: baseVerticalPadding);
     }
 
     return const EdgeInsets.all(0);
@@ -323,14 +330,12 @@ class _ToastWidgetState extends State<_ToastWidget>
 
   @override
   Widget build(BuildContext context) {
-    final double iconSize = widget.data.icon != null ? 24.0 : 0;
+    final double iconSize = widget.data.icon != null ? 20.0 : 0.0;
 
     return Positioned(
       left: 0,
-      top: widget.data.position == ToastPosition.top ? 3 : null,
-      bottom: widget.data.position == ToastPosition.bottom
-          ? MediaQuery.of(context).viewPadding.bottom
-          : null,
+      top: widget.data.position == .top ? 3 : null,
+      bottom: widget.data.position == .bottom ? MediaQuery.viewPaddingOf(context).bottom : null,
       right: 0,
       child: SlideTransition(
         position: _offsetAnimation,
@@ -338,34 +343,22 @@ class _ToastWidgetState extends State<_ToastWidget>
           clipBehavior: Clip.none,
           controller: _scrollController,
           hitTestBehavior: HitTestBehavior.deferToChild,
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
+          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: SafeArea(
             child: Center(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
-                clipBehavior: widget.data.shape == ToastShape.squared
-                    ? Clip.none
-                    : Clip.antiAlias,
+                clipBehavior: widget.data.shape == ToastShape.squared ? Clip.none : Clip.antiAlias,
                 decoration: ShapeDecoration(
                   shape: widget.data.shape == ToastShape.squared
-                      ? const ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(Corners.md),
-                          ),
-                        )
+                      ? const ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(Corners.md)))
                       : const StadiumBorder(),
                   shadows: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    ),
+                    BoxShadow(color: context.colors.shadow.op(0.1), blurRadius: 12, offset: const Offset(0, 8)),
                   ],
                 ),
                 child: Material(
-                  color: context.theme.colorScheme.surfaceContainerHighest,
+                  color: context.colors.surface,
                   child: Padding(
                     padding: widget.data.padding ?? getPadding(),
                     child: Row(
@@ -376,9 +369,7 @@ class _ToastWidgetState extends State<_ToastWidget>
                             widget.data.icon,
                             color:
                                 widget.data.iconColor ??
-                                (widget.data.isDestructive
-                                    ? context.colors.error
-                                    : context.colors.primary),
+                                (widget.data.isDestructive ? context.colors.error : context.colors.primary),
                             size: iconSize,
                           ),
                         if (widget.data.icon != null) const Gap(Insets.sm),
@@ -399,7 +390,7 @@ class _ToastWidgetState extends State<_ToastWidget>
                                     ),
                               ),
                               if (widget.data.subtitle != null) ...[
-                                const Gap(Insets.xs),
+                                const Gap(Insets.xxs),
                                 Text(
                                   widget.data.subtitle!,
                                   maxLines: widget.data.subtitleMaxLines,
@@ -407,14 +398,38 @@ class _ToastWidgetState extends State<_ToastWidget>
                                   style:
                                       widget.data.subtitleTextStyle ??
                                       context.text.labelMedium?.copyWith(
-                                        color: context.colors.onSurfaceVariant
-                                            .withValues(alpha: 0.8),
+                                        color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
                                       ),
                                 ),
                               ],
                             ],
                           ),
                         ),
+                        if (widget.data.action != null && widget.data.actionLabel != null) ...[
+                          const Gap(Insets.md),
+                          TextButton(
+                            onPressed: () {
+                              widget.data.action!();
+                              _dismissAlert();
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: widget.data.isDestructive
+                                  ? context.colors.error.op1
+                                  : context.colors.primary.op1,
+                              visualDensity: const VisualDensity(horizontal: -4, vertical: -1),
+                              minimumSize: Size.zero,
+                              shape: const RoundedRectangleBorder(borderRadius: Corners.circleBorder),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              widget.data.actionLabel!,
+                              style: context.text.labelMedium?.copyWith(
+                                color: widget.data.isDestructive ? context.colors.error : context.colors.primary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

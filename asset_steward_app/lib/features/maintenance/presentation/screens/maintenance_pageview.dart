@@ -25,6 +25,10 @@ class MaintenancePageview extends HookConsumerWidget {
           child: AsyncBuilder(
             asyncValue: maintenanceAsync,
             providers: [maintenanceCtrlProvider],
+            onLoading: () => const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: ShimmerList(count: 6, itemHeight: 100, separatorHeight: 12),
+            ),
             onEmpty: () => const EmptyState(
               label: 'No Maintenance Records',
               subLabel: 'There are no active or completed maintenance records.',

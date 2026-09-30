@@ -29,6 +29,10 @@ class AllAssetsTabView extends HookConsumerWidget {
               asyncValue: assetsAsync,
               providers: [assetsCtrlProvider],
               allowEmpty: true,
+              onLoading: () => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: ShimmerList(count: 8, itemHeight: 80, separatorHeight: Insets.md),
+              ),
               builder: (assets) {
                 if (assets.isEmpty) {
                   return ListView(

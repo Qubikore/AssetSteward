@@ -7,6 +7,7 @@ import 'package:material_ui/material_ui.dart';
 import '../controllers/profile_controller.dart';
 import 'edit_profile_sheet.dart';
 import 'local_widget/profile_header.dart';
+import 'local_widget/profile_shimmer.dart';
 import 'local_widget/section_title.dart';
 import 'local_widget/settings_tile.dart';
 
@@ -31,6 +32,7 @@ class ProfilePage extends HookConsumerWidget {
       body: AsyncBuilder(
         asyncValue: profileAsync,
         providers: [profileCtrlProvider],
+        onLoading: () => const ProfilePageShimmer(),
         builder: (data) => RefreshIndicator(
           onRefresh: () =>
               Future.wait([ref.refresh(profileCtrlProvider.future), ref.refresh(organizationCtrlProvider.future)]),

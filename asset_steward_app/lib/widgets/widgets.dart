@@ -12,3 +12,4 @@ export 'spaced_text.dart';
 export 'toast/toast.dart';
 export 'u_image.dart';
 export 'universal_header_delegate.dart';
+export 'shimmer_loading.dart';
