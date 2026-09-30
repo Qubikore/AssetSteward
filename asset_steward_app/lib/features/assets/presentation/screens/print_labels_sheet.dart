@@ -5,7 +5,6 @@ import 'package:asset_steward_app/features/assets/data/models/asset_label_respon
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
-import 'package:asset_steward_app/core/services/file_storage_service.dart';
 import 'package:asset_steward_app/main.export.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -107,8 +106,14 @@ class PrintLabelsSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final storage = di<KeyValueStorage>();
     final isLoading = useState(false);
-    final pdfWidth = useState<double>(21.0); // Standard A4 width in cm
+    final pdfWidth = useState<double>(storage.getString(PrefsKey.labelsPdfWidth) != null ? double.parse(storage.getString(PrefsKey.labelsPdfWidth)!) : 21.0);
+
+    useEffect(() {
+      storage.saveString(PrefsKey.labelsPdfWidth, pdfWidth.value.toString());
+      return null;
+    }, [pdfWidth.value]);
 
     final org = ref.watch(organizationCtrlProvider).value;
     final orgName = org?.name ?? 'Asset Steward';

@@ -1,5 +1,6 @@
 export 'const/app_const.dart';
 export 'const/endpoints.dart';
+export 'const/prefs_key.dart';
 export 'di/di.config.dart';
 export 'di/di.dart';
 export 'errors/error_handler.dart';
@@ -18,6 +19,7 @@ export 'layout/space.dart';
 export 'models/api_response.dart';
 export 'network/auth_interceptor.dart';
 export 'network/dio_client.dart';
+export 'services/file_storage_service.dart';
 export 'storage/key_value_storage.dart';
 export 'storage/token_storage.dart';
 export 'utility/app_event_bus.dart';

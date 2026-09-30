@@ -13,11 +13,7 @@ class MetricsOverview extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        MetricCard(
-          title: 'Total Asset Value',
-          value: '\$${metrics.totalAssetValue.toStringAsFixed(2)}',
-          icon: HIStroke.money01,
-        ),
+        MetricCard(title: 'Total Asset Value', value: metrics.totalAssetValue.currency(), icon: HIStroke.money01),
         const Gap(Insets.sm),
         Row(
           children: [
@@ -43,11 +39,7 @@ class MetricsOverview extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: MetricCard(
-                title: 'Assigned',
-                value: metrics.assignedAssets.toString(),
-                icon: HIStroke.userAdd01,
-              ),
+              child: MetricCard(title: 'Assigned', value: metrics.assignedAssets.toString(), icon: HIStroke.userAdd01),
             ),
             const Gap(Insets.sm),
             Expanded(

@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:asset_steward_app/core/services/file_storage_service.dart';
 import 'package:asset_steward_app/features/assets/data/models/asset_model.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
@@ -52,8 +51,6 @@ class StockReportSheet extends HookConsumerWidget {
       font = pw.Font.helvetica();
       fontBold = pw.Font.helveticaBold();
     }
-
-    final currencyFmt = NumberFormat.currency(symbol: '\$');
 
     final Map<String, List<AssetModel>> groupedAssets = {};
     if (groupBy == ReportGroup.none) {
@@ -209,8 +206,8 @@ class StockReportSheet extends HookConsumerWidget {
                 if (showLocation && groupBy != ReportGroup.location) asset.location?.name ?? '-',
                 if (showStatus && groupBy != ReportGroup.status) asset.status.name.titleCase,
                 if (showQty) qty.toString(),
-                if (showPrice) currencyFmt.format(price),
-                if (showQty && showPrice) currencyFmt.format(val),
+                if (showPrice) price.currency(),
+                if (showQty && showPrice) val.currency(),
               ]);
             }
 
@@ -247,10 +244,7 @@ class StockReportSheet extends HookConsumerWidget {
                       ],
                       if (showQty && showPrice) ...[
                         pw.SizedBox(width: 16),
-                        pw.Text(
-                          'Value: ${currencyFmt.format(groupValue)}',
-                          style: pw.TextStyle(font: fontBold, fontSize: 10),
-                        ),
+                        pw.Text('Value: ${groupValue.currency()}', style: pw.TextStyle(font: fontBold, fontSize: 10)),
                       ],
                     ],
                   ),
@@ -283,7 +277,7 @@ class StockReportSheet extends HookConsumerWidget {
                     if (showQty && showPrice) ...[
                       pw.SizedBox(width: 24),
                       pw.Text(
-                        'Value: ${currencyFmt.format(overallTotalValue)}',
+                        'Value: ${overallTotalValue.currency()}',
                         style: pw.TextStyle(font: fontBold, fontSize: 12),
                       ),
                     ],
@@ -305,15 +299,45 @@ class StockReportSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = useState(false);
 
-    final groupByState = useState(ReportGroup.none);
-    final showCode = useState(true);
-    final showSerial = useState(false);
-    final showCategory = useState(true);
-    final showDepartment = useState(true);
-    final showLocation = useState(true);
-    final showStatus = useState(true);
-    final showQty = useState(true);
-    final showPrice = useState(true);
+    final storage = di<KeyValueStorage>();
+
+    final groupByState = useState(
+      ReportGroup.values.tryByName(storage.getString(PrefsKey.reportGroupBy)) ?? ReportGroup.none,
+    );
+    final showCode = useState(storage.getBool(PrefsKey.reportShowCode) ?? true);
+    final showSerial = useState(storage.getBool(PrefsKey.reportShowSerial) ?? false);
+    final showCategory = useState(storage.getBool(PrefsKey.reportShowCategory) ?? true);
+    final showDepartment = useState(storage.getBool(PrefsKey.reportShowDepartment) ?? true);
+    final showLocation = useState(storage.getBool(PrefsKey.reportShowLocation) ?? true);
+    final showStatus = useState(storage.getBool(PrefsKey.reportShowStatus) ?? true);
+    final showQty = useState(storage.getBool(PrefsKey.reportShowQty) ?? true);
+    final showPrice = useState(storage.getBool(PrefsKey.reportShowPrice) ?? true);
+
+    useEffect(
+      () {
+        storage.saveString(PrefsKey.reportGroupBy, groupByState.value.name);
+        storage.saveBool(PrefsKey.reportShowCode, showCode.value);
+        storage.saveBool(PrefsKey.reportShowSerial, showSerial.value);
+        storage.saveBool(PrefsKey.reportShowCategory, showCategory.value);
+        storage.saveBool(PrefsKey.reportShowDepartment, showDepartment.value);
+        storage.saveBool(PrefsKey.reportShowLocation, showLocation.value);
+        storage.saveBool(PrefsKey.reportShowStatus, showStatus.value);
+        storage.saveBool(PrefsKey.reportShowQty, showQty.value);
+        storage.saveBool(PrefsKey.reportShowPrice, showPrice.value);
+        return null;
+      },
+      [
+        groupByState.value,
+        showCode.value,
+        showSerial.value,
+        showCategory.value,
+        showDepartment.value,
+        showLocation.value,
+        showStatus.value,
+        showQty.value,
+        showPrice.value,
+      ],
+    );
 
     final org = ref.watch(organizationCtrlProvider).value;
     final orgName = org?.name ?? 'Asset Steward';
