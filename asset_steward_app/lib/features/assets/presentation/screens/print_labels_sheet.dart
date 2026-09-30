@@ -5,12 +5,11 @@ import 'package:asset_steward_app/features/assets/data/models/asset_label_respon
 import 'package:asset_steward_app/features/assets/presentation/controllers/asset_details_controller.dart';
 import 'package:asset_steward_app/features/assets/presentation/controllers/assets_controller.dart';
 import 'package:asset_steward_app/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:asset_steward_app/core/services/file_storage_service.dart';
 import 'package:asset_steward_app/main.export.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -140,35 +139,16 @@ class PrintLabelsSheet extends HookConsumerWidget {
       final fileName = assetId == null
           ? 'asset_labels_${DateTime.now().toIso8601String().replaceAll(':', '-')}'
           : 'asset_label_$assetId';
-      final savedPath = await FilePicker.saveFile(
-        bytes: bytes,
-        dialogTitle: 'Save Asset Labels PDF',
-        fileName: '$fileName.pdf',
-        type: FileType.custom,
-        allowedExtensions: ['pdf'],
-      );
+      
       if (context.mounted) context.pop();
 
-      if (savedPath != null) {
-        Toast.showSuccess(
-          'PDF saved successfully',
-          actionLabel: 'Open',
-          action: () async {
-            String cleanPath = savedPath.toString();
-            if (cleanPath.startsWith('/document/raw:')) {
-              cleanPath = cleanPath.replaceFirst('/document/raw:', '');
-            } else if (cleanPath.startsWith('/document/primary:')) {
-              cleanPath = cleanPath.replaceFirst('/document/primary:', '/storage/emulated/0/');
-            }
-            cleanPath = Uri.decodeFull(cleanPath);
-
-            final a = await OpenFilex.open(cleanPath);
-            if (a.type != ResultType.done) {
-              Chirp.error('Failed to open file: ${a.message}');
-            }
-          },
-        );
-      }
+      await FileStorageService.instance.saveAndPrompt(
+        bytes: bytes,
+        fileName: fileName,
+        extension: 'pdf',
+        mimeType: 'application/pdf',
+        successMessage: 'PDF saved successfully',
+      );
     }
 
     void onPrint() async {
