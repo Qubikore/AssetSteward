@@ -1,4 +1,5 @@
 import 'package:asset_steward_app/features/assets/presentation/screens/print_labels_sheet.dart';
+import 'package:asset_steward_app/features/assets/presentation/screens/stock_report_sheet.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/all_assets_tab_view.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/my_assets_tab_view.dart';
 import 'package:asset_steward_app/features/assets/presentation/screens/tab_views/pending_assets_tab_view.dart';
@@ -36,7 +37,7 @@ class AssetsPageview extends HookConsumerWidget {
                   ContextMenuAction(
                     title: 'Asset Report',
                     leading: const Icon(HIStroke.documentAttachment),
-                    onTap: () => Toast.showInfo('Asset Report feature coming soon'),
+                    onTap: () => StockReportSheet.show(context),
                   ),
                 ],
               ),
@@ -79,7 +80,7 @@ class AssetsPageview extends HookConsumerWidget {
               ContextMenuAction(
                 title: 'Asset Report',
                 leading: const Icon(HIStroke.documentAttachment),
-                onTap: () => Toast.showInfo('Asset Report feature coming soon'),
+                onTap: () => StockReportSheet.show(context),
               ),
             ],
           ),
